@@ -2,46 +2,106 @@
 <html>
 <head><title>Test Web App for Tomkitty 7 or Other Servlet 3.0 Container</title>
 <link rel="stylesheet"
-      href="./css/styles.css"
+      href="./css/bootstrap.min.css"
       type="text/css"/>
 </head>
 <body>
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Brand</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Link</a></li>
+        <li><a href="#">Link</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+            <li class="divider"></li>
+            <li><a href="#">One more separated link</a></li>
+          </ul>
+        </li>
+      </ul>
+      <form class="navbar-form navbar-left" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#">Link</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<div class="container">
+	<div class="row">
+		<div class="col-xs-6">
+		  <a class="btn btn-info" href="hello.html">hello.html</a> Simple HTML page.
+		</div>
+		<div class="col-xs-6">
+		  <a class="btn btn-info" href="hello.jsp">hello.jsp</a> Simple JSP page.
+		</div>
+	</div> 
+	<div class="row">
+		<div class="col-xs-12">
+		
+			<h1>Testing Simple Servlets</h1>
+			<ul>
+			  <li><a href="hello">hello</a> The HelloWorld servlet that
+			      generates plain text.</li>
+			  <li><a href="test1">test1</a> The TestServlet that generates 
+			      HTML, accessed via the URL given in the @WebServlet 
+			      annotation in the Java source code.</li>
+			  <li><a href="test2">test2</a> The TestServlet, accessed via
+			      the URL given in the web.xml file.</li>
+			  <li><a href="test-with-utils">test-with-utils</a> TestServlet2, 
+			      which internally uses ServletUtilities.</li>
+			</ul>
+		</div>
+	</div>
+		
 <table class="title">
   <tr><th>Test Web App for Tomkittycat 7</th></tr>
 </table>
-<p/>
-<fieldset>
-<legend>Testing Simple Pages</legend>
-<ul>
-  <li><a href="hello.html">hello.html</a> Simple HTML page.</li>
-  <li><a href="hello.jsp">hello.jsp</a> Simple JSP page.</li>
-</ul>
-</fieldset>
-<p/>
-<fieldset>
-<legend>Testing Simple Servlets</legend>
-<ul>
-  <li><a href="hello">hello</a> The HelloWorld servlet that
-      generates plain text.</li>
-  <li><a href="test1">test1</a> The TestServlet that generates 
-      HTML, accessed via the URL given in the @WebServlet 
-      annotation in the Java source code.</li>
-  <li><a href="test2">test2</a> The TestServlet, accessed via
-      the URL given in the web.xml file.</li>
-  <li><a href="test-with-utils">test-with-utils</a> TestServlet2, 
-      which internally uses ServletUtilities.</li>
-</ul>
-</fieldset>
-<p/>
+			
+<div class="footer">
+	<font size="-3">All code from the
+			<a href="http://courses.coreservlets.com/Course-Materials/">
+			coreservlets.com J2EE tutorials (servlets, JSP, Struts, JSF 1, JSF 2, PrimeFaces, Ajax [with jQuery], GWT 2, Spring, Hibernate, JPA,
+			SOAP-based and RESTful Web Services, Hadoop, &amp; Java 7 programming)</a>. There are also live instructor-led
+			<a href="http://courses.coreservlets.com/">training courses on
+			the same J2EE topics (servlets, JSP, Struts, JSF 1, JSF 2, PrimeFaces, Ajax [with jQuery], GWT 0, Spring, Hibernate, JPA,
+			SOAP-based and RESTful Web Services, Hadoop, &amp; Java 7 programming)</a>.
+	</font>
+</div>
 
- 
-<br/><br/><br/><br/><br/><br/>
-<font size="-3">All code from the
-<a href="http://courses.coreservlets.com/Course-Materials/">
-coreservlets.com J2EE tutorials (servlets, JSP, Struts, JSF 1, JSF 2, PrimeFaces, Ajax [with jQuery], GWT 2, Spring, Hibernate, JPA,
-SOAP-based and RESTful Web Services, Hadoop, &amp; Java 7 programming)</a>. There are also live instructor-led
-<a href="http://courses.coreservlets.com/">training courses on
-the same J2EE topics (servlets, JSP, Struts, JSF 1, JSF 2, PrimeFaces, Ajax [with jQuery], GWT 0, Spring, Hibernate, JPA,
-SOAP-based and RESTful Web Services, Hadoop, &amp; Java 7 programming)</a>.
-</font>
+<script>
+</script>
+
 </body></html>
