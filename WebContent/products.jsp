@@ -4,10 +4,10 @@
 <t:template title="Products">
 	<div class="container">
 		<div class="row">
-			<t:product name="Jewelry" description="Fine Jewelry. Show it off" imgurl="people"/>
-			<t:product name="Art" description="Fine Art. Good for the eyes" imgurl="abstract"/>
-			<t:product name="Clothes" description="Hide that skin" imgurl="fashion"/>
-			<t:product name="Sports" description="Get out, get active" imgurl="sports"/>
+			<t:product name="Necklace" description="Fine Jewelry. Show it off" imgurl="people"/>
+			<t:product name="Mona Lisa" description="Fine Art. Good for the eyes" imgurl="abstract"/>
+			<t:product name="Shirt" description="Hide that skin" imgurl="fashion"/>
+			<t:product name="Ball" description="Get out, get active" imgurl="sports"/>
 		</div>
 	</div>
 </t:template>
