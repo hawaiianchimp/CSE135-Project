@@ -1,5 +1,5 @@
 <%@tag description="default template" pageEncoding="UTF-8" %>
-<%@attribute name="title" fragment="true" %>
+<%@attribute name="title" required="true" %>
 <!DOCTYPE html>
 <html>
 <head><title>${title}</title>

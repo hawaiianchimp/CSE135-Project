@@ -3,4 +3,4 @@
 
 <t:template>
 Hello World
-</t:template>
+</t:template title="Home Page">
