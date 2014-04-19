@@ -1,7 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<t:template title="Products">
+<t:template title="Product Categories">
 	<div class="container">
 		<div class="row">
 			<t:product name="Necklace" description="Fine Jewelry. Show it off" imgurl="people"/>

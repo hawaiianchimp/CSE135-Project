@@ -13,7 +13,7 @@
 				${description}
 			</p>
 			<p>
-				<a class="btn btn-primary" href="#">Browse</a><a class="btn" href="#">Action</a>
+				<a class="btn btn-primary" href="#">Browse Products</a>
 			</p>
 		</div>
 	</div>
