@@ -9,8 +9,8 @@ import javax.servlet.http.*;
  *  text as with the HelloWorld servlet.
  */
 
-@WebServlet("/test1")
-public class TestServlet extends HttpServlet {
+@WebServlet("/index")
+public class Functions extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request,
                     HttpServletResponse response)
@@ -18,12 +18,13 @@ public class TestServlet extends HttpServlet {
     response.setContentType("text/html");
     PrintWriter out = response.getWriter();
     out.println
-      ("<!DOCTYPE html>\n" +
-       "<html>\n" +
-       "<head><title>A Test Servlet</title></head>\n" +
-       "<body bgcolor=\"#fdf5e6\">\n" +
-       "<h1>Test</h1>\n" +
-       "<p>Simple servlet for testing.</p>\n" +
-       "</body></html>");
+      ();
+  }
+  
+  
+  public static String do_html_header(String title){
+	
+	  return "String";
+	  
   }
 }
