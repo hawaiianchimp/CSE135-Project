@@ -1,13 +1,7 @@
 <%@tag description="default template" pageEncoding="UTF-8" %>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@attribute name="title" required="true" %>
-<!DOCTYPE html>
-<html>
-<head><title>${title}</title>
-<link rel="stylesheet"
-      href="./css/bootstrap.min.css"
-      type="text/css"/>
-</head>
-<body>
+<t:base title="${title}">
 <nav class="navbar navbar-default" role="navigation">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -52,15 +46,10 @@
   </div><!-- /.container-fluid -->
 </nav>
 <div class="container">
-</div>
 <jsp:doBody/>		
 <hr>
-<div class='footer'>
+<div class="footer">
 <p>CSE135 Project &copy; 2014</p>
 </div>
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-<script src="./js/bootstrap.min.js"></script>
-
-
-</body></html>
+</div>
+</t:base>

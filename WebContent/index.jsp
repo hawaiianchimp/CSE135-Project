@@ -1,6 +1,13 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
-
 <t:template title="Home Page">
-Hello World
-</t:template >
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>CSE135 Project</h1>
+        <p>This project is for creating a shopping cart application for an ecommerce site</p>
+        <p><a href="categories.jsp" class="btn btn-primary btn-lg" role="button">Start &raquo;</a></p>
+      </div>
+    </div>
+</t:template>
