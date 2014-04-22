@@ -8,6 +8,7 @@
 			<t:product name="Mona Lisa" description="Fine Art. Good for the eyes" imgurl="abstract"/>
 			<t:product name="Shirt" description="Hide that skin" imgurl="fashion"/>
 			<t:product name="Ball" description="Get out, get active" imgurl="sports"/>
+			<t:product name="Cellphone" description="Landline, but mobile" imgurl="technics"/>
 		</div>
 	</div>
 </t:template>

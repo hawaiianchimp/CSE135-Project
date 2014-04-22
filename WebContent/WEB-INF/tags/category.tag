@@ -13,7 +13,7 @@
 				${description}
 			</p>
 			<p>
-				<a class="btn btn-primary" href="#">Browse Products</a>
+				<a class="btn btn-primary" href="/CSE135Project/products.jsp?category=${name}">Browse Products</a>
 			</p>
 		</div>
 	</div>

@@ -37,6 +37,7 @@
           <input type="password" class="form-control" placeholder="Password">
         </div>
         <button type="submit" class="btn btn-default">Submit</button>
+        <a class="btn btn-default" href="/CSE135Project/register.jsp" >Register</a>
       </form>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
