@@ -1,7 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
-<t:template title='New User Registration'>
+<t:header title='New User Registration'/>
 
 	<!DOCTYPE html>
 	<html lang="en">
@@ -101,4 +101,4 @@
 	<!-- Used for spacing -->
 	<div class="col-md-4 column"></div>
 </div>
-</t:template>
+<t:footer/>

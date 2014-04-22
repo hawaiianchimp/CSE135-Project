@@ -4,7 +4,7 @@
 
 <% String category = request.getParameter("category");%>
 
-<t:template title="Product Categories">
+<t:header title="Product Categories"/>
 	<div class="container">
 		<div class="row">
 			<t:product name="Necklace" description="Fine Jewelry. Show it off" imgurl="people"/>
@@ -86,4 +86,4 @@
             %>
 		</div>
 	</div>
-</t:template>
+<<t:footer />
