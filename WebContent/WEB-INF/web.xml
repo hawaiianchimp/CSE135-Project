@@ -8,4 +8,5 @@
     <servlet-name>Test</servlet-name>
     <url-pattern>/test2</url-pattern>
   </servlet-mapping>
+
 </web-app>
