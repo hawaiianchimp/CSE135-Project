@@ -53,4 +53,8 @@
 <p>CSE135 Project &copy; 2014</p>
 </div>
 </div>
+<<<<<<< HEAD
 </t:base>
+=======
+</t:base>
+>>>>>>> FETCH_HEAD
