@@ -18,8 +18,8 @@
 
 			<!-- Username -->
 			<div class="form-group">
-				<label for="username">Username</label><input type="text"
-					class="form-control" name="username">
+				<label for="name">Username</label><input type="text"
+					class="form-control" name="name">
 			</div>
 
 			<!-- Role -->
