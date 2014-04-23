@@ -1,6 +1,7 @@
 <%@tag description="default template" pageEncoding="UTF-8" %>
 <%@attribute name="title" required="true" %>
 
+<!--Welcome Message-->
 <%
 	String message = "Welcome, " + session.getAttribute("name") + "!";
 	if(message.equals("Welcome, null!"))
@@ -32,14 +33,6 @@
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Categories <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li><a href="/categories">Category 1</a></li>
-          </ul>
-        </li>
-      </ul>
       <form class="navbar-form navbar-left" role="login" action="login.jsp" method="GET">
         <div class="form-group">
         	<input type="text" class="form-control" placeholder="Username" name="username">
@@ -48,7 +41,7 @@
         <a class="btn btn-default" href="/CSE135Project/register.jsp" >Register</a>
       </form>
       <ul class="nav navbar-nav navbar-right">
-      	<li ><a href="#"><%=message %></a></li>
+      	<li><a href="#"><%=message %></a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Shopping Cart <b class="caret"></b></a>
           <ul class="dropdown-menu">

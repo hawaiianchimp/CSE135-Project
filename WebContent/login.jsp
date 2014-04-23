@@ -76,6 +76,7 @@
 	<% }
 	
 	else{ %>
-		<h1>Unable to find username, please try again.</h1>
+		<h1>The provided name, <%= username %>, is not known.</h1>
+		<h3>Please try again.</h3>
 	<% } %>
 <t:footer/>
