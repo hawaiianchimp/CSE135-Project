@@ -68,28 +68,20 @@
 			out.println("<h1>org.postgresql.Driver Not Found</h1>");
 		}
 	}
-
-	if (successful) {
 %>
-<t:template title='Registration Confirmation'>
 
-	<h1>Registration Successful!</h1>
-	<h3>Thank you for signing up with us!</h3>
-	<a class="btn btn-default" href="/CSE135Project/categories.jsp">Go to Categories</a>
+<t:header title='Registration Confirmation'/>
 
-</t:template>
-<%
-	} else {
-%>
-<t:template title='Registration Confirmation'>
-
-	<h1>Registration Not Successful!</h1>
-
-	<h3>Unfortunately, someone else is using your username. Please go back and choose another username</h3>
-	<a class="btn btn-default" href="/CSE135Project/register.jsp">Go
+	<% if(successful){ %>
+		<h1>Registration Successful!</h1>
+		<h3>Thank you for signing up with us!</h3>
+		<a class="btn btn-default" href="/CSE135Project/categories.jsp">Go to Categories</a>
+	<% }
+	
+	else{ %>
+		<h1>Registration Not Successful!</h1>
+		<h3>Unfortunately, someone else is using your username. Please go back and choose another username</h3>
+		<a class="btn btn-default" href="/CSE135Project/register.jsp">Go
 		Back</a>
-
-</t:template>
-<%
-	}
-%>
+	<% } %>
+<t:footer/>
