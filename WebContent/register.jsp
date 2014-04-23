@@ -12,11 +12,13 @@
 
 	int errors = 1;
 	StringBuilder messages = new StringBuilder(); 
-	String name = request.getParameter("name");
+	String name = (request.getParameter("name") != null) ? request.getParameter("name"):"";
+	System.out.print(name);
 	String age = request.getParameter("age");
 	String role = request.getParameter("role");
 	String state = request.getParameter("state");
 	String message_type = "success";
+	String output = "";
 	
 	ArrayList<String> states = new ArrayList<String>();
 			states.add("AL");
@@ -72,27 +74,26 @@
 			states.add("WY");
 			
 			
-	if (name != null) 
+	if (request.getQueryString() != null) 
 	{
 			
 		if(name.length() < 2)
 		{
 			errors++;
-			messages.append("The name you entered is too short");
+			messages.append(", ").append("The name you entered is too short");
 			message_type = "danger";
 		}
-		
 		if(!states.contains(state))
 		{
 			errors++;
-			messages.append("This is not a valid state");
+			messages.append(", ").append("This is not a valid state");
 			message_type = "danger";
 		}
 		
 		if(Integer.parseInt(age) < 0)
 		{
 			errors++;
-			messages.append("Age must be a positive number");
+			messages.append(", ").append("Age must be a positive number");
 			message_type = "danger";
 		}
 		
@@ -133,12 +134,12 @@
 				if(count == 0)
 				{
 					errors++;
-					messages.append("User " + name + " already exists, please try another name");
+					messages.append(", ").append("User " + name + " already exists, please try another name");
 					message_type = "danger";
 				}
 				else
 				{
-					messages.append("User " + name + " successfully registered");
+					messages.append(", ").append("User " + name + " successfully registered");
 					message_type = "success";
 				}
 				statement.close();
@@ -146,24 +147,23 @@
 		} catch (SQLException e) {
             e.printStackTrace();
             errors++;
-            messages.append("Error in SQL Statement");
+            messages.append(", ").append("Error in SQL Statement");
             message_type = "danger";
             
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			errors++;
-			messages.append("org.postgresql.Driver Not Found");
+			messages.append(", ").append("org.postgresql.Driver Not Found");
 			message_type = "danger";
 		}
 	}
-
+	output = messages.toString().substring(1);
 }	
-	String output = messages.toString();
 %>
 
 <t:header title='New User Registration'/>
 
-<% if(name != null) {%>
+<% if(request.getQueryString() != null) {%>
 <t:message type="<%= message_type%>" message="<%=output%>"/> 
 <% } %>
 
@@ -178,13 +178,16 @@
 
 			<!-- Username -->
 			<div class="form-group">
-				<label for="name">Username</label><input type="text"
+				<label for="name">Name</label><input type="text" placeholder="Name"
 					class="form-control" name="name" value="<%=name%>">
 			</div>
 
 			<!-- Role -->
 			<div class="form-group">
+				<label for="role">Role</label>
 				<select class="form-control" name="role">
+					<option>Role</option>
+					<option>----</option>
 					<option value="Owner">Owner</option>
 					<option value="Customer">Customer</option>
 				</select>
@@ -192,16 +195,19 @@
 
 			<!-- State -->
 			<div class="form-group">
-				<label for="age">Age</label><input type="number"
+				<label for="age">Age</label><input type="number" placeholder="Age"
 					class="form-control" name="age" value="<%=age%>">
 			</div>
 			<div class="form-group">
+				<label for="state">State</label>
 				<select class="form-control" name="state">
+					<option>State</option>
+					<option>-----</option>
 					<option value="AL">Alabama</option>
 					<option value="AK">Alaska</option>
 					<option value="AZ">Arizona</option>
 					<option value="AR">Arkansas</option>
-					<option selected value="CA">California</option>
+					<option value="CA">California</option>
 					<option value="CO">Colorado</option>
 					<option value="CT">Connecticut</option>
 					<option value="DE">Delaware</option>
