@@ -28,7 +28,7 @@
 		// Use the created statement to SELECT
 		// the student attributes FROM the Student table.
 		pstmt = conn
-				.prepareStatement("SELECT * FROM products WHERE product_id= (SELECT product_id FROM products_categories WHERE category_id=?)");
+				.prepareStatement("SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id=?) WHERE products_categories.product_id=products.product_id");
 		pstmt.setInt(1, category_id);
 		rs = pstmt.executeQuery();
 %>
