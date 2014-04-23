@@ -1,5 +1,14 @@
 <%@tag description="default template" pageEncoding="UTF-8" %>
 <%@attribute name="title" required="true" %>
+
+<%
+	String message = "Welcome, " + session.getAttribute("name") + "!";
+	if(message.equals("Welcome, null!"))
+	{
+		message = "Welcome, Guest!";
+	}
+%>
+
 <!DOCTYPE html>
 <html>
 <head><title>${title}</title>
@@ -31,15 +40,15 @@
           </ul>
         </li>
       </ul>
-      <form class="navbar-form navbar-left" role="login">
+      <form class="navbar-form navbar-left" role="login" action="login.jsp" method="GET">
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="Username">
-          <input type="password" class="form-control" placeholder="Password">
-        </div>
-        <button type="submit" class="btn btn-default">Submit</button>
+        	<input type="text" class="form-control" placeholder="Username" name="username">
+       	</div>
+        <button type="submit" class="btn btn-default">Log In</button>
         <a class="btn btn-default" href="/CSE135Project/register.jsp" >Register</a>
       </form>
       <ul class="nav navbar-nav navbar-right">
+      	<li ><a href="#"><%=message %></a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Shopping Cart <b class="caret"></b></a>
           <ul class="dropdown-menu">
