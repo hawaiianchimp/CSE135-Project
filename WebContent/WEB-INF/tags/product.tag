@@ -4,7 +4,7 @@
 <%@attribute name="imgurl" required="true"%>
 <div class="col-md-4">
 	<div class="thumbnail">
-		<img alt="300x200" src="http://lorempixel.com/600/200/${imgurl}">
+		<img src="img/${imgurl}.png">
 		<div class="caption">
 			<h3>
 				${name}

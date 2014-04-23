@@ -1,89 +1,77 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<%@page import="java.sql.*"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
-<% String category = request.getParameter("category");%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.io.*"%>
+<%@ page import="java.sql.*"%>
 
-<t:header title="Product Categories"/>
-	<div class="container">
-		<div class="row">
-			<t:product name="Necklace" description="Fine Jewelry. Show it off" imgurl="people"/>
-			<t:product name="Mona Lisa" description="Fine Art. Good for the eyes" imgurl="abstract"/>
-			<t:product name="Shirt" description="Hide that skin" imgurl="fashion"/>
-			<t:product name="Ball" description="Get out, get active" imgurl="sports"/>
-			<t:product name="Cellphone" description="Landline, but mobile" imgurl="technics"/>
-			<%
-            
-            Connection conn = null;
-            PreparedStatement pstmt = null;
-            ResultSet rs = null;
-            
-            try {
-                // Registering Postgresql JDBC driver with the DriverManager
-                Class.forName("org.postgresql.Driver");
+<%
+	Connection conn = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
 
-                // Open a connection to the database using DriverManager
-                conn = DriverManager.getConnection(
-						"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
-                
-             // Create the statement
-                Statement statement = conn.createStatement();
+	int category_id = Integer.parseInt(request.getParameter("id"));
 
-                // Use the created statement to SELECT
-                // the student attributes FROM the Student table.
-                rs = statement.executeQuery("SELECT * FROM students");
-                %>
-		
-			<%
-                // Iterate over the ResultSet
-                while (rs.next()) {
-            %>
-			<t:product name="<%= rs.getString("name") %>" description="<%= rs.getString("description") %>" imgurl="<%= rs.getString("imgurl") %>"/>
-			<%
-                }
-			%>
-			
-            <%-- -------- Close Connection Code -------- --%>
-            <%
-                // Close the ResultSet
-                rs.close();
+	try {
+		// Registering Postgresql JDBC driver with the DriverManager
+		Class.forName("org.postgresql.Driver");
 
-                // Close the Statement
-                statement.close();
 
-                // Close the Connection
-                conn.close();
-            } catch (SQLException e) {
+		// Open a connection to the database using DriverManager
+		conn = DriverManager.getConnection(
+				"jdbc:postgresql://localhost/bonnie_test", "bonnie",
+				"password"); //TODO: Change name of database accordingly
 
-                // Wrap the SQL exception in a runtime exception to propagate
-                // it upwards
-                throw new RuntimeException(e);
-            }
-            finally {
-                // Release resources in a finally block in reverse-order of
-                // their creation
+		// Create the statement
+		Statement statement = conn.createStatement();
 
-                if (rs != null) {
-                    try {
-                        rs.close();
-                    } catch (SQLException e) { } // Ignore
-                    rs = null;
-                }
-                if (pstmt != null) {
-                    try {
-                        pstmt.close();
-                    } catch (SQLException e) { } // Ignore
-                    pstmt = null;
-                }
-                if (conn != null) {
-                    try {
-                        conn.close();
-                    } catch (SQLException e) { } // Ignore
-                    conn = null;
-                }
-            }
-            %>
-		</div>
+		// Use the created statement to SELECT
+		// the student attributes FROM the Student table.
+		pstmt = conn
+				.prepareStatement("SELECT * FROM products WHERE product_id= (SELECT product_id FROM products_categories WHERE category_id=?)");
+		pstmt.setInt(1, category_id);
+		rs = pstmt.executeQuery();
+%>
+
+<t:header title="Product Categories" />
+<div class="container">
+	<div class="row">
+
+		<%
+			String rsname, rsdescription, rsimg, rssku, rsid, rsprice;
+				while (rs.next()) {
+					rsname = rs.getString("name");
+					rsdescription = rs.getString("description");
+					rsimg = rs.getString("img_src");
+					rssku = rs.getString("sku");
+					rsid = String.valueOf(rs.getInt("product_id"));
+					rsid = String.valueOf(rs.getDouble("price"));
+
+					if (rsimg == null)
+						rsimg = "default";
+		%>
+		<t:product name="<%=rsname %>" description="<%=rsdescription %>"
+			imgurl="<%=rsimg %>" />
+		<%
+			}
+				/* Close everything  */
+				// Close the ResultSet
+				rs.close();
+				//Close the Statement
+				statement.close();
+				// Close the Connection
+				conn.close();
+			}
+
+			catch (SQLException e) {
+				e.printStackTrace();
+				out.println("<h1>" + "Shit happened" + "</h1>");
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+				out.println("<h1>org.postgresql.Driver Not Found</h1>");
+			}
+		%>
+
 	</div>
-<<t:footer />
+</div>
+<t:footer />

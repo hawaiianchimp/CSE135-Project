@@ -26,16 +26,17 @@
 <div class="container">
 	<div class="row">
 		<%
-		String rsname,rsdescription,rsimg;
+		String rsname,rsdescription,rsimg,rsid;
 			while(rs.next())
 			{ 
 				rsname = rs.getString("name");
 				rsdescription = rs.getString("description");
 				rsimg = rs.getString("img_src");
+				rsid = String.valueOf(rs.getInt("category_id"));
 				if(rsimg == null)
 					rsimg = "default";
 			%>
-		<t:category name="<%=rsname %>" description="<%=rsdescription %>" imgurl="<%=rsimg %>" />
+		<t:category name="<%=rsname %>" description="<%=rsdescription %>" imgurl="<%=rsimg %>" id="<%=rsid %>"/>
 			
 		<%
 			}
