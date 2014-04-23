@@ -39,7 +39,7 @@
                 // Iterate over the ResultSet
                 while (rs.next()) {
             %>
-			<t:product name="<%= rs.getString("name") %>" description="<%= rs.getString("description") %>" imgurl=<%= rs.getString("imgurl") %>/>
+			<t:product name="<%= rs.getString("name") %>" description="<%= rs.getString("description") %>" imgurl="<%= rs.getString("imgurl") %>"/>
 			<%
                 }
 			%>

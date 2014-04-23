@@ -3,14 +3,14 @@
 
 <%@ page import="java.util.*"%>
 <%@ page import="java.io.*"%>
-<%@ page import="java.sql.*"%>
+<%@ page import="java.sql.*" %>
 
 <%
 	PrintWriter o = response.getWriter();
 
 	boolean successful = false;
-	String username = request.getParameter("username");
-	if (username != null) {
+	String name = request.getParameter("name");
+	if (name != null) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -21,30 +21,35 @@
 
 			// Open a connection to the database using DriverManager
 			conn = DriverManager.getConnection(
-					"jdbc:postgresql://localhost/bonnie_test",
-					"bonnie", "password"); //TODO: Change name of database accordingly
+					"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+					"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); //TODO: Change name of database accordingly
 			
-			if (username != null) {
+			if (name != null) {
 				// Create the statement
 				Statement statement = conn.createStatement();
 				// Use the created statement to SELECT
 				// the student attributes FROM the Student table.
 				pstmt = conn
-						.prepareStatement("SELECT * FROM users WHERE username=?"); //TODO: Change accordingly
-				pstmt.setString(1, username);
+						.prepareStatement("SELECT * FROM users WHERE name=?"); //TODO: Change accordingly
+				pstmt.setString(1, name);
 				rs = pstmt.executeQuery();
 				//out.println("<h1>" + "test" + "</h1>");
-				
 				if (rs.next())
+				{
+					System.out.print("There is an entry already! " + rs.findColumn("name"));
 					successful = false; //match found
+				}
 				else
-					successful = true; 
+				{
+					System.out.print("good to go! " + rs.findColumn("name"));
+					successful = true;
+				}
 					
 				if(successful)
 				{
 					//TODO: Change accordingly: 
-					pstmt = conn.prepareStatement("INSERT INTO users (username, role, age, state) VALUES (?,?,?,?)");
-					pstmt.setString(1, username);
+					pstmt = conn.prepareStatement("INSERT INTO users (name, role, age, state) VALUES (?,?,?,?)");
+					pstmt.setString(1, name);
 					pstmt.setString(2, request.getParameter("role"));
 					pstmt.setInt(3, Integer.parseInt(request.getParameter("age")));
 					pstmt.setString(4, request.getParameter("state"));
