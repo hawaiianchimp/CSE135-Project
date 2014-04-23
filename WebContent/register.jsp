@@ -1,11 +1,171 @@
+<%@page import="org.postgresql.util.PSQLException"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
+
+<%@page import="java.util.*"%>
+<%@page import="java.io.*"%>
+<%@page import="java.sql.*" %>
+<%@page import="org.postgresql.*" %>
+<%
+	PrintWriter o = response.getWriter();
+
+	int errors = 1;
+	StringBuilder messages = new StringBuilder(); 
+	String name = request.getParameter("name");
+	String age = request.getParameter("age");
+	String role = request.getParameter("role");
+	String state = request.getParameter("state");
+	String message_type = "success";
+	
+	ArrayList<String> states = new ArrayList<String>();
+			states.add("AL");
+			states.add("AK");
+			states.add("AZ");
+			states.add("AR");
+			states.add("CA");
+			states.add("CO");
+			states.add("CT");
+			states.add("DE");
+			states.add("DC");
+			states.add("FL");
+			states.add("GA");
+			states.add("HI");
+			states.add("ID");
+			states.add("IL");
+			states.add("IN");
+			states.add("IA");
+			states.add("KS");
+			states.add("KY");
+			states.add("LA");
+			states.add("ME");
+			states.add("MD");
+			states.add("MA");
+			states.add("MI");
+			states.add("MN");
+			states.add("MS");
+			states.add("MO");
+			states.add("MT");
+			states.add("NE");
+			states.add("NV");
+			states.add("NH");
+			states.add("NJ");
+			states.add("NM");
+			states.add("NY");
+			states.add("NC");
+			states.add("ND");
+			states.add("OH");
+			states.add("OK");
+			states.add("OR");
+			states.add("PA");
+			states.add("RI");
+			states.add("SC");
+			states.add("SD");
+			states.add("TN");
+			states.add("TX");
+			states.add("UT");
+			states.add("VT");
+			states.add("VA");
+			states.add("WA");
+			states.add("WV");
+			states.add("WI");
+			states.add("WY");
+			
+			
+	if (name != null) 
+	{
+			
+		if(name.length() < 2)
+		{
+			errors++;
+			messages.append("The name you entered is too short");
+			message_type = "danger";
+		}
+		
+		if(!states.contains(state))
+		{
+			errors++;
+			messages.append("This is not a valid state");
+			message_type = "danger";
+		}
+		
+		if(Integer.parseInt(age) < 0)
+		{
+			errors++;
+			messages.append("Age must be a positive number");
+			message_type = "danger";
+		}
+		
+		if(errors == 1)
+		{
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql = null;
+			
+			try {
+				// Registering Postgresql JDBC driver with the DriverManager
+				Class.forName("org.postgresql.Driver");
+
+				// Open a connection to the database using DriverManager
+				conn = DriverManager.getConnection(
+						"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); //TODO: Change name of database accordingly
+					
+				// Create the statement
+				
+				Statement statement = conn.createStatement();
+				// Insert the user into table users, only if it does not already exist
+				sql =	"INSERT INTO users (name, role, age, state) " +
+						"SELECT ?,?,?,? " +
+						"WHERE NOT EXISTS (SELECT name FROM users WHERE name = ?);";
+				System.out.print(sql + "\n");		   
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, name);
+				pstmt.setString(2, role);
+				pstmt.setInt(3, Integer.parseInt(age));
+				pstmt.setString(4, state);
+				pstmt.setString(5, name);
+				
+				//get the count for the number of rows that have been affected by the update 
+				int count = pstmt.executeUpdate();
+				//if no rows have been updated, that is because the name already exists.
+				if(count == 0)
+				{
+					errors++;
+					messages.append("User " + name + " already exists, please try another name");
+					message_type = "danger";
+				}
+				else
+				{
+					messages.append("User " + name + " successfully registered");
+					message_type = "success";
+				}
+				statement.close();
+				conn.close();
+		} catch (SQLException e) {
+            e.printStackTrace();
+            errors++;
+            messages.append("Error in SQL Statement");
+            message_type = "danger";
+            
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			errors++;
+			messages.append("org.postgresql.Driver Not Found");
+			message_type = "danger";
+		}
+	}
+
+}	
+	String output = messages.toString();
+%>
+
 <t:header title='New User Registration'/>
 
-	<!DOCTYPE html>
-	<html lang="en">
-<head>
+<% if(name != null) {%>
+<t:message type="<%= message_type%>" message="<%=output%>"/> 
+<% } %>
 
 <div class="row clearfix">
 	<!-- Used for spacing -->
@@ -14,12 +174,12 @@
 	<!-- User registration  -->
 	<div class="col-md-4 column">
 		<h2>New User Registration</h2>
-		<form action="register_confirm.jsp" method="GET">
+		<form action="register.jsp" method="GET">
 
 			<!-- Username -->
 			<div class="form-group">
 				<label for="name">Username</label><input type="text"
-					class="form-control" name="name">
+					class="form-control" name="name" value="<%=name%>">
 			</div>
 
 			<!-- Role -->
@@ -33,7 +193,7 @@
 			<!-- State -->
 			<div class="form-group">
 				<label for="age">Age</label><input type="number"
-					class="form-control" name="age">
+					class="form-control" name="age" value="<%=age%>">
 			</div>
 			<div class="form-group">
 				<select class="form-control" name="state">
@@ -41,7 +201,7 @@
 					<option value="AK">Alaska</option>
 					<option value="AZ">Arizona</option>
 					<option value="AR">Arkansas</option>
-					<option value="CA">California</option>
+					<option selected value="CA">California</option>
 					<option value="CO">Colorado</option>
 					<option value="CT">Connecticut</option>
 					<option value="DE">Delaware</option>
