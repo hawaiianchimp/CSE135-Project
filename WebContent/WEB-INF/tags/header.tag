@@ -18,7 +18,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">CSE135</a>
+      <a class="navbar-brand" href="/CSE135Project/index.jsp">CSE135</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
