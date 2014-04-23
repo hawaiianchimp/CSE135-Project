@@ -16,6 +16,7 @@
 		// Registering Postgresql JDBC driver with the DriverManager
 		Class.forName("org.postgresql.Driver");
 
+
 		// Open a connection to the database using DriverManager
 		conn = DriverManager.getConnection(
 				"jdbc:postgresql://localhost/bonnie_test", "bonnie",
