@@ -20,6 +20,10 @@
 	String message_type = "success";
 	String output = "";
 	
+	ArrayList<String> roles = new ArrayList<String>();
+		roles.add("Owner");
+		roles.add("Customer");
+	
 	ArrayList<String> states = new ArrayList<String>();
 			states.add("AL");
 			states.add("AK");
@@ -86,14 +90,28 @@
 		if(!states.contains(state))
 		{
 			errors++;
-			messages.append(", ").append("This is not a valid state");
+			messages.append(", ").append("Please select a state");
 			message_type = "danger";
 		}
-		
-		if(Integer.parseInt(age) < 0)
+		if(age.isEmpty())
 		{
 			errors++;
-			messages.append(", ").append("Age must be a positive number");
+			messages.append(", ").append("Please enter an age");
+			message_type = "danger";
+		}
+		else{
+			if(Integer.parseInt(age) < 0)
+			{
+				errors++;
+				messages.append(", ").append("Age must be a positive number");
+				message_type = "danger";
+			}
+		}
+
+		if(!roles.contains(role))
+		{
+			errors++;
+			messages.append(", ").append("Please select a role");
 			message_type = "danger";
 		}
 		
@@ -122,11 +140,11 @@
 						"WHERE NOT EXISTS (SELECT name FROM users WHERE name = ?);";
 				System.out.print(sql + "\n");		   
 				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, name);
-				pstmt.setString(2, role);
+				pstmt.setString(1, name.trim());
+				pstmt.setString(2, role.trim());
 				pstmt.setInt(3, Integer.parseInt(age));
-				pstmt.setString(4, state);
-				pstmt.setString(5, name);
+				pstmt.setString(4, state.trim());
+				pstmt.setString(5, name.trim());
 				
 				//get the count for the number of rows that have been affected by the update 
 				int count = pstmt.executeUpdate();
