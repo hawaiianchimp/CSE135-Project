@@ -78,8 +78,11 @@
 	<% 
 	if(logged_in==1){ 
 	%>
-		<h3>Signed In! Welcome <%= username %>!</h3>
+		<h1>Signed In! Welcome <%= username %>!</h1>
+		<h3>What would you like to do today?</h3>
+		<a class="btn btn-default" href="/CSE135Project/index.jsp">Home</a>
 		<a class="btn btn-default" href="/CSE135Project/categories.jsp">Go to Categories</a>
+		<a class="btn btn-default" href=#>Go to Shopping Cart</a>
 	<% 
 	}
 	

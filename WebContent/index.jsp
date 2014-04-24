@@ -10,7 +10,7 @@
         <p><a href="categories.jsp" class="btn btn-primary btn-lg" role="button">Start &raquo;</a></p>
       </div>
     </div>
-	
+<%-- 	
 	<%
 	String message = "Welcome, " + session.getAttribute("name") + "!";
 	if(!message.equals("Welcome, null!"))
@@ -26,7 +26,7 @@
 	<%
 	}
 	%>
-		
+		 --%>
 		
     
 <t:footer/>
