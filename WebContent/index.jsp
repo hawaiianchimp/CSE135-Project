@@ -22,15 +22,16 @@
 </div>
 </container> -->
 
-<row>
-<h2>
-	<span> CSE135 Shopping Project<span class='spacer'></span><br>
-		<span class='spacer'></span>This project is for creating a shopping cart
-		<span class='spacer'></span><br><span class='spacer'></span>application for an ecommerce site.
-		<span class='spacer'></span><br><br><span class='spacer'><span class='spacer'></span><a href="categories.jsp">Go &raquo;</a>
-	</span>
+<h2 class="header_title">
+	<span>CSE135 Shopping Project</span>
+	<br>
+	<span>This project is for creating a shopping cart</span>
+	<br>
+	<span>application for an ecommerce site.</span>
+	<br>
+	<br>
+	<span><a href="categories.jsp">Go &raquo;</a></span>
 </h2>
-</row>
 
 
 <%-- 	
