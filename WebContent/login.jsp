@@ -8,9 +8,10 @@
 <%
 	PrintWriter o = response.getWriter();
 
-	boolean logged_in = false;
+	int logged_in = 0;
 	String username = request.getParameter("username");
-	if (username != null) {
+	//System.out.println("username= " + username + " " + username.length());
+	if (username != null && username.length()>0) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -36,16 +37,16 @@
 				//out.println("<h1>" + "test" + "</h1>");
 				if (rs.next())
 				{
-					System.out.print("There is an entry already! " + rs.findColumn("name"));
-					logged_in = true; //match found
+					//System.out.print("There is an entry already! " + rs.findColumn("name"));
+					logged_in = 1; //match found
 				}
 				else
 				{
-					System.out.print("good to go! " + rs.findColumn("name"));
-					logged_in = false;
+					//System.out.print("good to go! " + rs.findColumn("name"));
+					logged_in = 0;
 				}
 					
-				if(logged_in)
+				if(logged_in==1)
 				{
 					session.setAttribute("name", username);
 				}
@@ -66,17 +67,35 @@
 			out.println("<h1>org.postgresql.Driver Not Found</h1>");
 		}
 	}
+	else
+	{
+		logged_in = 2;
+	}
 %>
 
 <t:header title='Login'/>
 
-	<% if(logged_in){ %>
+	<% 
+	if(logged_in==1){ 
+	%>
 		<h3>Signed In! Welcome <%= username %>!</h3>
 		<a class="btn btn-default" href="/CSE135Project/categories.jsp">Go to Categories</a>
-	<% }
+	<% 
+	}
 	
-	else{ %>
+	else if(logged_in==2){ 
+	%>
+		<h1>You did not provide a username.</h1>
+		<h3>Please provide a username and try again.</h3>	
+	<% 
+	}
+	
+	else
+	{ 
+	%>
 		<h1>The provided name, <%= username %>, is not known.</h1>
 		<h3>Please try again.</h3>
-	<% } %>
+	<% 
+	}
+	%>
 <t:footer/>
