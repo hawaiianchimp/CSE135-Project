@@ -16,6 +16,9 @@
 <link rel="stylesheet"
       href="./css/bootstrap.min.css"
       type="text/css"/>
+<link rel="stylesheet"
+      href="./css/styles.css"
+      type="text/css"/>
 </head>
 <body>
 <nav class="navbar navbar-default" role="navigation">
