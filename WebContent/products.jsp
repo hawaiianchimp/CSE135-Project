@@ -38,6 +38,7 @@
 	<div class="row">
 
 		<%
+			if(rs.getRow() > 0){
 			String rsname, rsdescription, rsimg, rssku, rsid, rsprice;
 				while (rs.next()) {
 					rsname = rs.getString("name");
@@ -53,6 +54,13 @@
 		<t:product name="<%=rsname %>" description="<%=rsdescription %>"
 			imgurl="<%=rsimg %>" />
 		<%
+				}
+			}
+			else{
+				%>
+				No Products in this category
+				<%
+				
 			}
 				/* Close everything  */
 				// Close the ResultSet

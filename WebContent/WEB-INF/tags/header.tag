@@ -58,3 +58,6 @@
   </div><!-- /.container-fluid -->
 </nav>
 <div class="container">
+
+<h1>${title}</h1>
+	<hr>
