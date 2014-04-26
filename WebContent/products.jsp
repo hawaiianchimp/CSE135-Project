@@ -6,6 +6,7 @@
 <%@ page import="java.sql.*"%>
 
 <%
+	String role = "" + session.getAttribute("role");
 	Connection conn = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
@@ -58,9 +59,17 @@
 				}
 			}
 			else{
+				if(role.equals("Owner"))
+				{
 				%>
-				<t:message type="warning" message="No Products in this category, please add a product"></t:message>
+					<t:message type="warning" message="No Products in this category, please add a product"></t:message>
 				<%
+				}
+				else{
+				%>
+					<t:message type="warning" message="No Products in this category"></t:message>
+				<%
+				}
 				
 			}
 				/* Close everything  */
@@ -79,7 +88,7 @@
 				e.printStackTrace();
 				out.println("<h1>org.postgresql.Driver Not Found</h1>");
 			}
-	if(session.getAttribute("role").equals("Owner")){%>
+	if(role.equals("Owner")){%>
 		<div class="col-md-4">
 			<div class="thumbnail">
 				<img style="height:200px" src="img/categories/plus.png">

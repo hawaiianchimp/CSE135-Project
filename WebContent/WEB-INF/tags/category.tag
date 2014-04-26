@@ -16,17 +16,24 @@
 			<p>
 				${description}
 			</p>
-			<% if(session.getAttribute("role").equals("Owner")){ %>
+			<% 
+			String role = ""+session.getAttribute("role");
+			System.out.println("role= " + role);
+			%>
+			<% if(role.equals("Owner")){ %>
 			<p>
+				<% System.out.println("inside if()"); %>
 				<a class="btn btn-primary" href="products.jsp?cid=${cid}&category=${name}">${label}</a>
 				<a class="btn btn-success" href="category.jsp?action=update&cid=${cid}">Update</a>
 				<a class="btn btn-danger" href="category.jsp?action=delete&cid=${cid}">Delete</a>
 			</p>
 			<%}else{ %>
 			<p>
+				<% System.out.println("inside else()"); %>
 				<a class="btn btn-primary" href="products.jsp?cid=${cid}&category=${name}">${label}</a>
 			</p>
 			<%} %>
+			<% System.out.println("outside if-else"); %>
 		</div>
 	</div>
 </div>

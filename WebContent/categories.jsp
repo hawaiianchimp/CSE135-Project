@@ -6,6 +6,7 @@
 <%@ page import="java.sql.*"%>
 
 <%
+	String role = ""+session.getAttribute("role");
 	Connection conn = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
@@ -36,11 +37,11 @@
 					rsimg = rs.getString("img_src");
 					rsid = String.valueOf(rs.getInt("category_id"));
 					if(rsimg == null)
-						rsimg = "default";
+						rsimg = "category_default";
+					System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
 				%>
-			<t:category name="<%=rsname %>" description="<%=rsdescription %>" imgurl="<%=rsimg %>" cid="<%=rsid %>" label="Browse Products"/>
-				
-			<%
+					<t:category name="<%=rsname %>" description="<%=rsdescription %>" imgurl="<%=rsimg %>" cid="<%=rsid %>" label="Browse Products"/>
+				<%
 				}
 		}
 		else
@@ -65,7 +66,7 @@
 		}
 	
 		
-	if(session.getAttribute("role").equals("Owner")) {%>
+	if(role.equals("Owner")) {%>
 		<div class="col-md-4">
 			<div class="thumbnail">
 				<img style="height:200px" src="img/categories/plus.png">
