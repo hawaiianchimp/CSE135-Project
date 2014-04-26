@@ -49,26 +49,27 @@
 						"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
 		Statement c_statement = c_conn.createStatement();
-		c_pstmt = c_conn.prepareStatement("SELECT * FROM categories");
+		c_pstmt = c_conn.prepareStatement("SELECT * FROM categories AS c LEFT JOIN (SELECT p.category_id, COUNT(p.category_id) FROM products_categories AS p GROUP BY p.category_id) AS p ON (c.category_id = p.category_id);");
 		c_rs = c_pstmt.executeQuery();
 %>
 
 <t:header title="Product Categories" />
 	<div class="row">
 	<!-- category menu -->
-	<div class="col-md-1">
+	<div class="col-md-2">
 		<ul class="nav nav-stacked navbar-left nav-pills">
 		<li class="active"><a href="categories.jsp">Categories</a>
 		</li>
 		<%
 			if (c_rs.isBeforeFirst()) {
-					String rsname, rsid;
+					String rsname, rsid, rscount;
 					while (c_rs.next()) {
 						rsname = c_rs.getString("name");
 						rsid = String.valueOf(c_rs.getInt("category_id"));
+						rscount = String.valueOf(c_rs.getInt("count"));
 						//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
 					%>
-						<li><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%></a></li>
+						<li><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%> <span class="badge"><%=rscount %></span></a></li>
 					<%
 					}
 			}
@@ -90,7 +91,7 @@
 	</div>
 
 		<!-- products -->
-		<div class="col-md-11">
+		<div class="col-md-10">
 			<%
 				if (rs.isBeforeFirst()) {
 					String rsname, rsdescription, rsimg, rssku, rsid, rsprice;

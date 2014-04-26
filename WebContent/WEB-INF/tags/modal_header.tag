@@ -1,7 +1,7 @@
-<%@tag description="default template" pageEncoding="UTF-8" %>
+<%@tag description="Modal header" pageEncoding="UTF-8" %>
 <%@attribute name="modal_title" required="true"%>
 
-<div class="modal fade">
+<div id="modal" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -9,3 +9,5 @@
         <h4 class="modal-title">{modal_title}</h4>
       </div>
       <div class="modal-body">
+      <form class="form-horizontal" action="${action}" method="${method}">
+      

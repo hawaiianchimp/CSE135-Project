@@ -19,6 +19,11 @@
 <link rel="stylesheet"
       href="./css/styles.css"
       type="text/css"/>
+
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script src="./js/bootstrap.min.js"></script>
+
 </head>
 <body>
 <nav class="navbar navbar-default" role="navigation">
