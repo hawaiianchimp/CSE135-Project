@@ -31,7 +31,6 @@
 
 <!--  Deleting a category -->
 <% 
-	System.out.print(action);
 	if(action.equals("delete"))
 	{
 		if(!cid.isEmpty())
@@ -83,6 +82,7 @@
 	}
 %>
 
+<!-- Show add modal -->
 <% 
 	System.out.print(action);
 	if(action.equals("add"))
@@ -90,46 +90,31 @@
 		%>
 		<t:modal_header modal_title="Adding Item" />
 			<fieldset>
-
-			<!-- Form Name -->
-			<legend>Form Name</legend>
-			
 			<!-- Text input-->
-			<div class="control-group">
-			  <label class="control-label" for="Name">Name</label>
-			  <div class="controls">
-			    <input id="name" name="name" type="text" placeholder="Name" class="input-xlarge">
-			    
-			  </div>
-			</div>
 			
-			<!-- Prepended text-->
-			<div class="control-group">
-			  <label class="control-label" for="img_url">Image</label>
-			  <div class="controls">
-			    <div class="input-prepend">
-			      <span class="add-on">$</span>
-			      <input id="img_url" name="img_url" class="input-xlarge" placeholder="0.00" type="text">
-			    </div>
-			    
-			  </div>
+			<label class="control-label" for="name">Name</label>
+			<input id="name" name="name" type="text" placeholder="Name" class="form-control">
+			
+			
+			<label class="control-label" for="img_url">Image</label>
+			<div class="input-group">
+			  	<span class="input-group-addon">/img/categories/</span><input id="img_url" name="img_url" class="form-control" placeholder="image" type="text"><span class="input-group-addon">.png</span>
 			</div>
 			
 			<!-- Textarea -->
 			<div class="control-group">
 			  <label class="control-label" for="description">Description</label>
 			  <div class="controls">                     
-			    <textarea id="description" name="description"></textarea>
+			    <textarea class="form-control" id="description" name="description"></textarea>
 			  </div>
 			</div>
 			
 			</fieldset>
 		<t:modal_footer name="add"/>
-		<% 
-	}
-	
-	
-	//If submit is equal to "add"
+<% }	%>
+
+<!-- Do add submission -->
+	<%
 	if(submit.equals("add"))
 	{
 			if(role.equals("Owner"))
@@ -143,15 +128,15 @@
 					d_pstmt.setString(1, ""+request.getParameter("name"));
 					d_pstmt.setString(2, ""+request.getParameter("img_url"));
 					d_pstmt.setString(3, ""+request.getParameter("description"));
+
 					int count = d_pstmt.executeUpdate();
-				
-					if(count > 0)
-					{
+
+					if(count != 0){
 						%>
-					<t:message type="success" message="Category successfully added"></t:message>
-					<%
-						
-					}else{
+						<t:message type="danger" message="Category successfully deleted"></t:message>
+						<%
+						}
+					else{
 						%>
 						<t:message type="danger" message="Error occurred in SQL"></t:message>
 						<%
@@ -169,6 +154,133 @@
 		<%}	
 			else{%>
 				<t:message type="warning" message="You must be an owner to add categories"></t:message>
+		<%
+			}
+	}
+%>
+
+<!--  Updating a category -->
+<% 
+	if(action.equals("update"))
+	{
+		if(!cid.isEmpty())
+		{
+			if(role.equals("Owner"))
+			{
+				try{
+				Class.forName("org.postgresql.Driver");
+				statement = conn.createStatement();
+				sql = "SELECT * FROM categories WHERE category_id = ?;";
+				d_pstmt = conn.prepareStatement(sql);
+				d_pstmt.setInt(1, Integer.parseInt(cid));
+				rs = d_pstmt.executeQuery();
+				
+				if(rs.next())
+				{
+					String rsname,rsdescription, rsimg; 
+					rsname = rs.getString("name");
+					rsdescription = rs.getString("description");
+					rsimg = rs.getString("img_src");
+					%>
+				<t:modal_header modal_title="Updating Item" />
+					<fieldset>
+						<!-- Text input-->
+						<input type="hidden" name="cid" value="<%=cid %>"/>
+						<label class="control-label" for="name">Name</label>
+						<input value="<%=rsname %>" id="name" name="name" type="text" placeholder="Name" class="form-control">
+						<label class="control-label" for="img_url">Image</label>
+						<div class="input-group">
+						  	<span class="input-group-addon">/img/categories/</span>
+						  	<input value="<%=rsimg %>" id="img_url" name="img_url" class="form-control" placeholder="image" type="text">
+						  	<span class="input-group-addon">.png</span>
+						</div>
+						
+						<!-- Textarea -->
+						<div class="control-group">
+						  <label class="control-label" for="description">Description</label>
+						  <div class="controls">                     
+						    <textarea class="form-control" id="description" name="description"><%=rsdescription %></textarea>
+						  </div>
+						</div>
+						
+					</fieldset>
+				<t:modal_footer name="update"/>
+				<%
+				}
+					else{
+					%>
+					<t:message type="danger" message="Category does not exist"></t:message>
+					<%
+					}
+				}
+				catch(SQLException e){
+					e.printStackTrace();
+		   	     	%>
+					<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
+					<%
+				}
+				
+			}	
+			else
+			{
+				%>
+				<t:message type="warning" message="You must be an owner to delete categories"></t:message>
+				<%
+			}
+		}
+		else
+		{
+			%>
+			<t:message type="warning" message="No category selected for deletion"></t:message>
+			<%
+		}
+		
+		
+	}
+%>
+
+<%
+	//If submit is equal to "add"
+	if(submit.equals("update"))
+	{
+			if(role.equals("Owner"))
+			{
+				try{
+					Class.forName("org.postgresql.Driver");
+					statement = conn.createStatement();
+					sql =	"UPDATE categories SET (name, img_src, description) = " +
+							"(?,?,?) WHERE category_id = ?";
+					d_pstmt = conn.prepareStatement(sql);
+					d_pstmt.setString(1, ""+request.getParameter("name"));
+					d_pstmt.setString(2, ""+request.getParameter("img_url"));
+					d_pstmt.setString(3, ""+request.getParameter("description"));
+					d_pstmt.setInt(4, Integer.parseInt(request.getParameter("cid")));
+
+					int count = d_pstmt.executeUpdate();
+
+					if(count != 0){
+						%>
+						<t:message type="success" message="Category successfully updated"></t:message>
+						<%
+						}
+					else{
+						%>
+						<t:message type="danger" message="Error occurred in SQL"></t:message>
+						<%
+						
+					}
+				}
+				catch(SQLException e){
+					e.printStackTrace();
+					%>
+					<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
+					<%
+				}
+				
+		%>
+		<%}	
+			else{%>
+				<t:message type="warning" message="You must be an owner to update categories"></t:message>
 		<%
 			}
 	}
