@@ -5,7 +5,7 @@
 	<img src="img/bg2.jpg" alt="">
 </div>
 
-<t:header title="Home Page" />
+<t:header title="" />
 <!-- <container> 
 
 <div class="row clearfix">
@@ -51,7 +51,4 @@
 	}
 	%>
 		 --%>
-
-
-<t:footer />
 

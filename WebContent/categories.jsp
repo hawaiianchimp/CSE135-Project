@@ -1,3 +1,4 @@
+<%@page import="org.postgresql.util.PSQLException"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
@@ -5,39 +6,232 @@
 <%@ page import="java.io.*"%>
 <%@ page import="java.sql.*"%>
 
-<%
-	Connection conn = null;
-	PreparedStatement pstmt = null;
-	ResultSet rs = null;
-	
-	try{
-		Class.forName("org.postgresql.Driver");
-		
-		conn = DriverManager.getConnection(
-				"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-				"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
-		Statement statement = conn.createStatement();
-		String sql = "SELECT * FROM categories AS c LEFT JOIN (SELECT p.category_id, COUNT(p.category_id) FROM products_categories AS p GROUP BY p.category_id) AS p ON (c.category_id = p.category_id);";
-		pstmt = conn.prepareStatement(sql);
-		
-		rs = pstmt.executeQuery();
-%>
 
 <t:header title="Product Categories" />
-<div class="container">
-	<div class="row">
+
+
+<!-- Selecting all categories -->
+<%
+	String role = ""+session.getAttribute("role");
+	String action = ""+request.getParameter("action");
+	String submit = ""+request.getParameter("submit");
+	String cid = ""+request.getParameter("cid");
+	Connection conn = DriverManager.getConnection(
+					"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+					"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
+	PreparedStatement pstmt = null, d_pstmt = null;
+	Statement statement = null, d_statement = null;
+	ResultSet rs = null;
+	String sql = null;
+%>
+
+
+
+
+
+<!--  Deleting a category -->
+<% 
+	System.out.print(action);
+	if(action.equals("delete"))
+	{
+		if(!cid.isEmpty())
+		{
+			if(role.equals("Owner"))
+			{
+				try{
+				Class.forName("org.postgresql.Driver");
+				statement = conn.createStatement();
+				sql = "DELETE FROM categories WHERE category_id = ?;";
+				d_pstmt = conn.prepareStatement(sql);
+				d_pstmt.setInt(1, Integer.parseInt(cid));
+				int count = d_pstmt.executeUpdate();
+
+				if(count != 0){
+					%>
+					<t:message type="danger" message="Category successfully deleted"></t:message>
+					<%
+					}
+					else{
+					%>
+					<t:message type="danger" message="Item was already deleted"></t:message>
+					<%
+					}
+				}
+				catch(SQLException e){
+					e.printStackTrace();
+		   	     	%>
+					<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
+					<%
+				}
+				
+			}	
+			else
+			{
+				%>
+				<t:message type="warning" message="You must be an owner to delete categories"></t:message>
+				<%
+			}
+		}
+		else
+		{
+			%>
+			<t:message type="warning" message="No category selected for deletion"></t:message>
+			<%
+		}
+		
+		
+	}
+%>
+
+<% 
+	System.out.print(action);
+	if(action.equals("add"))
+	{
+		%>
+		<t:modal_header modal_title="Adding Item" />
+			<fieldset>
+
+			<!-- Form Name -->
+			<legend>Form Name</legend>
+			
+			<!-- Text input-->
+			<div class="control-group">
+			  <label class="control-label" for="Name">Name</label>
+			  <div class="controls">
+			    <input id="name" name="name" type="text" placeholder="Name" class="input-xlarge">
+			    
+			  </div>
+			</div>
+			
+			<!-- Prepended text-->
+			<div class="control-group">
+			  <label class="control-label" for="img_url">Image</label>
+			  <div class="controls">
+			    <div class="input-prepend">
+			      <span class="add-on">$</span>
+			      <input id="img_url" name="img_url" class="input-xlarge" placeholder="0.00" type="text">
+			    </div>
+			    
+			  </div>
+			</div>
+			
+			<!-- Textarea -->
+			<div class="control-group">
+			  <label class="control-label" for="description">Description</label>
+			  <div class="controls">                     
+			    <textarea id="description" name="description"></textarea>
+			  </div>
+			</div>
+			
+			</fieldset>
+		<t:modal_footer name="add"/>
+		<% 
+	}
+	
+	
+	//If submit is equal to "add"
+	if(submit.equals("add"))
+	{
+			if(role.equals("Owner"))
+			{
+				try{
+					Class.forName("org.postgresql.Driver");
+					statement = conn.createStatement();
+					sql =	"INSERT INTO categories (name, img_src, description) " +
+							"SELECT ?,?,?";
+					d_pstmt = conn.prepareStatement(sql);
+					d_pstmt.setString(1, ""+request.getParameter("name"));
+					d_pstmt.setString(2, ""+request.getParameter("img_url"));
+					d_pstmt.setString(3, ""+request.getParameter("description"));
+					int count = d_pstmt.executeUpdate();
+				
+					if(count > 0)
+					{
+						%>
+					<t:message type="success" message="Category successfully added"></t:message>
+					<%
+						
+					}else{
+						%>
+						<t:message type="danger" message="Error occurred in SQL"></t:message>
+						<%
+						
+					}
+				}
+				catch(SQLException e){
+					e.printStackTrace();
+					%>
+					<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
+					<%
+				}
+				
+		%>
+		<%}	
+			else{%>
+				<t:message type="warning" message="You must be an owner to add categories"></t:message>
 		<%
+			}
+	}
+%>
+
+<div class="container">
+	<!-- category menu -->
+	<div class="col-md-2">
+		<ul class="nav nav-stacked navbar-left nav-pills">
+		<li class="active"><a href="categories.jsp">Categories</a>
+		</li>
+		<%
+
+		
+		try{
+
+			Class.forName("org.postgresql.Driver");
+			statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			sql = "SELECT * FROM categories AS c LEFT JOIN (SELECT p.category_id, COUNT(p.category_id) FROM products_categories AS p GROUP BY p.category_id) AS p ON (c.category_id = p.category_id);";
+			rs = statement.executeQuery(sql);
+
+			String rsname,rsdescription,rsimg,rsid,rscount;
+			
+			if (rs.isBeforeFirst()) {
+
+					//category menu
+					while (rs.next()) {
+						rsname = rs.getString("name");
+						rsdescription = rs.getString("description");
+						rsimg = rs.getString("img_src");
+						rsid = String.valueOf(rs.getInt("category_id"));
+						rscount = String.valueOf(rs.getInt("count"));
+						//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
+					%>
+						<li><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%><span class="badge"><%=rscount %></span></a></li>
+					<%
+					}
+			}
+			else {
+			%>
+				<li>No Categories</li>
+			<%
+			}
+		%>
+		</ul>
+	</div>
+
+	<div class="col-md-10">
+		<%
+		rs.beforeFirst();
 		if(rs.isBeforeFirst())
 		{
-			String rsname,rsdescription,rsimg,rsid;
 				while(rs.next())
 				{ 
+
 					rsname = rs.getString("name");
 					rsdescription = rs.getString("description");
 					rsimg = rs.getString("img_src");
 					rsid = String.valueOf(rs.getInt("category_id"));
+					rscount = String.valueOf(rs.getInt("count"));
 					if(rsimg == null)
-						rsimg = "default";
+						rsimg = "category_default";
+					//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
 				%>
 				<div class="col-md-4">
 					<div class="thumbnail">
@@ -47,18 +241,19 @@
 								<%=rsname %>
 							</h3>
 							<p>
-								<%=rsdescription %>
+								<span class="label label-info">Description:</span> <%=rsdescription %>
 							</p>
 							
 							<p>
-								<a class="btn btn-primary" href="products.jsp?cid=<%=rsid %>&category=${name}">Browse Items</a>
+								<a class="btn btn-primary" href="products.jsp?cid=<%=rsid %>&category=<%= rsname%>">Browse <span class="badge"><%= rscount %></span></a>
 								
-								<% if(session.getAttribute("role").equals("Owner")){ %>
-									<a class="btn btn-success" href="category.jsp?action=update&cid=${cid}">Update</a>
-									<% if(rs.getInt("count") == 0) { %>
-									<a class="btn btn-danger" href="category.jsp?action=delete&cid=${cid}">Delete</a>
-								<% } 
-								}%>
+								<% if(role.equals("Owner"))
+									{ %>
+										<a class="btn btn-success" href="categories.jsp?action=update&cid=<%=rsid %>">Update</a>
+										<% if(rs.getInt("count") == 0) { %>
+											<a class="btn btn-danger" href="categories.jsp?action=delete&cid=<%=rsid%>">Delete</a>
+										<% } 
+									}%>
 							</p>
 						</div>
 					</div>
@@ -89,7 +284,7 @@
 		}
 	
 		
-	if(session.getAttribute("role").equals("Owner")) {%>
+	if(role.equals("Owner")) {%>
 		<div class="col-md-4">
 			<div class="thumbnail">
 				<img style="height:200px" src="img/categories/plus.png">
@@ -106,13 +301,7 @@
 				</div>
 			</div>
 		</div>
-		
-		
-		
-		
-		
-		<%} %>
-
+	<%} %>
 	</div>
 </div>
 <t:footer />
