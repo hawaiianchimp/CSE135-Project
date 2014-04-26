@@ -49,6 +49,13 @@
 				if(logged_in==1)
 				{
 					session.setAttribute("name", username);
+					session.setAttribute("role", rs.getObject(rs.findColumn("role")));
+					session.setAttribute("state", rs.getObject(rs.findColumn("state")));
+					session.setAttribute("age", rs.getObject(rs.findColumn("age")));
+					System.out.print("Log\n name:" + session.getAttribute("name") + "\n");
+					System.out.print("Log\n role:" + session.getAttribute("role") + "\n");
+					System.out.print("Log\n state:" + session.getAttribute("state") + "\n");
+					System.out.print("Log\n age:" + session.getAttribute("age") + "\n");
 				}
 
 				// Close the ResultSet

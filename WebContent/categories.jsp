@@ -36,7 +36,7 @@
 				if(rsimg == null)
 					rsimg = "default";
 			%>
-		<t:category name="<%=rsname %>" description="<%=rsdescription %>" imgurl="<%=rsimg %>" id="<%=rsid %>"/>
+		<t:category name="<%=rsname %>" description="<%=rsdescription %>" imgurl="<%=rsimg %>" id="<%=rsid %>" label="Browse Products"/>
 			
 		<%
 			}
@@ -51,12 +51,39 @@
 	
 		catch(SQLException e){
 			e.printStackTrace();
-   	     	out.println("<h1>" + "Shit happened" + "</h1>");
+   	     	out.println("<h1>" + e.getMessage() + "</h1>");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			out.println("<h1>org.postgresql.Driver Not Found</h1>");
+			out.println("<h1>" + e.getMessage() + "</h1>");
 		}
+	
+
+	System.out.print(session.getAttribute("role"));
 		%>
+		
+	<% if(session.getAttribute("role").equals("Owner")){%>
+		<div class="col-md-4">
+			<div class="thumbnail">
+				<img style="height:200px" src="img/categories/plus.png">
+				<div class="caption">
+					<h3>
+						Add new category
+					</h3>
+					<p>
+						Add a new category to the list
+					</p>
+					<p>
+						<a class="btn btn-success" href="categories.jsp?action=add">Add Item</a>
+					</p>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		<%} %>
 
 	</div>
 </div>

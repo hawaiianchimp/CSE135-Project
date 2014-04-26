@@ -4,7 +4,7 @@
 <%@attribute name="imgurl" required="true"%>
 <div class="col-md-4">
 	<div class="thumbnail">
-		<img src="img/${imgurl}.png">
+		<img src="img/products/${imgurl}.png">
 		<div class="caption">
 			<h3>
 				${name}

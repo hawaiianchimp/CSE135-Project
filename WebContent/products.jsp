@@ -19,8 +19,8 @@
 
 		// Open a connection to the database using DriverManager
 		conn = DriverManager.getConnection(
-				"jdbc:postgresql://localhost/bonnie_test", "bonnie",
-				"password"); //TODO: Change name of database accordingly
+				"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+				"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
 
 		// Create the statement
 		Statement statement = conn.createStatement();
@@ -65,7 +65,7 @@
 
 			catch (SQLException e) {
 				e.printStackTrace();
-				out.println("<h1>" + "Shit happened" + "</h1>");
+				out.println("<h1>" + e.getMessage() + "</h1>");
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 				out.println("<h1>org.postgresql.Driver Not Found</h1>");

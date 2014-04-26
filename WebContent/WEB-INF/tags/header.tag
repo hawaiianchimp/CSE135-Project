@@ -3,7 +3,7 @@
 
 <!--Welcome Message-->
 <%
-	String message = "Welcome, " + session.getAttribute("name") + "!";
+	String message = "Welcome, " + session.getAttribute("name") + "! " + session.getAttribute("role");
 	if(message.equals("Welcome, null!"))
 	{
 		message = "Welcome, Guest!";
