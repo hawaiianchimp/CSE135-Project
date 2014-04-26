@@ -23,9 +23,60 @@
 
 %>
 
+<!-- category menu -->
+<%
+	Connection c_conn = null;
+	PreparedStatement c_pstmt = null;
+	ResultSet c_rs = null;
+
+		Class.forName("org.postgresql.Driver");
+
+		c_conn = DriverManager
+				.getConnection(
+						"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
+		Statement c_statement = c_conn.createStatement();
+		c_pstmt = c_conn.prepareStatement("SELECT * FROM categories");
+		c_rs = c_pstmt.executeQuery();
+%>
+
 <t:header title="Product Categories" />
 <div class="container">
-	<div class="row">
+	<!-- category menu -->
+	<div class="col-md-1">
+		<ul class="nav nav-stacked navbar-left nav-pills">
+		<li class="active"><a href="categories.jsp">Categories</a>
+		</li>
+		<%
+			if (c_rs.isBeforeFirst()) {
+					String rsname, rsid;
+					while (c_rs.next()) {
+						rsname = c_rs.getString("name");
+						rsid = String.valueOf(c_rs.getInt("category_id"));
+						//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
+					%>
+						<li><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%></a></li>
+					<%
+					}
+			}
+			else {
+			%>
+				<li>No Categories</li>
+			<%
+			}
+		
+			/* Close everything  */
+			// Close the ResultSet
+			c_rs.close();
+			//Close the Statement
+			c_statement.close();
+			// Close the Connection
+			c_conn.close();
+		%>
+		</ul>
+	</div>
+
+	<div class="col-md-11">
 		<%
 		if(rs.isBeforeFirst())
 		{
@@ -38,9 +89,9 @@
 					rsid = String.valueOf(rs.getInt("category_id"));
 					if(rsimg == null)
 						rsimg = "category_default";
-					System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
+					//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
 				%>
-					<t:category name="<%=rsname %>" description="<%=rsdescription %>" imgurl="<%=rsimg %>" cid="<%=rsid %>" label="Browse Products"/>
+					<t:category name="<%=rsname %>" description="<%=rsdescription %>" imgurl="<%=rsimg %>" cid="<%=rsid %>" label="Browse"/>
 				<%
 				}
 		}
@@ -83,13 +134,7 @@
 				</div>
 			</div>
 		</div>
-		
-		
-		
-		
-		
-		<%} %>
-
+	<%} %>
 	</div>
 </div>
 <t:footer />
