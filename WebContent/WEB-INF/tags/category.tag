@@ -3,7 +3,7 @@
 <%@attribute name="name" required="true"%>
 <%@attribute name="description" required="true"%>
 <%@attribute name="imgurl" required="true"%>
-<%@attribute name="id" required="true"%>
+<%@attribute name="cid" required="true"%>
 <%@attribute name="label" required="true"%>
 
 <div class="col-md-4">
@@ -18,13 +18,13 @@
 			</p>
 			<% if(session.getAttribute("role").equals("Owner")){ %>
 			<p>
-				<a class="btn btn-primary" href="products.jsp?id=${id}&category=${name}">${label}</a>
-				<a class="btn btn-success" href="category.jsp?action=update">Update</a>
-				<a class="btn btn-danger" href="category.jsp?action=delete">Delete</a>
+				<a class="btn btn-primary" href="products.jsp?cid=${cid}&category=${name}">${label}</a>
+				<a class="btn btn-success" href="category.jsp?action=update&cid=${cid}">Update</a>
+				<a class="btn btn-danger" href="category.jsp?action=delete&cid=${cid}">Delete</a>
 			</p>
 			<%}else{ %>
 			<p>
-				<a class="btn btn-primary" href="products.jsp?id=${id}&category=${name}">${label}</a>
+				<a class="btn btn-primary" href="products.jsp?cid=${cid}&category=${name}">${label}</a>
 			</p>
 			<%} %>
 		</div>

@@ -3,5 +3,5 @@
 <%@attribute name="type" required="true" %>
 
 <div class="alert alert-${type}">
-	<p>Message: ${message}</p>
+	<p>${message}</p>
 </div>

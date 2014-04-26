@@ -26,20 +26,27 @@
 <div class="container">
 	<div class="row">
 		<%
-		String rsname,rsdescription,rsimg,rsid;
-			while(rs.next())
-			{ 
-				rsname = rs.getString("name");
-				rsdescription = rs.getString("description");
-				rsimg = rs.getString("img_src");
-				rsid = String.valueOf(rs.getInt("category_id"));
-				if(rsimg == null)
-					rsimg = "default";
-			%>
-		<t:category name="<%=rsname %>" description="<%=rsdescription %>" imgurl="<%=rsimg %>" id="<%=rsid %>" label="Browse Products"/>
-			
-		<%
-			}
+		if(rs.isBeforeFirst())
+		{
+			String rsname,rsdescription,rsimg,rsid;
+				while(rs.next())
+				{ 
+					rsname = rs.getString("name");
+					rsdescription = rs.getString("description");
+					rsimg = rs.getString("img_src");
+					rsid = String.valueOf(rs.getInt("category_id"));
+					if(rsimg == null)
+						rsimg = "default";
+				%>
+			<t:category name="<%=rsname %>" description="<%=rsdescription %>" imgurl="<%=rsimg %>" cid="<%=rsid %>" label="Browse Products"/>
+				
+			<%
+				}
+		}
+		else
+		{	%>
+			No Categories, please add a category
+		<% }
 			/* Close everything  */
 			// Close the ResultSet
 			rs.close();
@@ -57,11 +64,8 @@
 			out.println("<h1>" + e.getMessage() + "</h1>");
 		}
 	
-
-	System.out.print(session.getAttribute("role"));
-		%>
 		
-	<% if(session.getAttribute("role").equals("Owner")){%>
+	if(session.getAttribute("role").equals("Owner")) {%>
 		<div class="col-md-4">
 			<div class="thumbnail">
 				<img style="height:200px" src="img/categories/plus.png">

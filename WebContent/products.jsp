@@ -10,7 +10,7 @@
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 
-	int category_id = Integer.parseInt(request.getParameter("id"));
+	int category_id = Integer.parseInt(request.getParameter("cid"));
 
 	try {
 		// Registering Postgresql JDBC driver with the DriverManager
@@ -27,8 +27,9 @@
 
 		// Use the created statement to SELECT
 		// the student attributes FROM the Student table.
+		String sql = "SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id=?) WHERE products_categories.product_id=products.product_id";
 		pstmt = conn
-				.prepareStatement("SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id=?) WHERE products_categories.product_id=products.product_id");
+				.prepareStatement(sql);
 		pstmt.setInt(1, category_id);
 		rs = pstmt.executeQuery();
 %>
@@ -38,7 +39,7 @@
 	<div class="row">
 
 		<%
-			if(rs.getRow() > 0){
+			if(rs.isBeforeFirst()){
 			String rsname, rsdescription, rsimg, rssku, rsid, rsprice;
 				while (rs.next()) {
 					rsname = rs.getString("name");
@@ -50,15 +51,15 @@
 
 					if (rsimg == null)
 						rsimg = "default";
-		%>
-		<t:product name="<%=rsname %>" description="<%=rsdescription %>"
-			imgurl="<%=rsimg %>" />
-		<%
+				%>
+				<t:product name="<%=rsname %>" description="<%=rsdescription %>"
+					imgurl="<%=rsimg %>" />
+				<%
 				}
 			}
 			else{
 				%>
-				No Products in this category
+				<t:message type="warning" message="No Products in this category, please add a product"></t:message>
 				<%
 				
 			}
@@ -78,7 +79,29 @@
 				e.printStackTrace();
 				out.println("<h1>org.postgresql.Driver Not Found</h1>");
 			}
-		%>
+	if(session.getAttribute("role").equals("Owner")){%>
+		<div class="col-md-4">
+			<div class="thumbnail">
+				<img style="height:200px" src="img/categories/plus.png">
+				<div class="caption">
+					<h3>
+						Add new product
+					</h3>
+					<p>
+						Add a new category to the list
+					</p>
+					<p>
+						<a class="btn btn-success" href="product.jsp?action=add">Add Item</a>
+					</p>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		
+		
+		<%} %>
 
 	</div>
 </div>

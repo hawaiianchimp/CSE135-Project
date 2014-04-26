@@ -67,7 +67,7 @@
 			}
 		} catch (SQLException e) {
             e.printStackTrace();
-            out.println("<h1>" + "Shit happened" + "</h1>");
+            out.println("<h1>" + e.getMessage() + "</h1>");
             
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -84,8 +84,9 @@
 
 	<% 
 	if(logged_in==1){ 
+		String welcome_message = "<h1>Signed In! Welcome " + username +"!</h1>";
 	%>
-		<h1>Signed In! Welcome <%= username %>!</h1>
+		<t:message type="success" message="<%=welcome_message %>" />
 		<h3>What would you like to do today?</h3>
 		<a class="btn btn-default" href="/CSE135Project/index.jsp">Home</a>
 		<a class="btn btn-default" href="/CSE135Project/categories.jsp">Go to Categories</a>
@@ -95,16 +96,18 @@
 	
 	else if(logged_in==2){ 
 	%>
-		<h1>You did not provide a username.</h1>
-		<h3>Please provide a username and try again.</h3>	
+		<t:message type="danger" message="<h1>You did not provide a username.</h1>
+		<h3>Please provide a username and try again.</h3>" />
+		
 	<% 
 	}
 	
 	else
 	{ 
+		String message="<h1>The provided name, " +username+ ", is not known.</h1>" +
+				"<h3>Please try again.</h3>";
 	%>
-		<h1>The provided name, <%= username %>, is not known.</h1>
-		<h3>Please try again.</h3>
+		<t:message type="danger" message="<%=message%>" />
 	<% 
 	}
 	%>
