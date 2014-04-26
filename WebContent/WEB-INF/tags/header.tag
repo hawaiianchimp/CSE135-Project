@@ -3,7 +3,7 @@
 
 <!--Welcome Message-->
 <%
-	String message = "Welcome, " + session.getAttribute("name") + "! " + session.getAttribute("role");
+	String message = "Welcome, " + session.getAttribute("name") + "! ";
 	if(message.equals("Welcome, null!"))
 	{
 		message = "Welcome, Guest!";
@@ -36,6 +36,9 @@
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+      <li><a href="categories.jsp">Categories</a></li>
+      </ul>
       <form class="navbar-form navbar-left" role="login" action="login.jsp" method="GET">
         <div class="form-group">
         	<input type="text" class="form-control" placeholder="Username" name="username">
@@ -50,7 +53,7 @@
           <ul class="dropdown-menu">
             <li><a href="#">Number of Items</a></li>
             <li class="divider"></li>
-            <li><a href="/shoppingcart">See Shopping Cart</a></li>
+            <li><a href="shoppingcart.jsp">See Shopping Cart</a></li>
           </ul>
         </li>
       </ul>
