@@ -23,6 +23,13 @@
 	Statement statement = null, d_statement = null;
 	ResultSet rs = null;
 	String sql = null;
+	
+	ArrayList<String> images = new ArrayList<String>();
+		images.add("default");
+		images.add("sports");
+		images.add("clothes");
+		
+		
 %>
 
 
@@ -97,9 +104,11 @@
 			
 			
 			<label class="control-label" for="img_url">Image</label>
-			<div class="input-group">
-			  	<span class="input-group-addon">/img/categories/</span><input id="img_url" name="img_url" class="form-control" placeholder="image" type="text"><span class="input-group-addon">.png</span>
-			</div>
+			<select class="form-control" name="img_url">
+				<% for(String s: images){ %>
+					<option value="<%=s %>"><%=s %></option>
+				<% }%>
+			</select>
 			
 			<!-- Textarea -->
 			<div class="control-group">
@@ -189,11 +198,13 @@
 						<label class="control-label" for="name">Name</label>
 						<input value="<%=rsname %>" id="name" name="name" type="text" placeholder="Name" class="form-control">
 						<label class="control-label" for="img_url">Image</label>
-						<div class="input-group">
-						  	<span class="input-group-addon">/img/categories/</span>
-						  	<input value="<%=rsimg %>" id="img_url" name="img_url" class="form-control" placeholder="image" type="text">
-						  	<span class="input-group-addon">.png</span>
-						</div>
+						<select class="form-control" name="img_url">
+							<% String selected = "";
+								for(String s: images){ 
+								selected = (s.equals(rsimg)) ? "selected":""; %>
+								<option <%=selected%> value="<%=s %>"><%=s %></option>
+							<% }%>
+						</select>
 						
 						<!-- Textarea -->
 						<div class="control-group">
@@ -399,7 +410,7 @@
 	if(role.equals("Owner")) {%>
 		<div class="col-md-4">
 			<div class="thumbnail">
-				<img style="height:200px" src="img/categories/plus.png">
+				<img style="height:200px" src="img/plus.png">
 				<div class="caption">
 					<h3>
 						Add new category
