@@ -20,7 +20,6 @@
 			<p>
 				<a class="btn btn-primary" href="products.jsp?cid=${cid}&category=${name}">${label}</a>
 				<a class="btn btn-success" href="category.jsp?action=update&cid=${cid}">Update</a>
-				<a class="btn btn-danger" href="category.jsp?action=delete&cid=${cid}">Delete</a>
 			</p>
 			<%}else{ %>
 			<p>

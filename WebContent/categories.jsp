@@ -17,9 +17,10 @@
 				"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 				"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
 		Statement statement = conn.createStatement();
-		pstmt = conn.prepareStatement("SELECT * FROM categories");
+		String sql = "SELECT * FROM categories AS c LEFT JOIN (SELECT p.category_id, COUNT(p.category_id) FROM products_categories AS p GROUP BY p.category_id) AS p ON (c.category_id = p.category_id);";
+		pstmt = conn.prepareStatement(sql);
+		
 		rs = pstmt.executeQuery();
-
 %>
 
 <t:header title="Product Categories" />
@@ -38,7 +39,30 @@
 					if(rsimg == null)
 						rsimg = "default";
 				%>
-			<t:category name="<%=rsname %>" description="<%=rsdescription %>" imgurl="<%=rsimg %>" cid="<%=rsid %>" label="Browse Products"/>
+				<div class="col-md-4">
+					<div class="thumbnail">
+						<img style="height:200px" src="img/categories/<%=rsimg %>.png">
+						<div class="caption">
+							<h3>
+								<%=rsname %>
+							</h3>
+							<p>
+								<%=rsdescription %>
+							</p>
+							
+							<p>
+								<a class="btn btn-primary" href="products.jsp?cid=<%=rsid %>&category=${name}">Browse Items</a>
+								
+								<% if(session.getAttribute("role").equals("Owner")){ %>
+									<a class="btn btn-success" href="category.jsp?action=update&cid=${cid}">Update</a>
+									<% if(rs.getInt("count") == 0) { %>
+									<a class="btn btn-danger" href="category.jsp?action=delete&cid=${cid}">Delete</a>
+								<% } 
+								}%>
+							</p>
+						</div>
+					</div>
+				</div>
 				
 			<%
 				}
