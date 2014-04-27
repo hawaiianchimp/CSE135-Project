@@ -299,7 +299,7 @@
 
 <div class="container">
 	<!-- category menu -->
-	<div class="col-md-2">
+	<div class="col-sm-2">
 		<ul class="nav nav-stacked navbar-left nav-pills">
 		<li class="active"><a href="categories.jsp">Categories</a>
 		</li>
@@ -339,7 +339,7 @@
 		</ul>
 	</div>
 
-	<div class="col-md-10">
+	<div class="col-sm-10">
 		<%
 		rs.beforeFirst();
 		if(rs.isBeforeFirst())
@@ -356,7 +356,7 @@
 						rsimg = "category_default";
 					//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
 				%>
-				<div class="col-md-4">
+				<div class="col-sm-4">
 					<div class="thumbnail">
 						<img style="height:200px" src="img/categories/<%=rsimg %>.png">
 						<div class="caption">
@@ -408,7 +408,7 @@
 	
 		
 	if(role.equals("Owner")) {%>
-		<div class="col-md-4">
+		<div class="col-sm-4">
 			<div class="thumbnail">
 				<img style="height:200px" src="img/plus.png">
 				<div class="caption">
