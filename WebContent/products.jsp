@@ -415,7 +415,7 @@
 					
 					
 					if (rs.isBeforeFirst()) {
-						String rsname, rsdescription, rsimg, rssku, rsid, rsprice;
+						String rsname, rsdescription, rsimg, rssku, rspid, rsprice;
 						rs.next();
 						%> <h1><%=rs.getString("category_name") %></h1> <%
 						rs.beforeFirst();
@@ -424,7 +424,7 @@
 							rsdescription = rs.getString("description");
 							rsimg = rs.getString("img_src");
 							rssku = rs.getString("sku");
-							rsid = String.valueOf(rs.getInt("product_id"));
+							rspid = String.valueOf(rs.getInt("product_id"));
 							rsprice = String.valueOf(rs.getDouble("price"));
 	
 							if (rsimg == null)
@@ -444,11 +444,11 @@
 											<%=rsdescription %>
 										</p>
 										<p>
-											<a class="btn btn-primary" href="#">Add to Cart</a>
+											<a class="btn btn-primary" href="productorder.jsp?product=<%=rspid %>&cid=<%=cid %>">Add to Cart</a>
 											<% if(role.equals("Owner"))
 											{ %>
-												<a class="btn btn-success" href="products.jsp?action=update&cid=<%=cid%>&pid=<%=rsid %>">Update</a>
-												<a class="btn btn-danger" href="products.jsp?action=delete&cid=<%=cid%>&pid=<%=rsid %>">Delete</a>
+												<a class="btn btn-success" href="products.jsp?action=update&cid=<%=cid%>&pid=<%=rspid %>">Update</a>
+												<a class="btn btn-danger" href="products.jsp?action=delete&cid=<%=cid%>&pid=<%=rspid %>">Delete</a>
 											<% }%>
 										</p>
 									</div>
