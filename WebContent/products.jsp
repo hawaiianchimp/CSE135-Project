@@ -427,7 +427,27 @@
 					if (rs.isBeforeFirst()) {
 						String rsname, rsdescription, rsimg, rssku, rspid, rsprice;
 						rs.next();
-						%> <h1><%=rs.getString("category_name") %></h1> <%
+						%> <h1><%=rs.getString("category_name") %></h1> 
+								<div class="row">
+										<div class="col-sm-1">
+											<h3>Image</h3>
+										</div>
+										<div class="col-sm-1">
+												<h3>Price</h3>
+										</div>
+										<div class="col-sm-2">
+												<h3>Name</h3>
+										</div>
+										<div class="col-sm-4">
+											<p>
+												<h3>Description</h3>
+											</p>
+										</div>
+										<div class="col-sm-4">
+										</div>
+								</div>
+								<hr>
+						<%
 						rs.beforeFirst();
 						while (rs.next()) {
 							rsname = rs.getString("name");
@@ -440,19 +460,24 @@
 							if (rsimg == null)
 								rsimg = "default";
 							%>
-							<div class="col-md-4">
-								<div class="thumbnail">
-									<img style="height:200px" src="img/products/<%=rsimg %>.png">
-									<div class="caption">
+							<div class="row">
+									<div class="col-sm-1">
+									<img style="height:45px" src="img/products/<%=rsimg %>.png">
+									</div>
+									<div class="col-sm-1">
 										<span class="badge badge-success">
 											$<%=rsprice %>
 										</span>
-										<h3>
+									</div>
+									<div class="col-sm-2">
 											<%=rsname %>
-										</h3>
+									</div>
+									<div class="col-sm-4">
 										<p>
 											<%=rsdescription %>
 										</p>
+									</div>
+									<div class="col-sm-4">
 										<p>
 											<a class="btn btn-primary" href="productorder.jsp?product=<%=rspid %>&cid=<%=cid %>">Add to Cart</a>
 											<% if(role.equals("Owner"))
@@ -462,7 +487,6 @@
 											<% }%>
 										</p>
 									</div>
-								</div>
 							</div>
 						<%}
 					} 
@@ -497,18 +521,24 @@
 
 				if (role.equals("Owner")) {
 			%>
-			<div class="col-sm-4">
-				<div class="thumbnail">
-					<img style="height: 200px" src="img/plus.png">
-					<div class="caption">
-						<h3>Add new product</h3>
-						<p>Add a new product to the list</p>
-						<p>
-							<a class="btn btn-success" href="products.jsp?cid=<%=cid %>&action=add">Add Item</a>
-						</p>
-					</div>
-				</div>
-			</div>
+			<div class="row">
+									<div class="col-sm-1">
+										<img style="height:45px" src="img/plus.png">
+									</div>
+									<div class="col-sm-1">
+									</div>
+									<div class="col-sm-2">
+											Add new product
+									</div>
+									<div class="col-sm-4">
+										<p>
+											Add a new product to the list
+										</p>
+									</div>
+									<div class="col-sm-4">
+										<a class="btn btn-success" href="products.jsp?cid=<%=cid %>&action=add">Add Item</a>
+									</div>
+							</div>
 
 
 

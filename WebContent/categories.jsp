@@ -394,6 +394,25 @@
 	</div>
 
 	<div class="col-sm-10">
+		<div class="row">
+				<div class="row">
+					<div class="col-sm-1">
+						<h2>Image</h2>
+					</div>
+					<div class="col-sm-2">
+							<h2>Name</h2>
+					</div>
+					<div class="col-sm-3">
+						<h2>
+							Description
+						</h2>
+					</div>
+					<div class="col-sm-4">	
+						
+					</div>
+				</div>
+		</div>
+		<hr>
 		<%
 		rs.beforeFirst();
 		if(rs.isBeforeFirst())
@@ -410,30 +429,33 @@
 						rsimg = "category_default";
 					//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
 				%>
-				<div class="col-sm-4">
-					<div class="thumbnail">
-						<img style="height:200px" src="img/categories/<%=rsimg %>.png">
-						<div class="caption">
-							<h3>
-								<%=rsname %>
-							</h3>
-							<p>
-								<span class="label label-info">Description:</span> <%=rsdescription %>
-							</p>
-							
-							<p>
-								<a class="btn btn-primary" href="products.jsp?cid=<%=rsid %>&category=<%= rsname%>">Browse <span class="badge"><%= rscount %></span></a>
-								
-								<% if(role.equals("Owner"))
-									{ %>
-										<a class="btn btn-success" href="categories.jsp?action=update&cid=<%=rsid %>">Update</a>
-										<% if(rs.getInt("count") == 0) { %>
-											<a class="btn btn-danger" href="categories.jsp?action=delete&cid=<%=rsid%>">Delete</a>
-										<% } 
-									}%>
-							</p>
+				<div class="row">
+						<div class="row">
+							<div class="col-sm-1">
+								<img style="height:45px" src="img/categories/<%=rsimg %>.png">
+							</div>
+							<div class="col-sm-2">
+									<%=rsname %>
+							</div>
+							<div class="col-sm-3">
+								<p>
+									<%=rsdescription %>
+								</p>
+							</div>
+							<div class="col-sm-4">	
+								<p>
+									<a class="btn btn-primary" href="products.jsp?cid=<%=rsid %>&category=<%= rsname%>">Browse <span class="badge"><%= rscount %></span></a>
+									
+									<% if(role.equals("Owner"))
+										{ %>
+											<a class="btn btn-success" href="categories.jsp?action=update&cid=<%=rsid %>">Update</a>
+											<% if(rs.getInt("count") == 0) { %>
+												<a class="btn btn-danger" href="categories.jsp?action=delete&cid=<%=rsid%>">Delete</a>
+											<% } 
+										}%>
+								</p>
+							</div>
 						</div>
-					</div>
 				</div>
 				
 			<%
@@ -462,21 +484,25 @@
 	
 		
 	if(role.equals("Owner")) {%>
-		<div class="col-sm-4">
-			<div class="thumbnail">
-				<img style="height:200px" src="img/plus.png">
-				<div class="caption">
-					<h3>
-						Add new category
-					</h3>
-					<p>
-						Add a new category to the list
-					</p>
-					<p>
-						<a class="btn btn-success" href="categories.jsp?action=add">Add Item</a>
-					</p>
+		<div class="row">
+				<div class="row">
+					<div class="col-sm-1">
+						<img style="height:45px" src="img/plus.png">
+					</div>
+					<div class="col-sm-2">
+							Add new category
+					</div>
+					<div class="col-sm-3">
+						<p>
+							Add a new category to the list
+						</p>
+					</div>
+					<div class="col-sm-4">	
+						<p>
+							<a class="btn btn-success" href="categories.jsp?action=add">Add Item</a>
+						</p>
+					</div>
 				</div>
-			</div>
 		</div>
 	<%} %>
 	</div>
