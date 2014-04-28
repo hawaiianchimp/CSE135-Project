@@ -10,6 +10,7 @@
 <t:header title="Search Results" />
 <div class="row">
 <%
+	String role = ""+session.getAttribute("role");
 	String[] keywords = request.getParameter("keyword").split(" ");
 	String prepared_keywords="%";
 	for(String s : keywords)
@@ -49,14 +50,41 @@
 			{
 				while(rs.next())
 				{
-					String rsname, rsdescription, rsimg;
+					String rsname, rsdescription, rsimg, rsprice;
+					int rspid, rscid;
 					rsname = rs.getString("name");
 					rsdescription = rs.getString("description");
 					rsimg = rs.getString("img_src");
+					rspid = rs.getInt("product_id");
+					rscid = rs.getInt("category_id");
+					rsprice = String.valueOf(rs.getDouble("price"));
 					if (rsimg == null)
 						rsimg = "default";
 					%>
-					<h1><%=rsname %></h1>
+					<div class="col-md-4">
+						<div class="thumbnail">
+							<img style="height:200px" src="img/products/<%=rsimg %>.png">
+							<div class="caption">
+								<span class="badge badge-success">
+									$<%=rsprice %>
+								</span>
+								<h3>
+									<%=rsname %>
+								</h3>
+								<p>
+									<%=rsdescription %>
+								</p>
+								<p>
+									<a class="btn btn-primary" href="productorder.jsp?product=<%=rspid %>&cid=<%=rscid %>">Add to Cart</a>
+									<% if(role.equals("Owner"))
+									{ %>
+										<a class="btn btn-success" href="products.jsp?action=update&cid=<%=rscid%>&pid=<%=rspid %>">Update</a>
+										<a class="btn btn-danger" href="products.jsp?action=delete&cid=<%=rscid%>&pid=<%=rspid %>">Delete</a>
+									<% }%>
+								</p>
+							</div>
+						</div>
+					</div>
 					<%
 				}
 			}
