@@ -1,3 +1,4 @@
+<%@page import="org.postgresql.util.PSQLException"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
@@ -25,8 +26,8 @@
 	
 	ArrayList<String> images = new ArrayList<String>();
 		images.add("default");
-		images.add("sports");
-		images.add("clothes");
+		images.add("baseball_bat");
+		//Add more images here
 %>
 	
 	<!--  Deleting a product -->
@@ -45,7 +46,10 @@
 					try{
 					Class.forName("org.postgresql.Driver");
 					statement = conn.createStatement();
+
+					//Need a transaction to delete from products and products_categories tables
 					sql = "DELETE FROM products WHERE product_id = ?;";
+					
 					d_pstmt = conn.prepareStatement(sql);
 					d_pstmt.setInt(1, Integer.parseInt(cid));
 					int count = d_pstmt.executeUpdate();
@@ -116,7 +120,8 @@
 				    <textarea class="form-control" id="description" name="description"></textarea>
 				  </div>
 				</div>
-				
+				<input type="hidden" name="cid" value="<%= cid%>"/>
+				<input type="hidden" name="pid" value="<%= pid%>"/>
 				</fieldset>
 			<t:modal_footer name="add"/>
 	<% }	%>
@@ -131,12 +136,14 @@
 					try{
 						Class.forName("org.postgresql.Driver");
 						statement = conn.createStatement();
-						sql =	"INSERT INTO categories (name, img_src, description) " +
-								"SELECT ?,?,?";
+						//need a transaction to add in products and product_categories
+						sql =	"INSERT INTO products (name, img_src, description, price) " +
+								"SELECT ?,?,?,?";
 						d_pstmt = conn.prepareStatement(sql);
 						d_pstmt.setString(1, ""+request.getParameter("name"));
 						d_pstmt.setString(2, ""+request.getParameter("img_url"));
 						d_pstmt.setString(3, ""+request.getParameter("description"));
+						d_pstmt.setString(4, ""+request.getParameter("price"));
 
 						int count = d_pstmt.executeUpdate();
 
@@ -180,22 +187,24 @@
 					try{
 					Class.forName("org.postgresql.Driver");
 					statement = conn.createStatement();
-					sql = "SELECT * FROM categories WHERE product_id = ?;";
+					sql = "SELECT * FROM products WHERE product_id = ?;";
 					d_pstmt = conn.prepareStatement(sql);
-					d_pstmt.setInt(1, Integer.parseInt(cid));
+					d_pstmt.setInt(1, Integer.parseInt(pid));
 					rs = d_pstmt.executeQuery();
 					
 					if(rs.next())
 					{
-						String rsname,rsdescription, rsimg; 
+						String rsname,rsdescription, rsimg, rsprice; 
 						rsname = rs.getString("name");
 						rsdescription = rs.getString("description");
 						rsimg = rs.getString("img_src");
+						rsprice = rs.getString("price");
 						%>
 					<t:modal_header modal_title="Updating Item" />
 						<fieldset>
 							<!-- Text input-->
 							<input type="hidden" name="cid" value="<%=cid %>"/>
+							<input type="hidden" name="pid" value="<%=pid %>"/>
 							<label class="control-label" for="name">Name</label>
 							<input value="<%=rsname %>" id="name" name="name" type="text" placeholder="Name" class="form-control">
 							<label class="control-label" for="img_url">Image</label>
@@ -206,6 +215,8 @@
 									<option <%=selected%> value="<%=s %>"><%=s %></option>
 								<% }%>
 							</select>
+							<label class="control-label" for="price">Price</label>
+							<input value="<%=rsprice %>" id="price" type="text" class="form-control" name="price"/>
 							
 							<!-- Textarea -->
 							<div class="control-group">
@@ -214,6 +225,7 @@
 							    <textarea class="form-control" id="description" name="description"><%=rsdescription %></textarea>
 							  </div>
 							</div>
+							
 							
 						</fieldset>
 					<t:modal_footer name="update"/>
@@ -261,13 +273,16 @@
 					try{
 						Class.forName("org.postgresql.Driver");
 						statement = conn.createStatement();
-						sql =	"UPDATE categories SET (name, img_src, description) = " +
-								"(?,?,?) WHERE product_id = ?";
+						sql =	"UPDATE products SET (name, img_src, description, price) = " +
+								"(?,?,?,?) WHERE product_id = ?";
 						d_pstmt = conn.prepareStatement(sql);
 						d_pstmt.setString(1, ""+request.getParameter("name"));
 						d_pstmt.setString(2, ""+request.getParameter("img_url"));
 						d_pstmt.setString(3, ""+request.getParameter("description"));
-						d_pstmt.setInt(4, Integer.parseInt(request.getParameter("cid")));
+						
+						//ERROR HERE with the double casting from string
+						d_pstmt.setDouble(4, Double.valueOf(""+request.getParameter("price")));
+						d_pstmt.setInt(5, Integer.parseInt(request.getParameter("cid")));
 
 						int count = d_pstmt.executeUpdate();
 
@@ -371,7 +386,6 @@
 
 			if(!cid.equals("null"))
 			{
-					
 					try {
 						// Registering Postgresql JDBC driver with the DriverManager
 						Class.forName("org.postgresql.Driver");
@@ -383,12 +397,13 @@
 										"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
 
 						// Create the statement
-						statement = conn.createStatement();
+						statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
 						// Use the created statement to SELECT
 						// the student attributes FROM the Student table.
-						sql = "SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id=?) WHERE products_categories.product_id=products.product_id";
-						pstmt = conn.prepareStatement(sql);
+						
+						sql = "SELECT p.*, categories.name AS category_name  FROM (SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id=?) WHERE products_categories.product_id=products.product_id) AS p LEFT JOIN categories ON (p.category_id = categories.category_ID)";
+						pstmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
 
 						int category_id = Integer.parseInt(cid);
@@ -399,18 +414,44 @@
 					
 					if (rs.isBeforeFirst()) {
 						String rsname, rsdescription, rsimg, rssku, rsid, rsprice;
+						rs.next();
+						%> <h1><%=rs.getString("category_name") %></h1> <%
+						rs.beforeFirst();
 						while (rs.next()) {
 							rsname = rs.getString("name");
 							rsdescription = rs.getString("description");
 							rsimg = rs.getString("img_src");
 							rssku = rs.getString("sku");
 							rsid = String.valueOf(rs.getInt("product_id"));
-							rsid = String.valueOf(rs.getDouble("price"));
+							rsprice = String.valueOf(rs.getDouble("price"));
 	
 							if (rsimg == null)
 								rsimg = "default";
 							%>
-							<t:product name="<%=rsname %>" description="<%=rsdescription %>" imgurl="<%=rsimg %>" />
+							<div class="col-md-4">
+								<div class="thumbnail">
+									<img style="height:200px" src="img/products/<%=rsimg %>.png">
+									<div class="caption">
+										<span class="badge badge-success">
+											$<%=rsprice %>
+										</span>
+										<h3>
+											<%=rsname %>
+										</h3>
+										<p>
+											<%=rsdescription %>
+										</p>
+										<p>
+											<a class="btn btn-primary" href="#">Add to Cart</a>
+											<% if(role.equals("Owner"))
+											{ %>
+												<a class="btn btn-success" href="products.jsp?action=update&cid=<%=cid%>&pid=<%=rsid %>">Update</a>
+												<a class="btn btn-danger" href="products.jsp?action=delete&cid=<%=cid%>&pid=<%=rsid %>">Delete</a>
+											<% }%>
+										</p>
+									</div>
+								</div>
+							</div>
 						<%}
 					} 
 					else 
@@ -449,7 +490,7 @@
 					<img style="height: 200px" src="img/plus.png">
 					<div class="caption">
 						<h3>Add new product</h3>
-						<p>Add a new category to the list</p>
+						<p>Add a new product to the list</p>
 						<p>
 							<a class="btn btn-success" href="products.jsp?cid=<%=cid %>&action=add">Add Item</a>
 						</p>
