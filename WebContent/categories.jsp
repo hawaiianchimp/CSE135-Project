@@ -130,26 +130,49 @@
 			{
 				try{
 					Class.forName("org.postgresql.Driver");
-					statement = conn.createStatement();
-					sql =	"INSERT INTO categories (name, img_src, description) " +
-							"SELECT ?,?,?";
-					d_pstmt = conn.prepareStatement(sql);
-					d_pstmt.setString(1, ""+request.getParameter("name"));
-					d_pstmt.setString(2, ""+request.getParameter("img_url"));
-					d_pstmt.setString(3, ""+request.getParameter("description"));
+					
+					Statement check_statement = conn.createStatement();
+					PreparedStatement check_pstmt = conn.prepareStatement("SELECT name FROM categories");
+					String input_c_name = ""+request.getParameter("name");
+					ResultSet check_rs = check_pstmt.executeQuery();
+					
+					Boolean duplicate_name = false;
+					while(check_rs.next())
+					{
+						String rs_c_name = check_rs.getString("name").toLowerCase();
+						if(input_c_name.toLowerCase().equals(rs_c_name))
+							duplicate_name = true;	
+					}
+					
+					if(duplicate_name==false)
+					{
+						statement = conn.createStatement();
+						sql =	"INSERT INTO categories (name, img_src, description) " +
+								"SELECT ?,?,?";
+						d_pstmt = conn.prepareStatement(sql);
+						d_pstmt.setString(1, ""+request.getParameter("name"));
+						d_pstmt.setString(2, ""+request.getParameter("img_url"));
+						d_pstmt.setString(3, ""+request.getParameter("description"));
 
-					int count = d_pstmt.executeUpdate();
+						int count = d_pstmt.executeUpdate();
 
-					if(count != 0){
-						%>
-						<t:message type="danger" message="Category successfully deleted"></t:message>
-						<%
+						if(count != 0){
+							%>
+							<t:message type="danger" message="Category successfully added"></t:message>
+							<%
+							}
+						else{
+							%>
+							<t:message type="danger" message="Error occurred in SQL"></t:message>
+							<%
+							
 						}
-					else{
+					}
+					else
+					{
 						%>
-						<t:message type="danger" message="Error occurred in SQL"></t:message>
-						<%
-						
+						<t:message type="danger" message="Duplicate name found. Please enter a unique category name."></t:message>
+						<%	
 					}
 				}
 				catch(SQLException e){
@@ -258,29 +281,53 @@
 			{
 				try{
 					Class.forName("org.postgresql.Driver");
-					statement = conn.createStatement();
-					sql =	"UPDATE categories SET (name, img_src, description) = " +
-							"(?,?,?) WHERE category_id = ?";
-					d_pstmt = conn.prepareStatement(sql);
-					d_pstmt.setString(1, ""+request.getParameter("name"));
-					d_pstmt.setString(2, ""+request.getParameter("img_url"));
-					d_pstmt.setString(3, ""+request.getParameter("description"));
-					d_pstmt.setInt(4, Integer.parseInt(request.getParameter("cid")));
+					
+					Statement check_statement = conn.createStatement();
+					PreparedStatement check_pstmt = conn.prepareStatement("SELECT name FROM categories");
+					String input_c_name = ""+request.getParameter("name");
+					ResultSet check_rs = check_pstmt.executeQuery();
+					
+					Boolean duplicate_name = false;
+					while(check_rs.next())
+					{
+						String rs_c_name = check_rs.getString("name").toLowerCase();
+						if(input_c_name.toLowerCase().equals(rs_c_name))
+							duplicate_name = true;	
+					}
+					
+					if(duplicate_name==false)
+					{
+						statement = conn.createStatement();
+						sql =	"UPDATE categories SET (name, img_src, description) = " +
+								"(?,?,?) WHERE category_id = ?";
+						d_pstmt = conn.prepareStatement(sql);
+						d_pstmt.setString(1, ""+request.getParameter("name"));
+						d_pstmt.setString(2, ""+request.getParameter("img_url"));
+						d_pstmt.setString(3, ""+request.getParameter("description"));
+						d_pstmt.setInt(4, Integer.parseInt(request.getParameter("cid")));
 
-					int count = d_pstmt.executeUpdate();
+						int count = d_pstmt.executeUpdate();
 
-					if(count != 0){
-						%>
-						<t:message type="success" message="Category successfully updated"></t:message>
-						<%
+						if(count != 0){
+							%>
+							<t:message type="success" message="Category successfully updated"></t:message>
+							<%
+							}
+						else{
+							%>
+							<t:message type="danger" message="Error occurred in SQL"></t:message>
+							<%
+							
 						}
-					else{
+					}
+					else
+					{
 						%>
-						<t:message type="danger" message="Error occurred in SQL"></t:message>
-						<%
-						
+						<t:message type="danger" message="Duplicate name found. Please enter a unique category name."></t:message>
+						<%	
 					}
 				}
+				
 				catch(SQLException e){
 					e.printStackTrace();
 					%>
