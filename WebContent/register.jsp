@@ -211,11 +211,13 @@
 				</select>
 			</div>
 
-			<!-- State -->
+			<!-- Age -->
 			<div class="form-group">
 				<label for="age">Age</label><input type="number" placeholder="Age"
 					class="form-control" name="age" value="<%=age%>">
 			</div>
+			
+			<!-- State -->
 			<div class="form-group">
 				<label for="state">State</label>
 				<select class="form-control" name="state">

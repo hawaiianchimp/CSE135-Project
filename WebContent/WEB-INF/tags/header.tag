@@ -44,11 +44,8 @@
       <ul class="nav navbar-nav">
       <li><a href="categories.jsp">Categories</a></li>
       </ul>
-      <form class="navbar-form navbar-left" role="login" action="login.jsp" method="GET">
-        <div class="form-group">
-        	<input type="text" class="form-control" placeholder="Username" name="username">
-       	</div>
-        <button type="submit" class="btn btn-default">Log In</button>
+      <form class="navbar-form navbar-left" role="login">
+        <a class="btn btn-default" href="/CSE135Project/login.jsp" >Log In</a>
         <a class="btn btn-default" href="/CSE135Project/register.jsp" >Register</a>
       </form>
       <ul class="nav navbar-nav navbar-right">
