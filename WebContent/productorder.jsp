@@ -5,8 +5,7 @@
 <%@ page import="java.io.*"%>
 
 
-<html>
-	<body>
+<t:header title="Product Order"/>
 		<%
 			//Initialize parameters
 			Connection conn = null;
@@ -148,5 +147,4 @@
 		catch (SQLException e) {e.printStackTrace();}
 		catch (IOException e) {e.printStackTrace();}
 		%>
-	</body>
-</html>
+<t:footer />
