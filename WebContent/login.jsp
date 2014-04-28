@@ -49,6 +49,7 @@
 				if(logged_in==1)
 				{
 					session.setAttribute("name", username);
+					session.setAttribute("uid", rs.getInt("uid"));
 					session.setAttribute("role", rs.getObject(rs.findColumn("role")));
 					session.setAttribute("state", rs.getObject(rs.findColumn("state")));
 					session.setAttribute("age", rs.getObject(rs.findColumn("age")));

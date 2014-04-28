@@ -123,7 +123,7 @@
 				<input type="hidden" name="cid" value="<%= cid%>"/>
 				<input type="hidden" name="pid" value="<%= pid%>"/>
 				</fieldset>
-			<t:modal_footer name="add"/>
+			<t:modal_footer name="add" />
 	<% }	%>
 
 	<!-- Do add submission -->
@@ -286,6 +286,15 @@
 
 						int count = d_pstmt.executeUpdate();
 
+<<<<<<< HEAD
+		// Use the created statement to SELECT
+		// the student attributes FROM the Student table.
+		String sql = "SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id=?) WHERE products_categories.product_id=products.product_id";
+		pstmt = conn.prepareStatement(sql);
+		pstmt.setInt(1, category_id);
+		rs = pstmt.executeQuery();
+		System.out.println("hello");
+=======
 						if(count != 0){
 							%>
 							<t:message type="success" message="Product successfully updated"></t:message>
@@ -323,6 +332,7 @@
 	
 	
 	
+>>>>>>> FETCH_HEAD
 %>
 
 
@@ -356,6 +366,7 @@
 					while (c_rs.next()) {
 						rsname = c_rs.getString("name");
 						rsid = String.valueOf(c_rs.getInt("category_id"));
+						session.setAttribute("cid", rsid);
 						rscount = String.valueOf(c_rs.getInt("count"));
 						//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
 					%>
@@ -383,6 +394,32 @@
 		<!-- products -->
 		<div class="col-sm-10">
 			<%
+<<<<<<< HEAD
+				if (rs.isBeforeFirst()) {
+					String rsname, rsdescription, rsimg, rssku, rspid, rsprice;
+					while (rs.next()) {
+						rsname = rs.getString("name");
+						rsdescription = rs.getString("description");
+						rsimg = rs.getString("img_src");
+						rssku = rs.getString("sku");
+						rspid = String.valueOf(rs.getInt("product_id"));
+						rsprice = String.valueOf(rs.getDouble("price"));
+
+						if (rsimg == null)
+							rsimg = "default";
+						
+						String cid = "" + session.getAttribute("cid");
+						%>
+						<t:product name="<%=rsname %>" description="<%=rsdescription %>" imgurl="<%=rsimg %>" pid="<%=rspid %>" cid="<%=cid%>" />
+					<%}
+				} 
+				else 
+				{
+					if (role.equals("Owner")) 
+					{%>
+						<t:message type="warning" message="No Products in this category, please add a product"></t:message>
+					<%} 
+=======
 
 			if(!cid.equals("null"))
 			{
@@ -454,6 +491,7 @@
 							</div>
 						<%}
 					} 
+>>>>>>> FETCH_HEAD
 					else 
 					{
 						if (role.equals("Owner")) 

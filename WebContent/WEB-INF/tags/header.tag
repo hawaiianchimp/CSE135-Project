@@ -4,7 +4,7 @@
 <!--Welcome Message-->
 <%
 	String message = "Welcome, " + session.getAttribute("name") + "! ";
-	if(message.equals("Welcome, null!"))
+	if(session.getAttribute("name")==null)
 	{
 		message = "Welcome, Guest!";
 	}

@@ -7,22 +7,29 @@
 
 <html>
 	<body>
-		<h2>Your Shopping Cart</h2>
-		<table>
 		<%
 			//Initialize parameters
 			Connection conn = null;
 			PreparedStatement pstmt1 = null;
 			PreparedStatement pstmt2 = null;
+			PreparedStatement pstmt3 = null;
+			PreparedStatement pstmt4 = null;
 			ResultSet rs1 = null;
 			ResultSet rs2 = null;
+			ResultSet rs4 = null;
 		
 			try
 			{
 				//Collect parameters: need user id and product sku to show user's cart as well as add to it
-				String user = request.getParameter("user");
-				String product = request.getParameter("product");
-				if (user == null || product == null)
+				String uid = "" + session.getAttribute("uid");
+				String product = "" + request.getParameter("product");
+				String action = "" + request.getParameter("action");
+				System.out.println("User: " + uid);
+				System.out.println("Product: " + product);
+				System.out.println("action: " + action);
+				
+				int quantity;
+				if (uid == null || product == null)
 					throw new IOException();
 				
 				//Connect to database if parameters exist
@@ -30,31 +37,51 @@
 				conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
 				
-				String action = request.getParameter("action");
-				
-				if (action != null && action == "insert")
+				//Insert data if specified, and redirect back to products.jsp
+				System.out.println("Before");
+				if (action != null && action.equals("insert"))
 				{
-					
+					System.out.println("SUP HOMIE");
+					//Add to carts_products
+					quantity = Integer.parseInt(request.getParameter("quantity"));
+					pstmt3 = conn.prepareStatement("INSERT INTO carts_products VALUES (?,?)");
+					pstmt4 = conn.prepareStatement("SELECT carts.cart_id FROM carts WHERE carts.uid = ?");
+					pstmt4.setInt(1, Integer.parseInt(uid));
+					rs4 = pstmt4.executeQuery();
+					System.out.println("successful");
+					rs4.next();
+					pstmt3.setInt(1, rs4.getInt("cart_id"));
+					pstmt3.setInt(2, Integer.parseInt(product));
+					System.out.println("here");
+					for (int i = 0; i < quantity; i++)
+						pstmt3.executeUpdate();
+					pstmt3.close();
+					conn.close();
+					response.sendRedirect("http://localhost:8080/CSE135Project/categories.jsp");
 				}
-			
+				
+				//Display cart contents
+				else
+				{
 				//Prepared Statement 1: Get product information and quantities in user's cart
 				//Parameters: 1) User ID
-				pstmt1 = conn.prepareStatement("SELECT products.img_src, products.sku, products.name, products.price, COUNT (*) 'Quantity' from (" 
-						+ "SELECT products.img_src, products.sku, products.name, products.price, FROM users, carts, carts_products, products "
-						+ "WHERE users.name = ? "
+				pstmt1 = conn.prepareStatement("SELECT products.product_id, products.sku, products.img_src, products.name, products.price, COUNT (*) \"Quantity\" FROM users, carts, carts_products, products "
+						+ "WHERE users.uid = ? "
 						+ "AND users.uid = carts.uid "
 						+ "AND carts.cart_id = carts_products.cart_id "
-						+ "AND carts_products.product_id = products.product_id) "
-						+ "GROUP BY products.sku");
-				pstmt1.setString(1, user);
-				rs1 = pstmt2.executeQuery();
+						+ "AND carts_products.product_id = products.product_id "
+						+ "GROUP BY products.product_id, products.sku, products.img_src, products.name, products.price");
+				pstmt1.setInt(1, Integer.parseInt(uid));
+				rs1 = pstmt1.executeQuery();
 			
 				//Prepared Statement 2: Show product information for product desired to add to cart
 				//Parameters: 1) Product SKU
-				pstmt2 = conn.prepareStatement("SELECT * from products WHERE products.sku = ?");
-				pstmt2.setString(1, product);
+				pstmt2 = conn.prepareStatement("SELECT * from products WHERE products.product_id = ?");
+				pstmt2.setInt(1, Integer.parseInt(product));
 				rs2 = pstmt2.executeQuery();
 		%>
+		<h2>Your Shopping Cart</h2>
+		<table>
 			<tr>
 				<th>Image</th>
 				<th>SKU</th>
@@ -80,12 +107,12 @@
 		%>
 		</table>
 		<h3>Add to cart?</h3>
-		<form action="browsing.jsp" method="POST">
+		<form action="productorder.jsp" method="GET">
 			<input type="hidden" name="action" value="insert">
 			<input type="hidden" name="product" value=<%=product%>>
 			<table>
 			<% 
-				pstmt2.setString(1, product); 
+				pstmt2.setInt(1, Integer.parseInt(product)); 
 				rs2 = pstmt2.executeQuery();
 				rs2.next(); 
 			%>
@@ -101,21 +128,24 @@
 					<td><%=rs2.getString("sku")%></td>
 					<td><%=rs2.getString("name")%></td>
 					<td><%=rs2.getDouble("price")%></td>
+					<%	
+						rs1.close();
+						rs2.close();
+						pstmt1.close();
+						pstmt2.close();
+						conn.close();
+					%>
 					<td><input type="text" name="quantity"></td>
-					<td><input type="submit"></td>
+					<td><input type="submit" value="Add to cart"></td>
 				</tr>
 			</table>
 		</form>
 
 		<%
-			rs1.close();
-			rs2.close();
-			pstmt1.close();
-			pstmt2.close();
-			conn.close();
-		} 
+			} 
+		}
 		
-		catch (SQLException e) { e.printStackTrace();}
+		catch (SQLException e) {e.printStackTrace();}
 		catch (IOException e) {e.printStackTrace();}
 		%>
 	</body>
