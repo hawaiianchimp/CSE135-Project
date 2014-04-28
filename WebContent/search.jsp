@@ -32,17 +32,16 @@
 			System.out.println(category_id);
 			if(category_id.equals("null"))
 			{
-				System.out.println("test1");
 				pstmt = conn.prepareStatement("SELECT * FROM products WHERE name ILIKE ?;");
 				pstmt.setString(1, prepared_keywords);
 				rs = pstmt.executeQuery();
 			}
 			else
 			{
-				System.out.println("test2");
-				pstmt = conn.prepareStatement("SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id=?) WHERE products_categories.product_id=products.product_id");
+				pstmt = conn.prepareStatement("SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id=?) WHERE products_categories.product_id=products.product_id AND (products.name ILIKE ?)");
 				int cid = Integer.parseInt(category_id);
 				pstmt.setInt(1, cid);
+				pstmt.setString(2, prepared_keywords);
 				rs = pstmt.executeQuery();
 			}
 			
@@ -57,7 +56,7 @@
 					if (rsimg == null)
 						rsimg = "default";
 					%>
-					<t:product name="<%=rsname %>" description="<%=rsdescription %>" imgurl="<%=rsimg %>" />
+					<h1><%=rsname %></h1>
 					<%
 				}
 			}

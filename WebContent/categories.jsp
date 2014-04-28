@@ -35,7 +35,7 @@
 <form class="navbar-form navbar-left" action="search.jsp" method="GET">
   <div class="form-group">
   	<input type="text" class="form-control" placeholder="Search All" name="keyword">
-  	<input type ="hidden" name=cid value="<%=cid%>">
+  	<input type ="hidden" name=cid value="null">
  	</div>
   <button type="submit" class="btn btn-default">Search</button>
 </form>
