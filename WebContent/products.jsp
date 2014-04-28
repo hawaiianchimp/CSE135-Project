@@ -32,6 +32,7 @@
 		pstmt = conn.prepareStatement(sql);
 		pstmt.setInt(1, category_id);
 		rs = pstmt.executeQuery();
+		System.out.println("hello");
 %>
 
 
@@ -66,6 +67,7 @@
 					while (c_rs.next()) {
 						rsname = c_rs.getString("name");
 						rsid = String.valueOf(c_rs.getInt("category_id"));
+						session.setAttribute("cid", rsid);
 						rscount = String.valueOf(c_rs.getInt("count"));
 						//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
 					%>
@@ -94,19 +96,21 @@
 		<div class="col-md-10">
 			<%
 				if (rs.isBeforeFirst()) {
-					String rsname, rsdescription, rsimg, rssku, rsid, rsprice;
+					String rsname, rsdescription, rsimg, rssku, rspid, rsprice;
 					while (rs.next()) {
 						rsname = rs.getString("name");
 						rsdescription = rs.getString("description");
 						rsimg = rs.getString("img_src");
 						rssku = rs.getString("sku");
-						rsid = String.valueOf(rs.getInt("product_id"));
-						rsid = String.valueOf(rs.getDouble("price"));
+						rspid = String.valueOf(rs.getInt("product_id"));
+						rsprice = String.valueOf(rs.getDouble("price"));
 
 						if (rsimg == null)
 							rsimg = "default";
+						
+						String cid = "" + session.getAttribute("cid");
 						%>
-						<t:product name="<%=rsname %>" description="<%=rsdescription %>" imgurl="<%=rsimg %>" />
+						<t:product name="<%=rsname %>" description="<%=rsdescription %>" imgurl="<%=rsimg %>" pid="<%=rspid %>" cid="<%=cid%>" />
 					<%}
 				} 
 				else 

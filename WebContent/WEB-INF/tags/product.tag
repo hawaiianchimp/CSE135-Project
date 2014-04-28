@@ -2,6 +2,9 @@
 <%@attribute name="name" required="true"%>
 <%@attribute name="description" required="true"%>
 <%@attribute name="imgurl" required="true"%>
+<%@attribute name="pid" required="true"%>
+<%@attribute name="cid" required="true"%>
+
 <div class="col-md-4">
 	<div class="thumbnail">
 		<img style="height:200px" src="img/products/${imgurl}.png">
@@ -13,7 +16,7 @@
 				${description}
 			</p>
 			<p>
-				<a class="btn btn-primary" href="#">Add to Cart</a>
+				<a class="btn btn-primary" href="productorder.jsp?product=${pid}&cid=${cid}">Add to Cart</a>
 			</p>
 		</div>
 	</div>
