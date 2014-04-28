@@ -5,27 +5,273 @@
 <%@ page import="java.io.*"%>
 <%@ page import="java.sql.*"%>
 
+
+<t:header title="Product Categories" />
+
 <%
-	String role = "" + session.getAttribute("role");
-	Connection conn = null;
-	PreparedStatement pstmt = null;
+	String role = ""+session.getAttribute("role");
+	String action = ""+request.getParameter("action");
+	String submit = ""+request.getParameter("submit");
+	String cid = ""+request.getParameter("cid");
+	String pid = ""+request.getParameter("pid");
+	
+	Connection conn = DriverManager.getConnection(
+					"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+					"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
+	PreparedStatement pstmt = null, d_pstmt = null;
+	Statement statement = null, d_statement = null;
 	ResultSet rs = null;
+	String sql = null;
+	
+	ArrayList<String> images = new ArrayList<String>();
+		images.add("default");
+		images.add("sports");
+		images.add("clothes");
+%>
+	
+	<!--  Deleting a product -->
+	
+	
+	<% 
+	//TODO still need to implement delete
+	if(!cid.equals("null"))
+	{
+		if(action.equals("delete"))
+		{
+			if(!cid.isEmpty())
+			{
+				if(role.equals("Owner"))
+				{
+					try{
+					Class.forName("org.postgresql.Driver");
+					statement = conn.createStatement();
+					sql = "DELETE FROM products WHERE product_id = ?;";
+					d_pstmt = conn.prepareStatement(sql);
+					d_pstmt.setInt(1, Integer.parseInt(cid));
+					int count = d_pstmt.executeUpdate();
 
-	int category_id = Integer.parseInt(request.getParameter("cid"));
+					if(count != 0){
+						%>
+						<t:message type="danger" message="Product successfully deleted"></t:message>
+						<%
+						}
+						else{
+						%>
+						<t:message type="danger" message="Product was already deleted"></t:message>
+						<%
+						}
+					}
+					catch(SQLException e){
+						e.printStackTrace();
+			   	     	%>
+						<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
+						<%
+					}
+					
+				}	
+				else
+				{
+					%>
+					<t:message type="warning" message="You must be an owner to delete items"></t:message>
+					<%
+				}
+			}
+			else
+			{
+				%>
+				<t:message type="warning" message="No product item for deletion"></t:message>
+				<%
+			}
+			
+			
+		}
+	%>
 
-	try {
-		// Registering Postgresql JDBC driver with the DriverManager
-		Class.forName("org.postgresql.Driver");
+	<!-- Show add modal -->
+	<% 
+	//TODO still need to implement add modal
+		System.out.print(action);
+		if(action.equals("add"))
+		{
+			%>
+			<t:modal_header modal_title="Adding Item" />
+				<fieldset>
+				<!-- Text input-->
+				
+				<label class="control-label" for="name">Name</label>
+				<input id="name" name="name" type="text" placeholder="Name" class="form-control">
+				
+				
+				<label class="control-label" for="img_url">Image</label>
+				<select class="form-control" name="img_url">
+					<% for(String s: images){ %>
+						<option value="<%=s %>"><%=s %></option>
+					<% }%>
+				</select>
+				
+				<!-- Textarea -->
+				<div class="control-group">
+				  <label class="control-label" for="description">Description</label>
+				  <div class="controls">                     
+				    <textarea class="form-control" id="description" name="description"></textarea>
+				  </div>
+				</div>
+				
+				</fieldset>
+			<t:modal_footer name="add" />
+	<% }	%>
 
-		// Open a connection to the database using DriverManager
-		conn = DriverManager
-				.getConnection(
-						"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
+	<!-- Do add submission -->
+		<%
+		//TODO still need to implement add submission
+		if(submit.equals("add"))
+		{
+				if(role.equals("Owner"))
+				{
+					try{
+						Class.forName("org.postgresql.Driver");
+						statement = conn.createStatement();
+						sql =	"INSERT INTO categories (name, img_src, description) " +
+								"SELECT ?,?,?";
+						d_pstmt = conn.prepareStatement(sql);
+						d_pstmt.setString(1, ""+request.getParameter("name"));
+						d_pstmt.setString(2, ""+request.getParameter("img_url"));
+						d_pstmt.setString(3, ""+request.getParameter("description"));
 
-		// Create the statement
-		Statement statement = conn.createStatement();
+						int count = d_pstmt.executeUpdate();
 
+						if(count != 0){
+							%>
+							<t:message type="danger" message="Product successfully deleted"></t:message>
+							<%
+							}
+						else{
+							%>
+							<t:message type="danger" message="Error occurred in SQL"></t:message>
+							<%
+							
+						}
+					}
+					catch(SQLException e){
+						e.printStackTrace();
+						%>
+						<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
+						<%
+					}
+					
+			%>
+			<%}	
+				else{%>
+					<t:message type="warning" message="You must be an owner to add categories"></t:message>
+			<%
+				}
+		}
+	%>
+
+	<!--  Updating a product -->
+	<% 
+		//TODO still need to implement udpate modal
+		if(action.equals("update"))
+		{
+			if(!cid.isEmpty())
+			{
+				if(role.equals("Owner"))
+				{
+					try{
+					Class.forName("org.postgresql.Driver");
+					statement = conn.createStatement();
+					sql = "SELECT * FROM categories WHERE product_id = ?;";
+					d_pstmt = conn.prepareStatement(sql);
+					d_pstmt.setInt(1, Integer.parseInt(cid));
+					rs = d_pstmt.executeQuery();
+					
+					if(rs.next())
+					{
+						String rsname,rsdescription, rsimg; 
+						rsname = rs.getString("name");
+						rsdescription = rs.getString("description");
+						rsimg = rs.getString("img_src");
+						%>
+					<t:modal_header modal_title="Updating Item" />
+						<fieldset>
+							<!-- Text input-->
+							<input type="hidden" name="cid" value="<%=cid %>"/>
+							<label class="control-label" for="name">Name</label>
+							<input value="<%=rsname %>" id="name" name="name" type="text" placeholder="Name" class="form-control">
+							<label class="control-label" for="img_url">Image</label>
+							<select class="form-control" name="img_url">
+								<% String selected = "";
+									for(String s: images){ 
+									selected = (s.equals(rsimg)) ? "selected":""; %>
+									<option <%=selected%> value="<%=s %>"><%=s %></option>
+								<% }%>
+							</select>
+							
+							<!-- Textarea -->
+							<div class="control-group">
+							  <label class="control-label" for="description">Description</label>
+							  <div class="controls">                     
+							    <textarea class="form-control" id="description" name="description"><%=rsdescription %></textarea>
+							  </div>
+							</div>
+							
+						</fieldset>
+					<t:modal_footer name="update"/>
+					<%
+					}
+						else{
+						%>
+						<t:message type="danger" message="Product does not exist"></t:message>
+						<%
+						}
+					}
+					catch(SQLException e){
+						e.printStackTrace();
+			   	     	%>
+						<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
+						<%
+					}
+					
+				}	
+				else
+				{
+					%>
+					<t:message type="warning" message="You must be an owner to delete categories"></t:message>
+					<%
+				}
+			}
+			else
+			{
+				%>
+				<t:message type="warning" message="No product selected for deletion"></t:message>
+				<%
+			}
+			
+			
+		}
+	%>
+
+	<%
+		//TODO still need to implement update action
+		//If submit is equal to "add"
+		if(submit.equals("update"))
+		{
+				if(role.equals("Owner"))
+				{
+					try{
+						Class.forName("org.postgresql.Driver");
+						statement = conn.createStatement();
+						sql =	"UPDATE categories SET (name, img_src, description) = " +
+								"(?,?,?) WHERE product_id = ?";
+						d_pstmt = conn.prepareStatement(sql);
+						d_pstmt.setString(1, ""+request.getParameter("name"));
+						d_pstmt.setString(2, ""+request.getParameter("img_url"));
+						d_pstmt.setString(3, ""+request.getParameter("description"));
+						d_pstmt.setInt(4, Integer.parseInt(request.getParameter("cid")));
+
+						int count = d_pstmt.executeUpdate();
+
+<<<<<<< HEAD
 		// Use the created statement to SELECT
 		// the student attributes FROM the Student table.
 		String sql = "SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id=?) WHERE products_categories.product_id=products.product_id";
@@ -33,6 +279,45 @@
 		pstmt.setInt(1, category_id);
 		rs = pstmt.executeQuery();
 		System.out.println("hello");
+=======
+						if(count != 0){
+							%>
+							<t:message type="success" message="Product successfully updated"></t:message>
+							<%
+							}
+						else{
+							%>
+							<t:message type="danger" message="Error occurred in SQL"></t:message>
+							<%
+							
+						}
+					}
+					catch(SQLException e){
+						e.printStackTrace();
+						%>
+						<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
+						<%
+					}
+					
+			%>
+			<%}	
+				else{%>
+					<t:message type="warning" message="You must be an owner to update categories"></t:message>
+			<%
+				}
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+>>>>>>> FETCH_HEAD
 %>
 
 
@@ -54,10 +339,9 @@
 		c_rs = c_pstmt.executeQuery();
 %>
 
-<t:header title="Product Categories" />
 	<div class="row">
 	<!-- category menu -->
-	<div class="col-md-2">
+	<div class="col-sm-2">
 		<ul class="nav nav-stacked navbar-left nav-pills">
 		<li class="active"><a href="categories.jsp">Categories</a>
 		</li>
@@ -93,8 +377,9 @@
 	</div>
 
 		<!-- products -->
-		<div class="col-md-10">
+		<div class="col-sm-10">
 			<%
+<<<<<<< HEAD
 				if (rs.isBeforeFirst()) {
 					String rsname, rsdescription, rsimg, rssku, rspid, rsprice;
 					while (rs.next()) {
@@ -119,11 +404,64 @@
 					{%>
 						<t:message type="warning" message="No Products in this category, please add a product"></t:message>
 					<%} 
+=======
+
+			if(!cid.equals("null"))
+			{
+					
+					try {
+						// Registering Postgresql JDBC driver with the DriverManager
+						Class.forName("org.postgresql.Driver");
+
+						// Open a connection to the database using DriverManager
+						conn = DriverManager
+								.getConnection(
+										"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+										"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
+
+						// Create the statement
+						statement = conn.createStatement();
+
+						// Use the created statement to SELECT
+						// the student attributes FROM the Student table.
+						sql = "SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id=?) WHERE products_categories.product_id=products.product_id";
+						pstmt = conn.prepareStatement(sql);
+
+
+						int category_id = Integer.parseInt(cid);
+						pstmt.setInt(1, category_id);
+						rs = pstmt.executeQuery();
+					
+					
+					
+					if (rs.isBeforeFirst()) {
+						String rsname, rsdescription, rsimg, rssku, rsid, rsprice;
+						while (rs.next()) {
+							rsname = rs.getString("name");
+							rsdescription = rs.getString("description");
+							rsimg = rs.getString("img_src");
+							rssku = rs.getString("sku");
+							rsid = String.valueOf(rs.getInt("product_id"));
+							rsid = String.valueOf(rs.getDouble("price"));
+	
+							if (rsimg == null)
+								rsimg = "default";
+							%>
+							<t:product name="<%=rsname %>" description="<%=rsdescription %>" imgurl="<%=rsimg %>" />
+						<%}
+					} 
+>>>>>>> FETCH_HEAD
 					else 
-					{%>
-						<t:message type="warning" message="No Products in this category"></t:message>
-					<%}
-				}
+					{
+						if (role.equals("Owner")) 
+						{%>
+							<t:message type="warning" message="No Products in this category, please add a product"></t:message>
+						<%} 
+						else 
+						{%>
+							<t:message type="warning" message="No Products in this category"></t:message>
+						<%}
+					}
 			
 				/* Close everything  */
 				// Close the ResultSet
@@ -132,7 +470,7 @@
 				statement.close();
 				// Close the Connection
 				conn.close();
-			}
+				}
 
 				catch (SQLException e) {
 					e.printStackTrace();
@@ -141,17 +479,17 @@
 					e.printStackTrace();
 					out.println("<h1>org.postgresql.Driver Not Found</h1>");
 				}
+
 				if (role.equals("Owner")) {
 			%>
-			<div class="col-md-4">
+			<div class="col-sm-4">
 				<div class="thumbnail">
-					<img style="height: 200px" src="img/categories/plus.png">
+					<img style="height: 200px" src="img/plus.png">
 					<div class="caption">
 						<h3>Add new product</h3>
 						<p>Add a new category to the list</p>
 						<p>
-							<a class="btn btn-success" href="product.jsp?action=add">Add
-								Item</a>
+							<a class="btn btn-success" href="products.jsp?cid=<%=cid %>&action=add">Add Item</a>
 						</p>
 					</div>
 				</div>
@@ -163,7 +501,11 @@
 
 			<%
 				}
-			%>
+		
+		}
+		else{%>
+			<t:message type="warning" message="No category selected, please select a category"></t:message>
+		<%}%>
 		</div>
 	</div>
 <t:footer />
