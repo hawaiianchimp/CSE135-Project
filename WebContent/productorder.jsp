@@ -16,13 +16,14 @@
 			ResultSet rs1 = null;
 			ResultSet rs2 = null;
 			ResultSet rs4 = null;
+			String uid = "" + session.getAttribute("uid");
+			String product = "" + request.getParameter("product");
+			String action = "" + request.getParameter("action");
 		
 			try
 			{
 				//Collect parameters: need user id and product sku to show user's cart as well as add to it
-				String uid = "" + session.getAttribute("uid");
-				String product = "" + request.getParameter("product");
-				String action = "" + request.getParameter("action");
+				
 				System.out.println("User: " + uid);
 				System.out.println("Product: " + product);
 				System.out.println("action: " + action);
@@ -43,7 +44,7 @@
 				
 				//Insert data if specified, and redirect back to products.jsp
 				System.out.println("Before");
-				if (action != null && action.equals("insert"))
+				if (!action.equals("null") && action.equals("insert"))
 				{
 					System.out.println("SUP HOMIE");
 					//Add to carts_products
@@ -151,4 +152,50 @@
 		catch (SQLException e) {e.printStackTrace();}
 		catch (IOException e) {e.printStackTrace();}
 		%>
+		
+		
+		<%
+		try{
+
+		Class.forName("org.postgresql.Driver");
+		conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+				"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
+		String sql = "SELECT * FROM products WHERE product_id = ?";
+		pstmt1 = conn.prepareStatement(sql); 
+		pstmt1.setInt(1, Integer.parseInt(product));
+		ResultSet rs = pstmt1.executeQuery();
+		
+		if(rs.next())
+		{
+			String rsname, rsprice, rssku, rsdesc;
+			rsname = rs.getString("name");
+			rsprice = rs.getString("price");
+			rssku = rs.getString("sku");
+			rsdesc = rs.getString("description");
+			%>
+			
+			<h1><%=rsname %></h1>
+			<h3>$<%=rsprice %></h3>
+			<h3>Description: <%=rsdesc %></h3>
+			<h3>SKU: <%=rssku %></h3>
+			<%
+			
+		}
+		
+		
+		
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+   	     	%>
+			<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
+			<%
+		}
+		
+		pstmt1.close();
+		
+		
+		
+		%>
+		
 <t:footer />
