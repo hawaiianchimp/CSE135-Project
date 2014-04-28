@@ -28,8 +28,13 @@
 				System.out.println("action: " + action);
 				
 				int quantity;
-				if (uid == null || product == null)
+				if (uid.equals("null") || product.equals("null"))
+				{
+					%>
+					<t:message type="warning" message="Please login first to see your cart"/><%
+
 					throw new IOException();
+				}
 				
 				//Connect to database if parameters exist
 				Class.forName("org.postgresql.Driver");
@@ -143,7 +148,6 @@
 		<%
 			} 
 		}
-		
 		catch (SQLException e) {e.printStackTrace();}
 		catch (IOException e) {e.printStackTrace();}
 		%>
