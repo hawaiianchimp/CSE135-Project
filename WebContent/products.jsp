@@ -118,7 +118,7 @@
 				</div>
 				
 				</fieldset>
-			<t:modal_footer name="add"/>
+			<t:modal_footer name="add" />
 	<% }	%>
 
 	<!-- Do add submission -->
