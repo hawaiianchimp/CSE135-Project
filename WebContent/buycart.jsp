@@ -8,6 +8,7 @@
 <t:header title="Shopping Cart"/>
 <% 
 	String action = request.getParameter("action");
+	System.out.println("action: " + action);
 	Connection conn = null;
 	PreparedStatement ps1 = null;
 	ResultSet rs1 = null;
@@ -69,7 +70,7 @@
 		</table>
 		<% if (action.equals("purchase")) { %>
 		<h3>Payment Information</h3>
-		<form action="confirmation.jsp">
+		<form method="POST" action="confirmation.jsp">
 			<label for="owner">Cardholder's Name</label>
 			<input type="text" name="owner">
 			<br>
@@ -85,9 +86,6 @@
 			<input type="text" name="cardno">
 			<label for="csv">Card Security Value</label>
 			<input type="text" name="csv">
-		</form>
-		<h3>Billing Address</h3>
-		<form>
 			<label for="street">Cardholder's Name</label>
 			<input type="text" name="street">
 			<br>
@@ -160,10 +158,11 @@
 		else
 		{
 			%>
-			<form action="categories.jsp">
+			<form method="POST" action="categories.jsp">
 				<input type="submit" value="Back to Browsing">
 			</form>
-			<form action="buycart.jsp?action=purchase">
+			<form method="POST" action="buycart.jsp">
+				<input type="hidden" name="action" value="purchase">
 				<input type="submit" value="Purchase Cart">
 			</form>
 	<%
@@ -176,8 +175,11 @@
 	}
 	finally
 	{
+		if (conn != null)
 			conn.close();
+		if (ps1 != null)
 			ps1.close();
+		if (rs1 != null)
 			rs1.close();
 	}
 	
