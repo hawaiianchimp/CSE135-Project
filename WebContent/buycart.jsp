@@ -11,7 +11,7 @@
 	PreparedStatement ps1 = null;
 	ResultSet rs1 = null;
 	
-	if (action != null && action.equals("purchase"))
+	if (action != null && (action.equals("view") || action.equals("purchase")))
 	{
 		String uid = "" + session.getAttribute("uid");
 		Class.forName("org.postgresql.Driver");
@@ -23,9 +23,20 @@
 				+ "AND carts.cart_id = carts_products.cart_id "
 				+ "AND carts_products.product_id = products.product_id "
 				+ "GROUP BY products.product_id, products.sku, products.img_src, products.name, products.price");
-	%>
+		ps1.setInt(1, Integer.parseInt(uid));
+		rs1 = ps1.executeQuery();
+	
+		if (action.equals("purchase"))	
+		{
+		
+		%>
 	
 	<h2>Purchase Shopping Cart</h2>
+	<%} else {
+		%>
+		
+		<h2>View Shopping Cart</h2>
+		<% }%>
 	
 	<table>
 			<tr>
@@ -52,23 +63,33 @@
 		<% 	} 
 		%>
 		</table>
-		
+		<% if (action.equals("purchase")) { %>
 		<h3>Payment Information</h3>
 		<form>
+			<label for="owner">Cardholder's Name</label>
 			<input type="text" name="owner">
+			<br>
+			<label for="card">Card Type</label>
 			<select name="card">
   				<option value="visa">Visa</option>
   				<option value="mastercard">Mastercard</option>
   				<option value="discover">Discover</option>
   				<option value="amex">American Express</option>
 			</select>
+			<br>
+			<label for="cardno">Card Number</label>
 			<input type="text" name="cardno">
+			<label for="csv">Card Security Value</label>
 			<input type="text" name="csv">
 		</form>
 		<h3>Billing Address</h3>
 		<form>
-			<input type="text" name="street" value="Street Address">
+			<label for="street">Cardholder's Name</label>
+			<input type="text" name="street">
+			<br>
+			<label for="city">City</label>
 			<input type="text" name="city" value="City">
+			<label for="state">State</label>
 			<select name="state">
 					<option>State</option>
 					<option>-----</option>
@@ -124,13 +145,27 @@
 					<option value="WI">Wisconsin</option>
 					<option value="WY">Wyoming</option>
 				</select>
+				<label for="zip">Zip Code</label>
 				<input type="text" value="zip">	
+				<br>
+				<input type="submit">
 		</form>
 		
 	<%
-		
-	
-	}%>
+	}
+		else
+		{
+			%>
+			<form action="categories.jsp">
+				<input type="submit" value="Back to Browsing">
+			</form>
+			<form action="buycart.jsp?action=purchase">
+				<input type="submit" value="Purchase Cart">
+			</form>
+	<%
+		}
+	}
+	%>
 
 </body>
 </html>

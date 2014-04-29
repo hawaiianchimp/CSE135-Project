@@ -55,7 +55,8 @@
           <ul class="dropdown-menu">
             <li><a href="#">Number of Items</a></li>
             <li class="divider"></li>
-            <li><a href="shoppingcart.jsp">See Shopping Cart</a></li>
+            <li><a href="buycart.jsp?action=view">View Shopping Cart</a></li>
+            <li><a href="buycart.jsp?action=purchase">Purchase Shopping Cart</a><li>
           </ul>
         </li>
       </ul>
