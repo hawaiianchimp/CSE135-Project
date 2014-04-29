@@ -102,7 +102,7 @@
 			{
 		%>
 			<tr>
-				<td><%=rs1.getString("img_src")%></td>
+				<td><%=rs1.getString("img_url")%></td>
 				<td><%=rs1.getString("sku")%></td>
 				<td><%=rs1.getString("name")%></td>
 				<td><%=rs1.getDouble("price")%></td>
