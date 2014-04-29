@@ -101,31 +101,63 @@
 		{
 			%>
 			<t:modal_header modal_title="Adding Item" />
-				<fieldset>
-				<!-- Text input-->
-				
-				<label class="control-label" for="name">Name</label>
-				<input id="name" name="name" type="text" placeholder="Name" class="form-control">
-				
-				
-				<label class="control-label" for="img_url">Image</label>
-				<select class="form-control" name="img_url">
-					<% for(String s: images){ %>
-						<option value="<%=s %>"><%=s %></option>
-					<% }%>
-				</select>
-				
-				<!-- Textarea -->
-				<div class="control-group">
-				  <label class="control-label" for="description">Description</label>
-				  <div class="controls">                     
-				    <textarea class="form-control" id="description" name="description"></textarea>
-				  </div>
-				</div>
-				<input type="hidden" name="cid" value="<%= cid%>"/>
-				<input type="hidden" name="pid" value="<%= pid%>"/>
-				</fieldset>
-			<t:modal_footer name="add" />
+						<fieldset>
+							<!-- Text input-->
+							<input type="hidden" name="cid" value="<%=cid %>"/>
+							<input type="hidden" name="pid" value="<%=pid %>"/>
+							<label class="control-label" for="name">Name</label>
+							<input id="name" name="name" type="text" placeholder="Name" class="form-control">
+							
+							<label class="control-label" for="name">SKU</label>
+							<input id="sku" name="sku" type="text" placeholder="SKU" class="form-control">
+							
+							<label class="control-label" for="img_url">Category</label>
+							<select class="form-control" name="category">
+								<% 
+								
+								try{	
+									sql = "SELECT category_id, name FROM categories";
+									statement = conn.createStatement();
+									rs = statement.executeQuery(sql);
+									ArrayList<String> categories;
+									while(rs.next())
+									{
+										String c = rs.getString("name");
+										String id = rs.getString("category_id");
+										String selected = (c.equals(id)) ? "selected":""; %>
+										<option <%=selected%> value="<%=c %>"><%=c %></option>
+								<% }
+									statement.close();
+								}
+								catch(PSQLException e)
+								{
+									e.printStackTrace();
+								}%>
+								
+								
+							</select>
+							<label class="control-label" for="price">Price</label>
+							<input id="price" type="text" class="form-control" name="price"/>
+							
+							<!-- Textarea -->
+							<div class="control-group">
+							  <label class="control-label" for="description">Description</label>
+							  <div class="controls">                     
+							    <textarea class="form-control" id="description" name="description"></textarea>
+							  </div>
+							</div>
+							
+							
+							<label class="control-label" for="img_url">Image</label>
+							<select class="form-control" name="img_url">
+								<%for(String s: images){ %>
+									<option value="<%=s %>"><%=s %></option>
+								<% }%>
+							</select>
+							
+							
+						</fieldset>
+					<t:modal_footer name="add"/>
 	<% }	%>
 
 	<!-- Do add submission -->
