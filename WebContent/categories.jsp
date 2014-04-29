@@ -86,13 +86,13 @@
 	}
 %>
 
-<!-- Show add modal -->
+<!-- Show insert modal -->
 <% 
 	System.out.print(action);
-	if(action.equals("add"))
+	if(action.equals("insert"))
 	{
 		%>
-		<t:modal_header modal_title="Adding Item" />
+		<t:modal_header modal_title="Inserting Item" />
 			<fieldset>
 			<!-- Text input-->
 			
@@ -116,12 +116,12 @@
 			</div>
 			
 			</fieldset>
-		<t:modal_footer name="add"/>
+		<t:modal_footer name="insert"/>
 <% }	%>
 
-<!-- Do add submission -->
+<!-- Do insert submission -->
 	<%
-	if(submit.equals("add"))
+	if(submit.equals("insert"))
 	{
 			if(role.equals("Owner"))
 			{
@@ -155,7 +155,7 @@
 
 						if(count != 0){
 							%>
-							<t:message type="danger" message="Category successfully added"></t:message>
+							<t:message type="danger" message="Category successfully inserted"></t:message>
 							<%
 							}
 						else{
@@ -182,7 +182,7 @@
 		%>
 		<%}	
 			else{%>
-				<t:message type="warning" message="You must be an owner to add categories"></t:message>
+				<t:message type="warning" message="You must be an owner to insert categories"></t:message>
 		<%
 			}
 	}
@@ -271,7 +271,7 @@
 %>
 
 <%
-	//If submit is equal to "add"
+	//If submit is equal to "insert"
 	if(submit.equals("update"))
 	{
 			if(role.equals("Owner"))
@@ -453,7 +453,7 @@
 		}
 		else
 		{	%>
-			No Categories, please add a category
+			<t:message type="warning" message="No Categories to display"/>
 		<% }
 			/* Close everything  */
 			// Close the ResultSet
@@ -480,16 +480,16 @@
 						<img style="height:45px" src="img/plus.png">
 					</div>
 					<div class="col-sm-2">
-							Add new category
+							Insert new category
 					</div>
 					<div class="col-sm-3">
 						<p>
-							Add a new category to the list
+							Insert a new category to the list
 						</p>
 					</div>
 					<div class="col-sm-4">	
 						<p>
-							<a class="btn btn-success" href="categories.jsp?action=add">Add Item</a>
+							<a class="btn btn-success" href="categories.jsp?action=insert">Insert Item</a>
 						</p>
 					</div>
 				</div>
