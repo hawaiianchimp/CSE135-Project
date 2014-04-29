@@ -12,6 +12,9 @@
 	PreparedStatement ps1 = null;
 	ResultSet rs1 = null;
 	
+	try
+	{
+	
 	if (action != null && (action.equals("view") || action.equals("purchase")))
 	{
 		String uid = "" + session.getAttribute("uid");
@@ -165,11 +168,19 @@
 			</form>
 	<%
 		}
-		
-		ps1.close();
-		rs1.close();
-		conn.close();
 	}
+	}
+	catch (Exception e)
+	{
+		e.printStackTrace();
+	}
+	finally
+	{
+			conn.close();
+			ps1.close();
+			rs1.close();
+	}
+	
 	%>
 <t:footer />
 </body>

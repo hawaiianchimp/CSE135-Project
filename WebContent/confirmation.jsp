@@ -16,6 +16,8 @@
 		PreparedStatement ps1 = null;
 		ResultSet rs1 = null;
 		String uid = "" + session.getAttribute("uid");
+		try
+		{
 		Class.forName("org.postgresql.Driver");
 		conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 				"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
@@ -51,10 +53,17 @@
 			<td><%=rs1.getDouble("price") * rs1.getInt("Quantity")%></td>
 		</tr>
 	<% 	}
-	
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	finally
+	{
 	ps1.close();
 	rs1.close();
 	conn.close();
+	}
 	
 	%>
 	</table>
