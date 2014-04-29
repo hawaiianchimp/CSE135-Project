@@ -144,7 +144,7 @@
 					if(duplicate_name==false)
 					{
 						statement = conn.createStatement();
-						sql =	"INSERT INTO categories (name, img_src, description) " +
+						sql =	"INSERT INTO categories (name, img_url, description) " +
 								"SELECT ?,?,?";
 						d_pstmt = conn.prepareStatement(sql);
 						d_pstmt.setString(1, ""+request.getParameter("name"));
@@ -209,7 +209,7 @@
 					String rsname,rsdescription, rsimg; 
 					rsname = rs.getString("name");
 					rsdescription = rs.getString("description");
-					rsimg = rs.getString("img_src");
+					rsimg = rs.getString("img_url");
 					%>
 				<t:modal_header modal_title="Updating Item" />
 					<fieldset>
@@ -295,7 +295,7 @@
 					if(duplicate_name==false)
 					{
 						statement = conn.createStatement();
-						sql =	"UPDATE categories SET (name, img_src, description) = " +
+						sql =	"UPDATE categories SET (name, img_url, description) = " +
 								"(?,?,?) WHERE category_id = ?";
 						d_pstmt = conn.prepareStatement(sql);
 						d_pstmt.setString(1, ""+request.getParameter("name"));
@@ -365,7 +365,7 @@
 					while (rs.next()) {
 						rsname = rs.getString("name");
 						rsdescription = rs.getString("description");
-						rsimg = rs.getString("img_src");
+						rsimg = rs.getString("img_url");
 						rsid = String.valueOf(rs.getInt("category_id"));
 						rscount = String.valueOf(rs.getInt("count"));
 						//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
@@ -412,7 +412,7 @@
 
 					rsname = rs.getString("name");
 					rsdescription = rs.getString("description");
-					rsimg = rs.getString("img_src");
+					rsimg = rs.getString("img_url");
 					rsid = String.valueOf(rs.getInt("category_id"));
 					rscount = String.valueOf(rs.getInt("count"));
 					if(rsimg == null)

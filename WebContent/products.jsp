@@ -140,7 +140,7 @@
 						Class.forName("org.postgresql.Driver");
 						statement = conn.createStatement();
 						//need a transaction to add in products and product_categories
-						sql =	"INSERT INTO products (name, img_src, description, price) " +
+						sql =	"INSERT INTO products (name, img_url, description, price) " +
 								"SELECT ?,?,?,?";
 						d_pstmt = conn.prepareStatement(sql);
 						d_pstmt.setString(1, ""+request.getParameter("name"));
@@ -200,7 +200,7 @@
 						String rsname,rsdescription, rsimg, rsprice; 
 						rsname = rs.getString("name");
 						rsdescription = rs.getString("description");
-						rsimg = rs.getString("img_src");
+						rsimg = rs.getString("img_url");
 						rsprice = rs.getString("price");
 						%>
 					<t:modal_header modal_title="Updating Item" />
@@ -276,7 +276,7 @@
 					try{
 						Class.forName("org.postgresql.Driver");
 						statement = conn.createStatement();
-						sql =	"UPDATE products SET (name, img_src, description, price) = " +
+						sql =	"UPDATE products SET (name, img_url, description, price) = " +
 								"(?,?,?,?) WHERE product_id = ?";
 						d_pstmt = conn.prepareStatement(sql);
 						d_pstmt.setString(1, ""+request.getParameter("name"));
@@ -445,7 +445,7 @@
 						while (rs.next()) {
 							rsname = rs.getString("name");
 							rsdescription = rs.getString("description");
-							rsimg = rs.getString("img_src");
+							rsimg = rs.getString("img_url");
 							rssku = rs.getString("sku");
 							rspid = String.valueOf(rs.getInt("product_id"));
 							rsprice = String.valueOf(rs.getDouble("price"));
