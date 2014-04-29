@@ -8,6 +8,7 @@
 <t:header title="Shopping Cart"/>
 <% 
 	String action = request.getParameter("action");
+	System.out.println("action: " + action);
 	Connection conn = null;
 	PreparedStatement ps1 = null;
 	ResultSet rs1 = null;
@@ -21,12 +22,12 @@
 		Class.forName("org.postgresql.Driver");
 		conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 				"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
-		ps1 = conn.prepareStatement("SELECT products.product_id, products.sku, products.img_src, products.name, products.price, COUNT (*) \"Quantity\" FROM users, carts, carts_products, products "
+		ps1 = conn.prepareStatement("SELECT products.product_id, products.sku, products.img_url, products.name, products.price, COUNT (*) \"Quantity\" FROM users, carts, carts_products, products "
 				+ "WHERE users.uid = ? "
 				+ "AND users.uid = carts.uid "
 				+ "AND carts.cart_id = carts_products.cart_id "
 				+ "AND carts_products.product_id = products.product_id "
-				+ "GROUP BY products.product_id, products.sku, products.img_src, products.name, products.price");
+				+ "GROUP BY products.product_id, products.sku, products.img_url, products.name, products.price");
 		ps1.setInt(1, Integer.parseInt(uid));
 		rs1 = ps1.executeQuery();
 	
@@ -69,7 +70,7 @@
 		</table>
 		<% if (action.equals("purchase")) { %>
 		<h3>Payment Information</h3>
-		<form action="confirmation.jsp">
+		<form method="POST" action="confirmation.jsp">
 			<label for="owner">Cardholder's Name</label>
 			<input type="text" name="owner">
 			<br>
@@ -85,9 +86,6 @@
 			<input type="text" name="cardno">
 			<label for="csv">Card Security Value</label>
 			<input type="text" name="csv">
-		</form>
-		<h3>Billing Address</h3>
-		<form>
 			<label for="street">Cardholder's Name</label>
 			<input type="text" name="street">
 			<br>
@@ -160,10 +158,11 @@
 		else
 		{
 			%>
-			<form action="categories.jsp">
+			<form method="POST" action="categories.jsp">
 				<input type="submit" value="Back to Browsing">
 			</form>
-			<form action="buycart.jsp?action=purchase">
+			<form method="POST" action="buycart.jsp">
+				<input type="hidden" name="action" value="purchase">
 				<input type="submit" value="Purchase Cart">
 			</form>
 	<%
@@ -176,8 +175,11 @@
 	}
 	finally
 	{
+		if (conn != null)
 			conn.close();
+		if (ps1 != null)
 			ps1.close();
+		if (rs1 != null)
 			rs1.close();
 	}
 	

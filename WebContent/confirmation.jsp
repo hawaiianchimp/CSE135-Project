@@ -60,9 +60,12 @@
 		}
 	finally
 	{
-	ps1.close();
-	rs1.close();
-	conn.close();
+		if (ps1 != null)
+			ps1.close();
+		if (rs1 != null)
+			rs1.close();
+		if (conn != null)
+			conn.close();
 	}
 	
 	%>

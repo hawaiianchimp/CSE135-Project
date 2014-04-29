@@ -44,7 +44,7 @@
 				
 				//Insert data if specified, and redirect back to products.jsp
 				System.out.println("Before");
-				if (!action.equals("null") && action.equals("insert"))
+				if (!(action.equals("null")) && action.equals("insert"))
 				{
 					System.out.println("SUP HOMIE");
 					//Add to carts_products
@@ -60,8 +60,6 @@
 					System.out.println("here");
 					for (int i = 0; i < quantity; i++)
 						pstmt3.executeUpdate();
-					pstmt3.close();
-					conn.close();
 					response.sendRedirect("http://localhost:8080/CSE135Project/categories.jsp");
 				}
 				
@@ -186,14 +184,22 @@
 		}
 		finally
 		{
-			conn.close();
-			pstmt1.close();
-			pstmt2.close();
-			pstmt3.close();
-			pstmt4.close();
-			rs1.close();
-			rs2.close();
-			rs4.close();
+			if (conn != null)
+				conn.close();
+			if (pstmt1 != null)
+				pstmt1.close();
+			if (pstmt2 != null)
+				pstmt2.close();
+			if (pstmt3 != null)
+				pstmt3.close();
+			if (pstmt4 != null)
+				pstmt4.close();
+			if (rs1 != null)
+				rs1.close();
+			if (rs2 != null)
+				rs2.close();
+			if (rs4 != null)
+				rs4.close();
 		}
 		
 		%>
