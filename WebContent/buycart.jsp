@@ -8,6 +8,11 @@
 <t:header title="Shopping Cart"/>
 <% 
 	String action = request.getParameter("action");
+	String uid = "" + session.getAttribute("uid");
+	if (uid.equals("null"))
+			{
+				response.sendRedirect("login.jsp");
+			}
 	System.out.println("action: " + action);
 	Connection conn = null;
 	PreparedStatement ps1 = null;
@@ -18,7 +23,6 @@
 	
 	if (action != null && (action.equals("view") || action.equals("purchase")))
 	{
-		String uid = "" + session.getAttribute("uid");
 		Class.forName("org.postgresql.Driver");
 		conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 				"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
@@ -58,7 +62,7 @@
 			{
 		%>
 			<tr>
-				<td><%=rs1.getString("img_src")%></td>
+				<td><%=rs1.getString("img_url")%></td>
 				<td><%=rs1.getString("sku")%></td>
 				<td><%=rs1.getString("name")%></td>
 				<td><%=rs1.getDouble("price")%></td>

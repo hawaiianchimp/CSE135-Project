@@ -55,7 +55,10 @@
 					rs4 = pstmt4.executeQuery();
 					System.out.println("successful");
 					rs4.next();
+					System.out.println("uid: " + uid);
+					System.out.println("before p3");
 					pstmt3.setInt(1, rs4.getInt("cart_id"));
+					System.out.println("before p3");
 					pstmt3.setInt(2, Integer.parseInt(product));
 					System.out.println("here");
 					for (int i = 0; i < quantity; i++)
@@ -68,12 +71,12 @@
 				{
 				//Prepared Statement 1: Get product information and quantities in user's cart
 				//Parameters: 1) User ID
-				pstmt1 = conn.prepareStatement("SELECT products.product_id, products.sku, products.img_src, products.name, products.price, COUNT (*) \"Quantity\" FROM users, carts, carts_products, products "
+				pstmt1 = conn.prepareStatement("SELECT products.product_id, products.sku, products.img_url, products.name, products.price, COUNT (*) \"Quantity\" FROM users, carts, carts_products, products "
 						+ "WHERE users.uid = ? "
 						+ "AND users.uid = carts.uid "
 						+ "AND carts.cart_id = carts_products.cart_id "
 						+ "AND carts_products.product_id = products.product_id "
-						+ "GROUP BY products.product_id, products.sku, products.img_src, products.name, products.price");
+						+ "GROUP BY products.product_id, products.sku, products.img_url, products.name, products.price");
 				pstmt1.setInt(1, Integer.parseInt(uid));
 				rs1 = pstmt1.executeQuery();
 			
@@ -127,7 +130,7 @@
 					<th>Quantity</th>
 				</tr>
 				<tr>
-					<td><%=rs2.getString("img_src")%></td>
+					<td><%=rs2.getString("img_url")%></td>
 					<td><%=rs2.getString("sku")%></td>
 					<td><%=rs2.getString("name")%></td>
 					<td><%=rs2.getDouble("price")%></td>
@@ -146,6 +149,7 @@
 		
 		
 		<%
+		
 		try{
 
 		Class.forName("org.postgresql.Driver");

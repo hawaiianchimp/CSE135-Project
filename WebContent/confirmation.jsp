@@ -7,7 +7,7 @@
 <body>
 <t:header title="Confirmation of Purchase"/>
 <%
-	String username = "" + session.getAttribute("user");
+	String username = "" + session.getAttribute("name");
 %>
 <h3><%=username%>, your purchase was successful!</h3>
 <h4>Summary of Purchase:</h4>
@@ -45,7 +45,7 @@
 		{
 	%>
 		<tr>
-			<td><%=rs1.getString("img_src")%></td>
+			<td><%=rs1.getString("img_url")%></td>
 			<td><%=rs1.getString("sku")%></td>
 			<td><%=rs1.getString("name")%></td>
 			<td><%=rs1.getDouble("price")%></td>
