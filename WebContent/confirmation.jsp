@@ -50,7 +50,12 @@
 			<td><%=rs1.getInt("Quantity") %></td>
 			<td><%=rs1.getDouble("price") * rs1.getInt("Quantity")%></td>
 		</tr>
-	<% 	} 
+	<% 	}
+	
+	ps1.close();
+	rs1.close();
+	conn.close();
+	
 	%>
 	</table>
 	<form action="categories.jsp">

@@ -165,6 +165,10 @@
 			</form>
 	<%
 		}
+		
+		ps1.close();
+		rs1.close();
+		conn.close();
 	}
 	%>
 <t:footer />
