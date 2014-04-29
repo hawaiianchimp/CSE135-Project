@@ -28,17 +28,10 @@
 		images.add("default");
 		images.add("baseball_bat");
 		//Add more images here
-%>
+%>	
 
-<div class="row">
-<form class="navbar-form navbar-left" action="search.jsp" method="GET">
-  <div class="form-group">
-  	<input type="text" class="form-control" placeholder="Search All" name="keyword">
-  	<input type = "hidden" name="cid" value="<%=cid%>">
- 	</div>
-  <button type="submit" class="btn btn-default">Search</button>
-</form>
-</div>	
+<!-- Search Function -->
+<a class="btn btn-default" href="/CSE135Project/search.jsp" >Search</a>
 	
 	<!--  Deleting a product -->
 	

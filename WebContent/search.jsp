@@ -8,87 +8,66 @@
 
 
 <t:header title="Search Results" />
-<div class="row">
+<div class="row clearfix">
 <%
-	String[] keywords = request.getParameter("keyword").split(" ");
-	String prepared_keywords="%";
-	for(String s : keywords)
-		prepared_keywords += s+"%";
-			
-	Connection conn = null;
-	PreparedStatement pstmt = null;
+	Connection conn = DriverManager.getConnection(
+			"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+			"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
+	PreparedStatement pstmt = null, d_pstmt = null;
+	Statement statement = null, d_statement = null;
 	ResultSet rs = null;
-	
-	try {
-		
+	String sql = null;
+
+	try{
 		Class.forName("org.postgresql.Driver");
-		conn = DriverManager.getConnection(
-				"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-				"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); //TODO: Change name of database accordingly
 		
-		if(!prepared_keywords.equals("%%"))
-		{
-			String category_id = request.getParameter("cid");
-			System.out.println(category_id);
-			if(category_id.equals("null"))
-			{
-				pstmt = conn.prepareStatement("SELECT * FROM products WHERE name ILIKE ?;");
-				pstmt.setString(1, prepared_keywords);
-				rs = pstmt.executeQuery();
-			}
-			else
-			{
-				pstmt = conn.prepareStatement("SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id=?) WHERE products_categories.product_id=products.product_id AND (products.name ILIKE ?)");
-				int cid = Integer.parseInt(category_id);
-				pstmt.setInt(1, cid);
-				pstmt.setString(2, prepared_keywords);
-				rs = pstmt.executeQuery();
-			}
+		statement = conn.createStatement();
+		pstmt = conn.prepareStatement("SELECT * FROM categories");
+		rs = pstmt.executeQuery();
+
+		%>
+		<!-- Used for spacing -->
+		<div class="col-md-4 column"></div>
+		
+		<div class="col-md-4 column">
+			<form class="navbar-form navbar-left" action="search_results.jsp" method="GET">
 			
-			if(rs.isBeforeFirst())
-			{
-				while(rs.next())
-				{
-					String rsname, rsdescription, rsimg;
-					rsname = rs.getString("name");
-					rsdescription = rs.getString("description");
-					rsimg = rs.getString("img_src");
-					if (rsimg == null)
-						rsimg = "default";
-					%>
-					<h1><%=rsname %></h1>
-					<%
-				}
-			}
-			else
-			{
-				%>
-				<t:message type="warning" message="No matches found." />
-				<%
-			}
-		}
-		else
-		{
-			%><t:message type="danger" message="Please enter a search keyword." /><%
-		}
+				<div class="form-group">
+					<input type="text" class="form-control" placeholder="Keyword"
+						name="keyword">
+				</div>
+				
+				<div class="form-group">
+					<label for="category">Categories</label> 
+					<select class="form-control" name="cid">
+						<option value="null">All</option>
+						<%
+						while(rs.next())
+						{
+							String name = rs.getString("name");
+							String cid = rs.getString("category_id");
+							%>
+							<option value="<%=cid%>"><%=name%></option>
+							<%	
+						}
+						%>
+					</select>
+				</div>
+				<button type="submit" class="btn btn-default">Search</button>
+			</form>
+		</div>
 		
-		/* Close everything  */
-		// Close the ResultSet
-		rs.close();
-		//Close the Statement
-		pstmt.close();
-		// Close the Connection
-		conn.close();
+		<!-- Used for spacing -->
+		<div class="col-md-4 column"></div>
 		
-	}catch (SQLException e) {
-        e.printStackTrace();
-        out.println("<h1>" + e.getMessage() + "</h1>");
-        
-	} catch (ClassNotFoundException e) {
+		<%
+		
+	}catch(SQLException e){
 		e.printStackTrace();
-		out.println("<h1>org.postgresql.Driver Not Found</h1>");
+		%>
+		<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
+		<%
 	}
 %>
-
 </div>
 <t:footer />

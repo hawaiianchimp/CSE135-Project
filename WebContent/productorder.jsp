@@ -133,13 +133,6 @@
 					<td><%=rs2.getString("sku")%></td>
 					<td><%=rs2.getString("name")%></td>
 					<td><%=rs2.getDouble("price")%></td>
-					<%	
-						rs1.close();
-						rs2.close();
-						pstmt1.close();
-						pstmt2.close();
-						conn.close();
-					%>
 					<td><input type="text" name="quantity"></td>
 					<td><input type="submit" value="Add to cart"></td>
 				</tr>
@@ -191,10 +184,17 @@
 			<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
 			<%
 		}
-		
-		pstmt1.close();
-		
-		
+		finally
+		{
+			conn.close();
+			pstmt1.close();
+			pstmt2.close();
+			pstmt3.close();
+			pstmt4.close();
+			rs1.close();
+			rs2.close();
+			rs4.close();
+		}
 		
 		%>
 		
