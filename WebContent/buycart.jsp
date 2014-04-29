@@ -5,6 +5,7 @@
 <%@ page import="java.io.*"%>
 <html>
 <body>
+<t:header title="Shopping Cart"/>
 <% 
 	String action = request.getParameter("action");
 	Connection conn = null;
@@ -65,7 +66,7 @@
 		</table>
 		<% if (action.equals("purchase")) { %>
 		<h3>Payment Information</h3>
-		<form>
+		<form action="confirmation.jsp">
 			<label for="owner">Cardholder's Name</label>
 			<input type="text" name="owner">
 			<br>
@@ -166,6 +167,6 @@
 		}
 	}
 	%>
-
+<t:footer />
 </body>
 </html>
