@@ -23,7 +23,6 @@
 	Statement statement = null, d_statement = null;
 	ResultSet rs = null;
 	String sql = null;
-	
 	ArrayList<String> images = new ArrayList<String>();
 		images.add("default");
 		images.add("baseball_bat");
@@ -149,7 +148,6 @@
 						d_pstmt.setString(4, ""+request.getParameter("price"));
 
 						int count = d_pstmt.executeUpdate();
-
 						if(count != 0){
 							%>
 							<t:message type="danger" message="Product successfully deleted"></t:message>
@@ -190,18 +188,21 @@
 					try{
 					Class.forName("org.postgresql.Driver");
 					statement = conn.createStatement();
-					sql = "SELECT * FROM products WHERE product_id = ?;";
+					sql = "SELECT p.*, categories.name AS category_name  FROM (SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id=?) WHERE products_categories.product_id=products.product_id AND products.product_id = ?) AS p LEFT JOIN categories ON (p.category_id = categories.category_ID);";
 					d_pstmt = conn.prepareStatement(sql);
-					d_pstmt.setInt(1, Integer.parseInt(pid));
+					d_pstmt.setInt(1, Integer.parseInt(cid));
+					d_pstmt.setInt(2, Integer.parseInt(pid));
 					rs = d_pstmt.executeQuery();
 					
 					if(rs.next())
 					{
-						String rsname,rsdescription, rsimg, rsprice; 
+						String rsname,rsdescription, rsimg, rsprice, rscategory, rssku; 
 						rsname = rs.getString("name");
 						rsdescription = rs.getString("description");
 						rsimg = rs.getString("img_url");
 						rsprice = rs.getString("price");
+						rssku = rs.getString("sku");
+						rscategory = rs.getString("category_name");
 						%>
 					<t:modal_header modal_title="Updating Item" />
 						<fieldset>
@@ -209,14 +210,34 @@
 							<input type="hidden" name="cid" value="<%=cid %>"/>
 							<input type="hidden" name="pid" value="<%=pid %>"/>
 							<label class="control-label" for="name">Name</label>
-							<input value="<%=rsname %>" id="name" name="name" type="text" placeholder="Name" class="form-control">
-							<label class="control-label" for="img_url">Image</label>
-							<select class="form-control" name="img_url">
-								<% String selected = "";
-									for(String s: images){ 
-									selected = (s.equals(rsimg)) ? "selected":""; %>
-									<option <%=selected%> value="<%=s %>"><%=s %></option>
-								<% }%>
+							<input value="<%=rssku %>" id="name" name="name" type="text" placeholder="Name" class="form-control">
+							
+							<label class="control-label" for="name">SKU</label>
+							<input value="<%=rsname %>" id="sku" name="sku" type="text" placeholder="SKU" class="form-control">
+							
+							<label class="control-label" for="img_url">Category</label>
+							<select class="form-control" name="category">
+								<% 
+								
+								try{	
+									sql = "SELECT name FROM categories";
+									statement = conn.createStatement();
+									rs = statement.executeQuery(sql);
+									ArrayList<String> categories;
+									while(rs.next())
+									{
+										String c = rs.getString("name");
+										String selected = (c.equals(rscategory)) ? "selected":""; %>
+										<option <%=selected%> value="<%=c %>"><%=c %></option>
+								<% }
+									statement.close();
+								}
+								catch(PSQLException e)
+								{
+									e.printStackTrace();
+								}%>
+								
+								
 							</select>
 							<label class="control-label" for="price">Price</label>
 							<input value="<%=rsprice %>" id="price" type="text" class="form-control" name="price"/>
@@ -228,6 +249,16 @@
 							    <textarea class="form-control" id="description" name="description"><%=rsdescription %></textarea>
 							  </div>
 							</div>
+							
+							
+							<label class="control-label" for="img_url">Image</label>
+							<select class="form-control" name="img_url">
+								<% String selected = "";
+									for(String s: images){ 
+									selected = (s.equals(rsimg)) ? "selected":""; %>
+									<option <%=selected%> value="<%=s %>"><%=s %></option>
+								<% }%>
+							</select>
 							
 							
 						</fieldset>
@@ -288,7 +319,7 @@
 						d_pstmt.setInt(5, Integer.parseInt(request.getParameter("cid")));
 
 						int count = d_pstmt.executeUpdate();
-
+						d_pstmt.close();
 						if(count != 0){
 							%>
 							<t:message type="success" message="Product successfully updated"></t:message>
@@ -298,7 +329,6 @@
 							%>
 							<t:message type="danger" message="Error occurred in SQL"></t:message>
 							<%
-							
 						}
 					}
 					catch(SQLException e){

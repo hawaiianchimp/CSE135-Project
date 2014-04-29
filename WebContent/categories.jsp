@@ -155,7 +155,7 @@
 
 						if(count != 0){
 							%>
-							<t:message type="danger" message="Category successfully inserted"></t:message>
+							<t:message type="success" message="Category successfully inserted"></t:message>
 							<%
 							}
 						else{
