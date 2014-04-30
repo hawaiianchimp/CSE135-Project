@@ -7,7 +7,7 @@
 <%@ page import="java.sql.*"%>
 
 
-<t:header title="Search Results" />
+<t:header title="Product Browsing" />
 <div class="row clearfix">
 <%
 	Connection conn = DriverManager.getConnection(

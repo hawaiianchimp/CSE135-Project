@@ -11,6 +11,7 @@
 
 <!-- Selecting all categories -->
 <%
+	Class.forName("org.postgresql.Driver");
 	String role = ""+session.getAttribute("role");
 	String action = ""+request.getParameter("action");
 	String submit = ""+request.getParameter("submit");
@@ -30,9 +31,6 @@
 		
 		
 %>
-<!-- Search Function -->
-<a class="btn btn-default" href="/CSE135Project/search.jsp" >Search</a>
-
 <!--  Deleting a category -->
 <% 
 	if(action.equals("delete"))
@@ -42,7 +40,6 @@
 			if(role.equals("Owner"))
 			{
 				try{
-				Class.forName("org.postgresql.Driver");
 				statement = conn.createStatement();
 				sql = "DELETE FROM categories WHERE category_id = ?;";
 				d_pstmt = conn.prepareStatement(sql);
@@ -125,9 +122,7 @@
 	{
 			if(role.equals("Owner"))
 			{
-				try{
-					Class.forName("org.postgresql.Driver");
-					
+				try{					
 					Statement check_statement = conn.createStatement();
 					PreparedStatement check_pstmt = conn.prepareStatement("SELECT name FROM categories");
 					String input_c_name = ""+request.getParameter("name");
@@ -197,7 +192,6 @@
 			if(role.equals("Owner"))
 			{
 				try{
-				Class.forName("org.postgresql.Driver");
 				statement = conn.createStatement();
 				sql = "SELECT * FROM categories WHERE category_id = ?;";
 				d_pstmt = conn.prepareStatement(sql);
@@ -276,9 +270,7 @@
 	{
 			if(role.equals("Owner"))
 			{
-				try{
-					Class.forName("org.postgresql.Driver");
-					
+				try{					
 					Statement check_statement = conn.createStatement();
 					PreparedStatement check_pstmt = conn.prepareStatement("SELECT name FROM categories");
 					String input_c_name = ""+request.getParameter("name");

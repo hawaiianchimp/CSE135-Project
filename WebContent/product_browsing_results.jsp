@@ -7,7 +7,7 @@
 <%@ page import="java.sql.*"%>
 
 
-<t:header title="Search Results" />
+<t:header title="Product Browsing Results" />
 <div class="row">
 <%
 	String role = ""+session.getAttribute("role");

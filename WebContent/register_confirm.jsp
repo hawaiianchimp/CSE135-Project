@@ -80,7 +80,19 @@
 	<% if(successful){ %>
 		<h1>Registration Successful!</h1>
 		<h3>Thank you for signing up with us!</h3>
-		<a class="btn btn-default" href="/CSE135Project/categories.jsp">Go to Categories</a>
+		<%
+		String role = ""+session.getAttribute("role");
+		if(role.equals("Owner")) 
+		%>
+			<a class="btn btn-default" href="/CSE135Project/categories.jsp">Go to Categories</a>
+		<%
+		else if(role.equals("Customer")) 
+		%>
+			<a class="btn btn-default" href="/CSE135Project/product_browsing_results.jsp" >Go to Product Browsing</a>
+		<%
+		else
+		%>
+			<a class="btn btn-default" href="/CSE135Project/login.jsp" >Go to Log In</a>
 	<% }
 	
 	else{ %>
