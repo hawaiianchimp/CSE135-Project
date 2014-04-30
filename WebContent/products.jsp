@@ -535,11 +535,14 @@
 									</div>
 									<div class="col-sm-4">
 										<p>
-											<a class="btn btn-primary" href="productorder.jsp?product=<%=rspid %>&cid=<%=cid %>">Add to Cart</a>
 											<% if(role.equals("Owner"))
 											{ %>
 												<a class="btn btn-success" href="products.jsp?action=update&cid=<%=cid%>&pid=<%=rspid %>">Update</a>
 												<a class="btn btn-danger" href="products.jsp?action=delete&cid=<%=cid%>&pid=<%=rspid %>">Delete</a>
+											<% }
+											else
+											{ %>
+												<a class="btn btn-primary" href="productorder.jsp?product=<%=rspid %>&cid=<%=cid %>">Add to Cart</a>
 											<% }%>
 										</p>
 									</div>
