@@ -341,6 +341,11 @@
 %>
 
 <div class="container">
+	<!-- product search -->
+	<div class="row clearfix">
+		<a class="btn btn-default" href="/CSE135Project/product_browsing.jsp" >Product Search</a>
+	</div>
+	
 	<!-- category menu -->
 	<div class="col-sm-2">
 		<ul class="nav nav-stacked navbar-left nav-pills">

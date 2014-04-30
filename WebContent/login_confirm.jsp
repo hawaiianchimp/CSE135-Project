@@ -15,6 +15,9 @@
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		
+		PreparedStatement pstmtcart = null;
+		ResultSet rscart = null;
 
 		try {
 			// Registering Postgresql JDBC driver with the DriverManager
@@ -34,6 +37,7 @@
 						.prepareStatement("SELECT * FROM users WHERE name=?"); //TODO: Change accordingly
 				pstmt.setString(1, username);
 				rs = pstmt.executeQuery();
+				
 				//out.println("<h1>" + "test" + "</h1>");
 				if (rs.next())
 				{
@@ -48,8 +52,14 @@
 					
 				if(logged_in==1)
 				{
+					pstmtcart = conn.prepareStatement("SELECT * FROM carts WHERE uid = ?");
+					pstmtcart.setInt(1, rs.getInt("uid"));
+					rscart = pstmtcart.executeQuery();
+					rscart.next();
+					
 					session.setAttribute("name", username);
 					session.setAttribute("uid", rs.getInt("uid"));
+					session.setAttribute("cart_id", rscart.getInt("cart_id"));
 					session.setAttribute("role", rs.getObject(rs.findColumn("role")));
 					session.setAttribute("state", rs.getObject(rs.findColumn("state")));
 					session.setAttribute("age", rs.getObject(rs.findColumn("age")));
@@ -58,6 +68,9 @@
 					System.out.print("Log\n state:" + session.getAttribute("state") + "\n");
 					System.out.print("Log\n age:" + session.getAttribute("age") + "\n");
 				}
+				
+				pstmtcart.close();
+				rscart.close();
 
 				// Close the ResultSet
 				rs.close();

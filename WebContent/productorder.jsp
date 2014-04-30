@@ -58,7 +58,7 @@
 					System.out.println("SUP HOMIE");
 					//Add to carts_products
 					quantity = Integer.parseInt(request.getParameter("quantity"));
-					pstmt3 = conn.prepareStatement("INSERT INTO carts_products VALUES (?,?)");
+					pstmt3 = conn.prepareStatement("INSERT INTO carts_products VALUES (? , ?)");
 					pstmt4 = conn.prepareStatement("SELECT carts.cart_id FROM carts WHERE carts.uid = ?");
 					pstmt4.setInt(1, Integer.parseInt(uid));
 					rs4 = pstmt4.executeQuery();

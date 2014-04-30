@@ -16,6 +16,13 @@
 		ResultSet rs = null;
 		String sql = null;
 		
+		//Add cart information
+		PreparedStatement pscart = null;
+		String sqlcart = null;
+		PreparedStatement psuid = null;
+		ResultSet rsuid = null;
+		String sqluid = null;
+	
 		String age = request.getParameter("age");
 		String role = request.getParameter("role");
 		String state = request.getParameter("state");
@@ -51,7 +58,22 @@
 				//if no rows have been updated, that is because the name already exists.
 				if(count>0)
 					success=true;
-
+				
+				sqlcart = "INSERT INTO carts (uid) VALUES (?)";
+				pscart = conn.prepareStatement(sqlcart);
+				
+				sqluid = "SELECT uid FROM users WHERE name = ?";
+				psuid = conn.prepareStatement(sqluid);
+				psuid.setString(1, name);
+				rsuid = psuid.executeQuery();
+				rsuid.next();
+				pscart.setInt(1, rsuid.getInt("uid")); 
+				pscart.executeUpdate();
+				
+				pscart.close();
+				psuid.close();
+				rsuid.close();
+				
 				statement.close();
 				conn.close();
 			}

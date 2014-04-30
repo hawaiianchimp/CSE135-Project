@@ -13,6 +13,7 @@
 <h4>Summary of Purchase:</h4>
 <%
 		String uid = "" + session.getAttribute("uid");
+		String cart_id = "" + session.getAttribute("cart_id");
 		if(uid.equals("null")) //redirect if not logged in
 		{
 			response.sendRedirect("login.jsp");
@@ -20,20 +21,24 @@
 	
 		Connection conn = null;
 		PreparedStatement ps1 = null;
+		PreparedStatement ps2 = null;
 		ResultSet rs1 = null;
 		try
 		{
 		Class.forName("org.postgresql.Driver");
 		conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 				"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
-		ps1 = conn.prepareStatement("SELECT products.product_id, products.sku, products.img_src, products.name, products.price, COUNT (*) \"Quantity\" FROM users, carts, carts_products, products "
+		ps1 = conn.prepareStatement("SELECT products.product_id, products.sku, products.img_url, products.name, products.price, COUNT (*) \"Quantity\" FROM users, carts, carts_products, products "
 				+ "WHERE users.uid = ? "
 				+ "AND users.uid = carts.uid "
 				+ "AND carts.cart_id = carts_products.cart_id "
 				+ "AND carts_products.product_id = products.product_id "
-				+ "GROUP BY products.product_id, products.sku, products.img_src, products.name, products.price");
+				+ "GROUP BY products.product_id, products.sku, products.img_url, products.name, products.price");
 		ps1.setInt(1, Integer.parseInt(uid));
 		rs1 = ps1.executeQuery();
+		
+		ps2 = conn.prepareStatement("DELETE FROM carts_products WHERE cart_id = " + cart_id + " AND product_id = ?");
+		
 		%>
 		<table>
 		<tr>
@@ -48,6 +53,8 @@
 		//Iterate through all tuples to display contents of cart
 		while (rs1.next())
 		{
+			ps2.setInt(1, rs1.getInt("product_id"));
+			ps2.executeUpdate();
 	%>
 		<tr>
 			<td><%=rs1.getString("img_url")%></td>
