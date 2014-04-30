@@ -7,7 +7,14 @@
 <%@ page import="java.sql.*"%>
 
 
-<t:header title="Product Browsing Results" />
+<% String role = "" + session.getAttribute("role"); 
+	if (role.equals("Owner"))
+	{
+		%><t:header title="Product Search Results" /><%
+	}
+	else{ %>
+		<t:header title="Product Browsing Results" /><%
+	} %>
 <div class="row">
 <%
 	//redirect if not logged in
@@ -17,7 +24,6 @@
 		response.sendRedirect("login.jsp");
 	}
 	
-	String role = ""+session.getAttribute("role");
 	String[] keywords = request.getParameter("keyword").split(" ");
 	String prepared_keywords="%";
 	for(String s : keywords)
@@ -140,6 +146,18 @@
 
 </div>
 <div class="col-md-12">
-	<a class="btn btn-default" href="/CSE135Project/product_browsing.jsp" >Back to Product Browsing</a>
+	<%
+	if (role.equals("Owner"))
+	{
+		%>
+		<a class="btn btn-default" href="/CSE135Project/product_browsing.jsp" >Back to Product Searching</a>
+		<a class="btn btn-default" href="/CSE135Project/categories.jsp" >Back to Categories</a>
+		<%
+	}
+	else{ %>
+		<a class="btn btn-default" href="/CSE135Project/product_browsing.jsp" >Back to Product Browsing</a><%
+	} %>
+	
+	
 </div>
 <t:footer />

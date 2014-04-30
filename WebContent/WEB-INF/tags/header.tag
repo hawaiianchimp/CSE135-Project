@@ -43,7 +43,7 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-      <% if(role == "Owner")
+      <% if(role.equals("Owner"))
       {
       %>
       <li><a href="categories.jsp">Categories</a></li>

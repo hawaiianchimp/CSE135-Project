@@ -6,7 +6,15 @@
 <%@ page import="java.io.*"%>
 <%@ page import="java.sql.*"%>
 
-<t:header title="Category Specific Product Browsing" />
+<% String role = "" + session.getAttribute("role"); 
+	if (role.equals("Owner"))
+	{
+		%><t:header title="Category Specific Product Searching" /><%
+	}
+	else
+	{ 
+		%><t:header title="Category Specific Product Browsing" /><%
+	}%>
 <div class="row clearfix">
 <%
 	//redirect if not logged in
@@ -69,7 +77,15 @@
 		</div>
 		
 		<div class="col-md-4 column">
-			<h3>Browse within <%=""+request.getParameter("category") %></h3>
+			<%
+			if (role.equals("Owner"))
+			{
+				%><h3>Search within <%=""+request.getParameter("category") %></h3><%
+			}
+			else{ %>
+				<h3>Browse within <%=""+request.getParameter("category") %></h3><%
+			} %>
+			
 			<form class="navbar-form navbar-left" action="product_browsing_results.jsp" method="GET">
 				<div class="form-group">
 					<input type="text" class="form-control" placeholder="Keyword"

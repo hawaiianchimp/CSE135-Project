@@ -434,7 +434,16 @@
 		c_rs = c_pstmt.executeQuery();
 %>
 
+<div class="row clearfix">
+	<!-- category product search -->
 	<div class="row">
+		<div class="col-md-4">
+			<a class="btn btn-default" href="product_browsing_category.jsp?cid=<%=""+request.getParameter("cid")%>&category=<%=""+request.getParameter("category") %>" >Product Search within <%=""+request.getParameter("category") %></a>
+		</div>
+		<div class="col-md-4"></div>
+		<div class="col-md-4"></div>
+	</div>
+
 	<!-- category menu -->
 	<div class="col-sm-2">
 		<ul class="nav nav-stacked navbar-left nav-pills">
