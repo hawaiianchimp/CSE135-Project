@@ -22,28 +22,28 @@
 			<!-- Username -->
 			<div class="form-group">
 				<label for="username">Username</label><input type="text"
-					class="form-control" name="username">
+					class="form-control" name="username" required="required">
 			</div>
 
 			<!-- Role -->
 			<div class="form-group">
+				<label for="age">Role</label>
 				<select class="form-control" name="role">
-					<option>Role</option>
-					<option>----</option>
 					<option value="Owner">Owner</option>
 					<option value="Customer">Customer</option>
 				</select>
 			</div>
 
-			<!-- State -->
+			<!-- Age -->
 			<div class="form-group">
 				<label for="age">Age</label><input type="number"
-					class="form-control" name="age">
+					class="form-control" name="age" required="required">
 			</div>
+			
+			<!-- State -->
 			<div class="form-group">
+				<label for="age">State</label>
 				<select class="form-control" name="state">
-					<option>State</option>
-					<option>-----</option>
 					<option value="AL">Alabama</option>
 					<option value="AK">Alaska</option>
 					<option value="AZ">Arizona</option>

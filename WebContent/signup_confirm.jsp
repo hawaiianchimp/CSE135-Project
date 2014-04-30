@@ -8,12 +8,17 @@
 <%
 	PrintWriter o = response.getWriter();
 
-	boolean successful = false;
+	boolean success = false;
 	String name = request.getParameter("username");
 	if (name != null) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		String sql = null;
+		
+		String age = request.getParameter("age");
+		String role = request.getParameter("role");
+		String state = request.getParameter("state");
 
 		try {
 			// Registering Postgresql JDBC driver with the DriverManager
@@ -26,43 +31,28 @@
 			
 			if (name != null) {
 				// Create the statement
+				
 				Statement statement = conn.createStatement();
-				// Use the created statement to SELECT
-				// the student attributes FROM the Student table.
-				pstmt = conn
-						.prepareStatement("SELECT * FROM users WHERE name=?"); //TODO: Change accordingly
+				// Insert the user into table users, only if it does not already exist
+				sql =	"INSERT INTO users (name, role, age, state) " +
+						"SELECT ?,?,?,? " +
+						"WHERE NOT EXISTS (SELECT name FROM users WHERE name = ?);";
+				//System.out.print(sql + "\n");	
+											
+				pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, name);
-				System.out.println(name);
-				rs = pstmt.executeQuery();
-				//out.println("<h1>" + "test" + "</h1>");
-				if (rs.next())
-				{
-					System.out.print("There is an entry already! " + rs.findColumn("name"));
-					successful = false; //match found
-				}
-				else
-				{
-					System.out.print("good to go! " + rs.findColumn("name"));
-					successful = true;
-				}
-					
-				if(successful)
-				{
-					//TODO: Change accordingly: 
-					pstmt = conn.prepareStatement("INSERT INTO users (name, role, age, state) VALUES (?,?,?,?)");
-					pstmt.setString(1, name);
-					pstmt.setString(2, request.getParameter("role"));
-					pstmt.setInt(3, Integer.parseInt(request.getParameter("age")));
-					pstmt.setString(4, request.getParameter("state"));
-					
-					pstmt.executeUpdate();
-				}
+				pstmt.setString(2, role);
+				pstmt.setInt(3, Integer.parseInt(age));
+				pstmt.setString(4, state);
+				pstmt.setString(5, name);
 
-				// Close the ResultSet
-				rs.close();
-				// Close the Statement
+				int count = pstmt.executeUpdate();
+				//out.println("<h1>" + "test" + "</h1>");
+				//if no rows have been updated, that is because the name already exists.
+				if(count>0)
+					success=true;
+
 				statement.close();
-				// Close the Connection
 				conn.close();
 			}
 		} catch (SQLException e) {
@@ -79,7 +69,7 @@
 <t:header title='Registration Confirmation'/>
 
 	<% 
-	if(successful)
+	if(success)
 	{ 
 	%>
 		<h1>Registration Successful!</h1>
