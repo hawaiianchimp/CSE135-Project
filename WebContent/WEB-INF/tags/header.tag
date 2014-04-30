@@ -31,7 +31,7 @@
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#example-navbar-collapse-1">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -41,7 +41,7 @@
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <div class="collapse navbar-collapse" id="example-navbar-collapse-1">
       <ul class="nav navbar-nav">
       <% if(role == "Owner")
       {
@@ -59,14 +59,8 @@
       </form>
       <ul class="nav navbar-nav navbar-right">
       	<li><a href="#"><%=message %></a></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Shopping Cart <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Number of Items</a></li>
-            <li class="divider"></li>
-            <li><a href="buycart.jsp?action=view">View Shopping Cart</a></li>
-            <li><a href="buycart.jsp?action=purchase">Purchase Shopping Cart</a><li>
-          </ul>
+        <li>
+          <a href="buycart.jsp?action=view">Buy Shopping Cart</a>
         </li>
       </ul>
     </div><!-- /.navbar-collapse -->

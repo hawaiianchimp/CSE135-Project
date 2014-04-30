@@ -1,3 +1,4 @@
+<%@page import="org.postgresql.util.PSQLException"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ page import="java.sql.*"%>
@@ -53,6 +54,7 @@
 				System.out.println("Before");
 				if (!(action.equals("null")) && action.equals("insert"))
 				{
+					try{
 					System.out.println("SUP HOMIE");
 					//Add to carts_products
 					quantity = Integer.parseInt(request.getParameter("quantity"));
@@ -71,6 +73,16 @@
 					for (int i = 0; i < quantity; i++)
 						pstmt3.executeUpdate();
 					response.sendRedirect("http://localhost:8080/CSE135Project/categories.jsp");
+					rs4.close();
+					conn.close();
+					pstmt4.close();
+					}
+					catch(PSQLException e)
+					{
+						%>
+						<t:message type="danger" message="<%=e.getMessage() %>"/>
+						<%
+					}
 				}
 				
 				//Display cart contents
