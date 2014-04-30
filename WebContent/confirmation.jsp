@@ -13,6 +13,7 @@
 <h4>Summary of Purchase:</h4>
 <%
 		String uid = "" + session.getAttribute("uid");
+		String cart_id = "" + session.getAttribute("cart_id");
 		if(uid.equals("null")) //redirect if not logged in
 		{
 			response.sendRedirect("login.jsp");
@@ -20,6 +21,7 @@
 	
 		Connection conn = null;
 		PreparedStatement ps1 = null;
+		PreparedStatement ps2 = null;
 		ResultSet rs1 = null;
 		try
 		{
@@ -34,6 +36,9 @@
 				+ "GROUP BY products.product_id, products.sku, products.img_src, products.name, products.price");
 		ps1.setInt(1, Integer.parseInt(uid));
 		rs1 = ps1.executeQuery();
+		
+		ps2 = conn.prepareStatement("DELETE FROM carts_products WHERE cart_id = " + cart_id + " AND product_id = ?");
+		
 		%>
 		<table>
 		<tr>
@@ -48,6 +53,8 @@
 		//Iterate through all tuples to display contents of cart
 		while (rs1.next())
 		{
+			ps2.setInt(1, rs1.getInt("product_id"));
+			ps2.executeUpdate();
 	%>
 		<tr>
 			<td><%=rs1.getString("img_url")%></td>
