@@ -6,21 +6,7 @@
 </div>
 
 <t:header title="" />
-<!-- <container> 
-
-<div class="row clearfix">
-	<div class="col-md-12 column block">
-		<div id="index">
-			<h1 class="text-center">CSE135 Shopping Project</h1>
-		</div>
-		<p class="text-center text-muted centered">
-			This project is for creating a shopping cart application for an ecommerce site.
-		</p>
-		<a href="categories.jsp" class="btn btn-primary btn-lg" role="button">Start
-				&raquo;</a>
-	</div>
-</div>
-</container> -->
+<% String role = ""+session.getAttribute("role"); %>
 
 <h2 class="header_title">
 	<span>CSE135 Shopping Project</span>
@@ -30,7 +16,19 @@
 	<span>application for an ecommerce site.</span>
 	<br>
 	<br>
+	
+	<%if(role.equals("Owner")){%>
 	<span><a href="categories.jsp">Go &raquo;</a></span>
+	<%} %>
+	
+	<%if(role.equals("Customer")){%>
+	<span><a href="product_browsing.jsp">Go &raquo;</a></span>
+	<%} %>
+	
+	<%if(role.equals("null")){%>
+	<span><a href="login.jsp">Go &raquo;</a></span>
+	<%} %>
+	
 </h2>
 
 
