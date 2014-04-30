@@ -36,7 +36,7 @@
 				// Insert the user into table users, only if it does not already exist
 				sql =	"INSERT INTO users (name, role, age, state) " +
 						"SELECT ?,?,?,? " +
-						"WHERE NOT EXISTS (SELECT name FROM users WHERE name = ?);";
+						"WHERE NOT EXISTS (SELECT name FROM users WHERE name = ?);" ;
 				//System.out.print(sql + "\n");	
 											
 				pstmt = conn.prepareStatement(sql);
@@ -88,8 +88,8 @@
 	<% }
 	
 	else{ %>
-		<h1>Registration Not Successful!</h1>
-		<h3>Unfortunately, someone else is using your username. Please go back and choose another username</h3>
+		<h1>Your signup failed!</h1>
+		<!-- <h3>Unfortunately, someone else is using your username. Please go back and choose another username</h3> -->
 		<a class="btn btn-default" href="/CSE135Project/signup.jsp">Go
 		Back</a>
 	<% } %>
