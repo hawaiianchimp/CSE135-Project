@@ -90,7 +90,15 @@
 		<t:message type="success" message="<%=welcome_message %>" />
 		<h3>What would you like to do today?</h3>
 		<a class="btn btn-default" href="/CSE135Project/index.jsp">Home</a>
+		<%
+		String role = ""+session.getAttribute("role");
+		if(role.equals("Owner")){
+		%>
 		<a class="btn btn-default" href="/CSE135Project/categories.jsp">Go to Categories</a>
+		<%}
+		if(role.equals("Customer")) { %>
+		<a class="btn btn-default" href="/CSE135Project/product_browsing.jsp" >Go to Product Browsing</a>
+		<%}%>
 		<a class="btn btn-default" href=#>Go to Shopping Cart</a>
 	<% 
 	}

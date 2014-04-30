@@ -7,9 +7,16 @@
 <%@ page import="java.sql.*"%>
 
 
-<t:header title="Search Results" />
+<t:header title="Product Browsing Results" />
 <div class="row">
 <%
+	//redirect if not logged in
+	String uid = "" + session.getAttribute("uid");
+	if(uid.equals("null")) 
+	{
+		response.sendRedirect("login.jsp");
+	}
+	
 	String role = ""+session.getAttribute("role");
 	String[] keywords = request.getParameter("keyword").split(" ");
 	String prepared_keywords="%";
@@ -23,7 +30,7 @@
 	if(role.equals("null"))
 	{
 		%>
-		<t:message type="warning" message="Please log in first for search function." />
+		<t:message type="warning" message="Please log in first for product browsing function." />
 		<a class="btn btn-default" href="/CSE135Project/login.jsp" >Log In</a>
 		<%
 	}
@@ -39,7 +46,6 @@
 			if(!prepared_keywords.equals("%%"))
 			{
 				String category_id = request.getParameter("cid");
-				System.out.println(category_id);
 				if(category_id.equals("null"))
 				{
 					pstmt = conn.prepareStatement("SELECT * FROM products_categories INNER JOIN products ON (products_categories.product_id=products.product_id) WHERE products_categories.product_id=products.product_id AND (products.name ILIKE ?)");
@@ -63,7 +69,7 @@
 						int rspid, rscid;
 						rsname = rs.getString("name");
 						rsdescription = rs.getString("description");
-						rsimg = rs.getString("img_src");
+						rsimg = rs.getString("img_url");
 						rspid = rs.getInt("product_id");
 						rscid = rs.getInt("category_id");
 						rsprice = String.valueOf(rs.getDouble("price"));
@@ -117,7 +123,7 @@
 			}
 			else
 			{
-				%><t:message type="danger" message="Please enter a search keyword." /><%
+				%><t:message type="danger" message="Please enter a product browsing keyword." /><%
 			}
 
 			
@@ -134,6 +140,6 @@
 
 </div>
 <div class="col-md-12">
-	<a class="btn btn-default" href="/CSE135Project/search.jsp" >Back to Search</a>
+	<a class="btn btn-default" href="/CSE135Project/product_browsing.jsp" >Back to Product Browsing</a>
 </div>
 <t:footer />

@@ -7,12 +7,13 @@
 <body>
 <t:header title="Shopping Cart"/>
 <% 
+	//redirect if not logged in
 	String action = request.getParameter("action");
 	String uid = "" + session.getAttribute("uid");
 	if (uid.equals("null"))
-			{
-				response.sendRedirect("login.jsp");
-			}
+	{
+		response.sendRedirect("login.jsp");
+	}
 	System.out.println("action: " + action);
 	Connection conn = null;
 	PreparedStatement ps1 = null;

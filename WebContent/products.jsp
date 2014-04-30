@@ -10,6 +10,14 @@
 <t:header title="Product Categories" />
 
 <%
+	Class.forName("org.postgresql.Driver");
+
+	String uid = "" + session.getAttribute("uid");
+	if(uid.equals("null")) //redirect if not logged in
+	{
+		response.sendRedirect("login.jsp");
+	}
+
 	String role = ""+session.getAttribute("role");
 	String action = ""+request.getParameter("action");
 	String submit = ""+request.getParameter("submit");
@@ -28,9 +36,6 @@
 		images.add("baseball_bat");
 		//Add more images here
 %>	
-
-<!-- Search Function -->
-<a class="btn btn-default" href="/CSE135Project/search.jsp" >Search</a>
 	
 	<!--  Deleting a product -->
 	

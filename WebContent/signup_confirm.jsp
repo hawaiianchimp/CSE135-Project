@@ -9,7 +9,7 @@
 	PrintWriter o = response.getWriter();
 
 	boolean successful = false;
-	String name = request.getParameter("name");
+	String name = request.getParameter("username");
 	if (name != null) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -32,6 +32,7 @@
 				pstmt = conn
 						.prepareStatement("SELECT * FROM users WHERE name=?"); //TODO: Change accordingly
 				pstmt.setString(1, name);
+				System.out.println(name);
 				rs = pstmt.executeQuery();
 				//out.println("<h1>" + "test" + "</h1>");
 				if (rs.next())
@@ -77,16 +78,29 @@
 
 <t:header title='Registration Confirmation'/>
 
-	<% if(successful){ %>
+	<% 
+	if(successful)
+	{ 
+	%>
 		<h1>Registration Successful!</h1>
 		<h3>Thank you for signing up with us!</h3>
-		<a class="btn btn-default" href="/CSE135Project/categories.jsp">Go to Categories</a>
+		<%
+		String role = ""+session.getAttribute("role");
+		if(role.equals("Owner")) { %>
+			<a class="btn btn-default" href="/CSE135Project/categories.jsp">Go to Categories</a>
+		<% }
+		if(role.equals("Customer")) { %>
+			<a class="btn btn-default" href="/CSE135Project/product_browsing.jsp" >Go to Product Browsing</a>
+		<%}%>
+		
+		<a class="btn btn-default" href="/CSE135Project/login.jsp" >Go to Log In</a>
+		
 	<% }
 	
 	else{ %>
 		<h1>Registration Not Successful!</h1>
 		<h3>Unfortunately, someone else is using your username. Please go back and choose another username</h3>
-		<a class="btn btn-default" href="/CSE135Project/register.jsp">Go
+		<a class="btn btn-default" href="/CSE135Project/signup.jsp">Go
 		Back</a>
 	<% } %>
 <t:footer/>

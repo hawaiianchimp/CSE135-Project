@@ -7,9 +7,16 @@
 <%@ page import="java.sql.*"%>
 
 
-<t:header title="Search Results" />
+<t:header title="Product Browsing" />
 <div class="row clearfix">
 <%
+	//redirect if not logged in
+	String uid = "" + session.getAttribute("uid");
+	if(uid.equals("null")) 
+	{
+		response.sendRedirect("login.jsp");
+	}
+	
 	Connection conn = DriverManager.getConnection(
 			"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 			"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
@@ -26,32 +33,49 @@
 		rs = pstmt.executeQuery();
 
 		%>
-		<!-- Used for spacing -->
-		<div class="col-md-4 column"></div>
+		<!-- Category Menu -->
+		<div class="col-md-4 column">
+			<ul class="nav nav-stacked navbar-left nav-pills">
+				<li class="active"><a href="categories.jsp">Categories</a></li>
+				
+				<%
+					if (rs.isBeforeFirst()) {
+							String rsname, rsid, rscount;
+							while (rs.next()) {
+								rsname = rs.getString("name");
+								rsid = String.valueOf(rs.getInt("category_id"));
+								session.setAttribute("cid", rsid);
+								//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
+							%>
+								<li><a href="product_browsing_category.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%> </a></li>
+							<%
+							}
+					}
+					else {
+					%>
+						<li>No Categories</li>
+					<%
+					}
+				
+					/* Close everything  */
+					// Close the ResultSet
+					rs.close();
+					//Close the Statement
+					statement.close();
+					// Close the Connection
+					conn.close();
+				%>
+				
+			</ul>
+		</div>
 		
 		<div class="col-md-4 column">
-			<form class="navbar-form navbar-left" action="search_results.jsp" method="GET">
-			
+			<h3>Browse All Categories</h3>
+			<form class="navbar-form navbar-left" action="product_browsing_results.jsp" method="GET">
 				<div class="form-group">
 					<input type="text" class="form-control" placeholder="Keyword"
 						name="keyword">
-				</div>
-				
-				<div class="form-group">
-					<label for="category">Categories</label> 
-					<select class="form-control" name="cid">
-						<option value="null">All</option>
-						<%
-						while(rs.next())
-						{
-							String name = rs.getString("name");
-							String cid = rs.getString("category_id");
-							%>
-							<option value="<%=cid%>"><%=name%></option>
-							<%	
-						}
-						%>
-					</select>
+					<input type ="hidden" name=cid value="null">
 				</div>
 				<button type="submit" class="btn btn-default">Search</button>
 			</form>

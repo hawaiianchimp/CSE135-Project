@@ -7,192 +7,8 @@
 <%@page import="java.io.*"%>
 <%@page import="java.sql.*" %>
 <%@page import="org.postgresql.*" %>
-<%
-	PrintWriter o = response.getWriter();
-
-	int errors = 1;
-	StringBuilder messages = new StringBuilder(); 
-	String name = (request.getParameter("name") != null) ? request.getParameter("name"):"";
-	System.out.print(name);
-	String age = request.getParameter("age");
-	String role = request.getParameter("role");
-	String state = request.getParameter("state");
-	String message_type = "success";
-	String output = "";
-	
-	ArrayList<String> roles = new ArrayList<String>();
-		roles.add("Owner");
-		roles.add("Customer");
-	
-	ArrayList<String> states = new ArrayList<String>();
-			states.add("AL");
-			states.add("AK");
-			states.add("AZ");
-			states.add("AR");
-			states.add("CA");
-			states.add("CO");
-			states.add("CT");
-			states.add("DE");
-			states.add("DC");
-			states.add("FL");
-			states.add("GA");
-			states.add("HI");
-			states.add("ID");
-			states.add("IL");
-			states.add("IN");
-			states.add("IA");
-			states.add("KS");
-			states.add("KY");
-			states.add("LA");
-			states.add("ME");
-			states.add("MD");
-			states.add("MA");
-			states.add("MI");
-			states.add("MN");
-			states.add("MS");
-			states.add("MO");
-			states.add("MT");
-			states.add("NE");
-			states.add("NV");
-			states.add("NH");
-			states.add("NJ");
-			states.add("NM");
-			states.add("NY");
-			states.add("NC");
-			states.add("ND");
-			states.add("OH");
-			states.add("OK");
-			states.add("OR");
-			states.add("PA");
-			states.add("RI");
-			states.add("SC");
-			states.add("SD");
-			states.add("TN");
-			states.add("TX");
-			states.add("UT");
-			states.add("VT");
-			states.add("VA");
-			states.add("WA");
-			states.add("WV");
-			states.add("WI");
-			states.add("WY");
-			
-			
-	if (request.getQueryString() != null) 
-	{
-			
-		if(name.length() < 2)
-		{
-			errors++;
-			messages.append(", ").append("The name you entered is too short");
-			message_type = "danger";
-		}
-		if(!states.contains(state))
-		{
-			errors++;
-			messages.append(", ").append("Please select a state");
-			message_type = "danger";
-		}
-		if(age.isEmpty())
-		{
-			errors++;
-			messages.append(", ").append("Please enter an age");
-			message_type = "danger";
-		}
-		else{
-			if(Integer.parseInt(age) < 0)
-			{
-				errors++;
-				messages.append(", ").append("Age must be a positive number");
-				message_type = "danger";
-			}
-		}
-
-		if(!roles.contains(role))
-		{
-			errors++;
-			messages.append(", ").append("Please select a role");
-			message_type = "danger";
-		}
-		
-		if(errors == 1)
-		{
-			Connection conn = null;
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			String sql = null;
-			
-			try {
-				// signuping Postgresql JDBC driver with the DriverManager
-				Class.forName("org.postgresql.Driver");
-
-				// Open a connection to the database using DriverManager
-				conn = DriverManager.getConnection(
-						"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); //TODO: Change name of database accordingly
-					
-				// Create the statement
-				
-				Statement statement = conn.createStatement();
-				// Insert the user into table users, only if it does not already exist
-				sql =	"INSERT INTO users (name, role, age, state) " +
-						"SELECT ?,?,?,? " +
-						"WHERE NOT EXISTS (SELECT name FROM users WHERE name = ?);";
-				System.out.print(sql + "\n");		   
-				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, name.trim());
-				pstmt.setString(2, role.trim());
-				pstmt.setInt(3, Integer.parseInt(age));
-				pstmt.setString(4, state.trim());
-				pstmt.setString(5, name.trim());
-				
-				//get the count for the number of rows that have been affected by the update 
-				int count = pstmt.executeUpdate();
-				//if no rows have been updated, that is because the name already exists.
-				if(count == 0)
-				{
-					errors++;
-					messages.append(", ").append("User " + name + " already exists, please try another name");
-					message_type = "danger";
-				}
-				else
-				{
-					messages.append(", ").append("User " + name + " successfully signed up");
-					message_type = "success";
-				}
-				statement.close();
-				conn.close();
-		} catch (SQLException e) {
-            e.printStackTrace();
-            errors++;
-            messages.append(", ").append("Error in SQL Statement");
-            message_type = "danger";
-            
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			errors++;
-			messages.append(", ").append("org.postgresql.Driver Not Found");
-			message_type = "danger";
-		}
-	}
-	output = messages.toString().substring(1);
-	
-	//Add this for the user requirements, no data checking
-	if(message_type.equals("success"))
-	{
-		output = "You have successfully signed up";
-	}
-	else{
-		output = "Your signup failed";
-	}
-}	
-%>
 
 <t:header title='New User Registration'/>
-
-<% if(request.getQueryString() != null) {%>
-<t:message type="<%= message_type%>" message="<%=output%>"/> 
-<% } %>
 
 <div class="row clearfix">
 	<!-- Used for spacing -->
@@ -201,17 +17,16 @@
 	<!-- User registration  -->
 	<div class="col-md-4 column">
 		<h2>New User Registration</h2>
-		<form action="signup.jsp" method="GET">
+		<form action="signup_confirm.jsp" method="GET">
 
 			<!-- Username -->
 			<div class="form-group">
-				<label for="name">Name</label><input type="text" placeholder="Name"
-					class="form-control" name="name" value="<%=name%>">
+				<label for="username">Username</label><input type="text"
+					class="form-control" name="username">
 			</div>
 
 			<!-- Role -->
 			<div class="form-group">
-				<label for="role">Role</label>
 				<select class="form-control" name="role">
 					<option>Role</option>
 					<option>----</option>
@@ -220,15 +35,12 @@
 				</select>
 			</div>
 
-			<!-- Age -->
-			<div class="form-group">
-				<label for="age">Age</label><input type="number" placeholder="Age"
-					class="form-control" name="age" value="<%=age%>">
-			</div>
-			
 			<!-- State -->
 			<div class="form-group">
-				<label for="state">State</label>
+				<label for="age">Age</label><input type="number"
+					class="form-control" name="age">
+			</div>
+			<div class="form-group">
 				<select class="form-control" name="state">
 					<option>State</option>
 					<option>-----</option>
