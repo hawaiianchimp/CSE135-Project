@@ -23,7 +23,7 @@
 	if(role.equals("null"))
 	{
 		%>
-		<t:message type="warning" message="Please log in first for search function." />
+		<t:message type="warning" message="Please log in first for product browsing function." />
 		<a class="btn btn-default" href="/CSE135Project/login.jsp" >Log In</a>
 		<%
 	}
@@ -63,7 +63,7 @@
 						int rspid, rscid;
 						rsname = rs.getString("name");
 						rsdescription = rs.getString("description");
-						rsimg = rs.getString("img_src");
+						rsimg = rs.getString("img_url");
 						rspid = rs.getInt("product_id");
 						rscid = rs.getInt("category_id");
 						rsprice = String.valueOf(rs.getDouble("price"));
@@ -117,7 +117,7 @@
 			}
 			else
 			{
-				%><t:message type="danger" message="Please enter a search keyword." /><%
+				%><t:message type="danger" message="Please enter a product browsing keyword." /><%
 			}
 
 			
@@ -134,6 +134,6 @@
 
 </div>
 <div class="col-md-12">
-	<a class="btn btn-default" href="/CSE135Project/search.jsp" >Back to Search</a>
+	<a class="btn btn-default" href="/CSE135Project/product_browsing.jsp" >Back to Product Browsing</a>
 </div>
 <t:footer />

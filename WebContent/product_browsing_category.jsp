@@ -6,8 +6,7 @@
 <%@ page import="java.io.*"%>
 <%@ page import="java.sql.*"%>
 
-
-<t:header title="Product Browsing" />
+<t:header title="Category Specific Product Browsing" />
 <div class="row clearfix">
 <%
 	Connection conn = DriverManager.getConnection(
@@ -40,7 +39,7 @@
 								session.setAttribute("cid", rsid);
 								//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
 							%>
-								<li><a href="product_browsing_category.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%> </a></li>
+								<li><a href="product_browsing.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%> </a></li>
 							<%
 							}
 					}
@@ -63,12 +62,12 @@
 		</div>
 		
 		<div class="col-md-4 column">
-			<h3>Browse All Categories</h3>
+			<h3>Browse within <%=""+request.getParameter("category") %></h3>
 			<form class="navbar-form navbar-left" action="product_browsing_results.jsp" method="GET">
 				<div class="form-group">
 					<input type="text" class="form-control" placeholder="Keyword"
 						name="keyword">
-					<input type ="hidden" name=cid value="null">
+					<input type ="hidden" name=cid value="<%=""+request.getParameter("cid")%>">
 				</div>
 				<button type="submit" class="btn btn-default">Search</button>
 			</form>
