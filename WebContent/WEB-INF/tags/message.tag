@@ -9,7 +9,7 @@
 </div>
 <script>
 window.onload = function(){
-	$(".message").hide();
-	$(".message").slideDown("slow");
+	//$(".message").hide();
+	//$(".message").slideDown("slow");
 }
 </script>

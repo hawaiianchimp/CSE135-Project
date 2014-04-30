@@ -98,8 +98,8 @@
 		<%}
 		if(role.equals("Customer")) { %>
 		<a class="btn btn-default" href="/CSE135Project/product_browsing.jsp" >Go to Product Browsing</a>
-		<%}%>
 		<a class="btn btn-default" href=#>Go to Shopping Cart</a>
+		<%}%>
 	<% 
 	}
 	

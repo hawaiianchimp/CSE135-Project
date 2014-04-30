@@ -8,6 +8,7 @@
 	{
 		message = "Welcome, Guest!";
 	}
+	String role = ""+session.getAttribute("role");
 %>
 
 <!DOCTYPE html>
@@ -42,7 +43,15 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
+      <% if(role == "Owner")
+      {
+      %>
       <li><a href="categories.jsp">Categories</a></li>
+      <% }
+      else
+      { %>
+      <li><a href="product_browsing.jsp">Browse Products</a></li>
+      <%} %>
       </ul>
       <form class="navbar-form navbar-left" role="login">
         <a class="btn btn-default" href="/CSE135Project/login.jsp" >Log In</a>

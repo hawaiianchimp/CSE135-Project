@@ -52,25 +52,21 @@
 				{
 					try{
 					Class.forName("org.postgresql.Driver");
-
+				
 					//Need a transaction to delete from products and products_categories tables
-					sql = "DELETE FROM products WHERE product_id = ?;";
-					
+					conn.setAutoCommit(false);
+					sql = "DELETE FROM products_categories WHERE product_id = ?;";
 					d_pstmt = conn.prepareStatement(sql);
-					d_pstmt.setInt(1, Integer.parseInt(cid));
-					int count = d_pstmt.executeUpdate();
-
-					if(count != 0){
+					d_pstmt.setInt(1, Integer.parseInt(pid));
+					d_pstmt.executeUpdate();
+					sql = "DELETE FROM products WHERE product_id = ?;";
+					d_pstmt.setInt(1, Integer.parseInt(pid));
+					d_pstmt.executeUpdate();
+					conn.commit();
+					conn.setAutoCommit(true);
 						%>
-						<t:message type="danger" message="Product successfully deleted"></t:message>
+						<t:message type="success" message="Product successfully deleted"></t:message>
 						<%
-						}
-						else{
-						%>
-						<t:message type="danger" message="Product was already deleted"></t:message>
-						<%
-						}
-					
 					d_pstmt.close();
 					// Close the ResultSet
 					conn.close();
@@ -212,7 +208,7 @@
 								}
 							}
 						}
-							
+						conn.setAutoCommit(true);
 						pstmt.close();
 						conn.close();
 					}
@@ -634,12 +630,6 @@
 		else{%>
 			<t:message type="warning" message="No category selected, please select a category"></t:message>
 		<%}
-		
-		
-		rs.close();
-		rs.close();
-		conn.close();
-		pstmt.close();
 		%>
 		</div>
 	</div>

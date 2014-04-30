@@ -201,7 +201,7 @@
 	<!-- User registration  -->
 	<div class="col-md-4 column">
 		<h2>New User Registration</h2>
-		<form action="signup.jsp" method="GET">
+		<form action="register.jsp" method="GET">
 
 			<!-- Username -->
 			<div class="form-group">
