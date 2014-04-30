@@ -21,7 +21,7 @@
 					"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
 	PreparedStatement pstmt = null, d_pstmt = null;
 	Statement statement = null, d_statement = null;
-	ResultSet rs = null;
+	ResultSet rs = null, d_rs = null;
 	String sql = null;
 	ArrayList<String> images = new ArrayList<String>();
 		images.add("default");
@@ -47,7 +47,6 @@
 				{
 					try{
 					Class.forName("org.postgresql.Driver");
-					statement = conn.createStatement();
 
 					//Need a transaction to delete from products and products_categories tables
 					sql = "DELETE FROM products WHERE product_id = ?;";
@@ -66,6 +65,10 @@
 						<t:message type="danger" message="Product was already deleted"></t:message>
 						<%
 						}
+					
+					d_pstmt.close();
+					// Close the ResultSet
+					conn.close();
 					}
 					catch(SQLException e){
 						e.printStackTrace();
@@ -128,6 +131,8 @@
 										<option <%=selected%> value="<%=c %>"><%=c %></option>
 								<% }
 									statement.close();
+									rs.close();
+									conn.close();
 								}
 								catch(PSQLException e)
 								{
@@ -169,29 +174,42 @@
 				{
 					try{
 						Class.forName("org.postgresql.Driver");
-						statement = conn.createStatement();
+						conn.setAutoCommit(false);
 						//need a transaction to add in products and product_categories
 						sql =	"INSERT INTO products (name, sku, img_url, description, price) " +
-								"SELECT ?,?,?,?,?";
-						d_pstmt = conn.prepareStatement(sql);
-						d_pstmt.setString(1, ""+request.getParameter("name"));
-						d_pstmt.setString(1, ""+request.getParameter("sku"));
-						d_pstmt.setString(2, ""+request.getParameter("img_url"));
-						d_pstmt.setString(3, ""+request.getParameter("description"));
-						d_pstmt.setString(4, ""+request.getParameter("price"));
-
-						int count = d_pstmt.executeUpdate();
-						if(count != 0){
-							%>
-							<t:message type="danger" message="Product successfully deleted"></t:message>
-							<%
+								"SELECT ?,?,?,?,? RETURNING product_id";
+						pstmt = conn.prepareStatement(sql);
+						
+						pstmt.setString(1, ""+request.getParameter("name"));
+						pstmt.setString(2, ""+request.getParameter("sku"));
+						pstmt.setString(3, ""+request.getParameter("img_url"));
+						pstmt.setString(4, ""+request.getParameter("description"));
+						pstmt.setDouble(5, Double.parseDouble(""+request.getParameter("price")));
+						Integer product_id;
+						if(pstmt.execute())
+						{
+							rs = pstmt.getResultSet();
+							if(rs.next()){ 
+							product_id = rs.getInt("product_id");
+							sql =	"INSERT INTO products_categories (category_id, product_id) " +
+									"SELECT ?,?";
+							pstmt = conn.prepareStatement(sql);
+							pstmt.setInt(1, Integer.parseInt(cid));
+							pstmt.setInt(2, product_id);
+								if(pstmt.executeUpdate() != 0)
+								{
+									conn.commit();
+									%><t:message type="success" message="Product successfully added"></t:message><%
+								}
+								else{
+									conn.rollback();
+									%><t:message type="danger" message="Rolling back"></t:message><%
+								}
 							}
-						else{
-							%>
-							<t:message type="danger" message="Error occurred in SQL"></t:message>
-							<%
-							
 						}
+							
+						pstmt.close();
+						conn.close();
 					}
 					catch(SQLException e){
 						e.printStackTrace();
@@ -243,10 +261,10 @@
 							<input type="hidden" name="cid" value="<%=cid %>"/>
 							<input type="hidden" name="pid" value="<%=pid %>"/>
 							<label class="control-label" for="name">Name</label>
-							<input value="<%=rssku %>" id="name" name="name" type="text" placeholder="Name" class="form-control">
+							<input value="<%=rsname %>" id="name" name="name" type="text" placeholder="Name" class="form-control">
 							
 							<label class="control-label" for="name">SKU</label>
-							<input value="<%=rsname %>" id="sku" name="sku" type="text" placeholder="SKU" class="form-control">
+							<input value="<%=rssku %>" id="sku" name="sku" type="text" placeholder="SKU" class="form-control">
 							
 							<label class="control-label" for="img_url">Category</label>
 							<select class="form-control" name="category">
@@ -254,16 +272,18 @@
 								
 								try{	
 									sql = "SELECT name FROM categories";
-									statement = conn.createStatement();
-									rs = statement.executeQuery(sql);
+									d_statement = conn.createStatement();
+									d_rs = statement.executeQuery(sql);
 									ArrayList<String> categories;
-									while(rs.next())
+									while(d_rs.next())
 									{
 										String c = rs.getString("name");
 										String selected = (c.equals(rscategory)) ? "selected":""; %>
 										<option <%=selected%> value="<%=c %>"><%=c %></option>
 								<% }
-									statement.close();
+									d_statement.close();
+									conn.close();
+									d_rs.close();
 								}
 								catch(PSQLException e)
 								{
@@ -297,6 +317,8 @@
 						</fieldset>
 					<t:modal_footer name="update"/>
 					<%
+					rs.close();
+					statement.close();
 					}
 						else{
 						%>
@@ -339,20 +361,21 @@
 				{
 					try{
 						Class.forName("org.postgresql.Driver");
-						statement = conn.createStatement();
-						sql =	"UPDATE products SET (name, img_url, description, price) = " +
-								"(?,?,?,?) WHERE product_id = ?";
+						sql =	"UPDATE products SET (name, sku, img_url, description, price) = " +
+								"(?,?,?,?,?) WHERE product_id = ?";
 						d_pstmt = conn.prepareStatement(sql);
 						d_pstmt.setString(1, ""+request.getParameter("name"));
-						d_pstmt.setString(2, ""+request.getParameter("img_url"));
-						d_pstmt.setString(3, ""+request.getParameter("description"));
+						d_pstmt.setString(2, ""+request.getParameter("sku"));
+						d_pstmt.setString(3, ""+request.getParameter("img_url"));
+						d_pstmt.setString(4, ""+request.getParameter("description"));
 						
 						//ERROR HERE with the double casting from string
-						d_pstmt.setDouble(4, Double.valueOf(""+request.getParameter("price")));
-						d_pstmt.setInt(5, Integer.parseInt(request.getParameter("cid")));
+						d_pstmt.setDouble(5, Double.valueOf(""+request.getParameter("price")));
+						d_pstmt.setInt(6, Integer.parseInt(request.getParameter("cid")));
 
 						int count = d_pstmt.executeUpdate();
 						d_pstmt.close();
+						conn.close();
 						if(count != 0){
 							%>
 							<t:message type="success" message="Product successfully updated"></t:message>
@@ -406,7 +429,6 @@
 				.getConnection(
 						"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
-		Statement c_statement = c_conn.createStatement();
 		c_pstmt = c_conn.prepareStatement("SELECT * FROM categories AS c LEFT JOIN (SELECT p.category_id, COUNT(p.category_id) FROM products_categories AS p GROUP BY p.category_id) AS p ON (c.category_id = p.category_id);");
 		c_rs = c_pstmt.executeQuery();
 %>
@@ -438,10 +460,9 @@
 			}
 		
 			/* Close everything  */
+			c_pstmt.close();
 			// Close the ResultSet
 			c_rs.close();
-			//Close the Statement
-			c_statement.close();
 			// Close the Connection
 			c_conn.close();
 		%>
@@ -465,7 +486,6 @@
 										"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
 
 						// Create the statement
-						statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
 						// Use the created statement to SELECT
 						// the student attributes FROM the Student table.
@@ -542,7 +562,7 @@
 											<% }
 											else
 											{ %>
-												<a class="btn btn-primary" href="productorder.jsp?product=<%=rspid %>&cid=<%=cid %>">Add to Cart</a>
+												<a class="btn btn-primary" href="productorder.jsp?product=<%=rspid %>&cid=<%=cid %>">Product Link</a>
 											<% }%>
 										</p>
 									</div>
@@ -562,10 +582,9 @@
 					}
 			
 				/* Close everything  */
+				pstmt.close();
 				// Close the ResultSet
 				rs.close();
-				//Close the Statement
-				statement.close();
 				// Close the Connection
 				conn.close();
 				}
@@ -609,7 +628,14 @@
 		}
 		else{%>
 			<t:message type="warning" message="No category selected, please select a category"></t:message>
-		<%}%>
+		<%}
+		
+		
+		rs.close();
+		rs.close();
+		conn.close();
+		pstmt.close();
+		%>
 		</div>
 	</div>
 <t:footer />

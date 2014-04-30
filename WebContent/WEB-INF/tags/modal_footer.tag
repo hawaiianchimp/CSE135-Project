@@ -2,7 +2,7 @@
 <%@attribute name="name" required="true"%>
       </div>
       <div class="modal-footer">
-      	<a class="btn btn-default" href="categories.jsp">Close</a>
+      	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <input name="submit" type="submit" value="${name}" class="btn btn-primary"/>
 		</form>
       </div>
