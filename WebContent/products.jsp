@@ -12,6 +12,12 @@
 <%
 	Class.forName("org.postgresql.Driver");
 
+	String uid = "" + session.getAttribute("uid");
+	if(uid.equals("null")) //redirect if not logged in
+	{
+		response.sendRedirect("login.jsp");
+	}
+
 	String role = ""+session.getAttribute("role");
 	String action = ""+request.getParameter("action");
 	String submit = ""+request.getParameter("submit");

@@ -10,6 +10,13 @@
 <t:header title="Product Browsing" />
 <div class="row clearfix">
 <%
+	//redirect if not logged in
+	String uid = "" + session.getAttribute("uid");
+	if(uid.equals("null")) 
+	{
+		response.sendRedirect("login.jsp");
+	}
+	
 	Connection conn = DriverManager.getConnection(
 			"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 			"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");

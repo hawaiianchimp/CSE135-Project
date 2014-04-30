@@ -12,7 +12,14 @@
 <!-- Selecting all categories -->
 <%
 	Class.forName("org.postgresql.Driver");
-	String role = ""+session.getAttribute("role");
+	String role = "" + session.getAttribute("role");
+	String uid = "" + session.getAttribute("uid");
+	
+	if(uid.equals("null")) //redirect if not logged in
+	{
+		response.sendRedirect("login.jsp");
+	}
+	
 	String action = ""+request.getParameter("action");
 	String submit = ""+request.getParameter("submit");
 	String cid = ""+request.getParameter("cid");

@@ -10,6 +10,13 @@
 <t:header title="Product Browsing Results" />
 <div class="row">
 <%
+	//redirect if not logged in
+	String uid = "" + session.getAttribute("uid");
+	if(uid.equals("null")) 
+	{
+		response.sendRedirect("login.jsp");
+	}
+	
 	String role = ""+session.getAttribute("role");
 	String[] keywords = request.getParameter("keyword").split(" ");
 	String prepared_keywords="%";
@@ -39,7 +46,6 @@
 			if(!prepared_keywords.equals("%%"))
 			{
 				String category_id = request.getParameter("cid");
-				System.out.println(category_id);
 				if(category_id.equals("null"))
 				{
 					pstmt = conn.prepareStatement("SELECT * FROM products_categories INNER JOIN products ON (products_categories.product_id=products.product_id) WHERE products_categories.product_id=products.product_id AND (products.name ILIKE ?)");

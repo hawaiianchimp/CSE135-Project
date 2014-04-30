@@ -7,6 +7,13 @@
 
 <t:header title="Product Order"/>
 		<%
+			//redirect if not logged in
+			String uid = "" + session.getAttribute("uid");
+			if(uid.equals("null")) 
+			{
+				response.sendRedirect("login.jsp");
+			}
+		
 			//Initialize parameters
 			Connection conn = null;
 			PreparedStatement pstmt1 = null;
@@ -16,7 +23,7 @@
 			ResultSet rs1 = null;
 			ResultSet rs2 = null;
 			ResultSet rs4 = null;
-			String uid = "" + session.getAttribute("uid");
+			
 			String product = "" + request.getParameter("product");
 			String action = "" + request.getParameter("action");
 		

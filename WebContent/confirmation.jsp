@@ -12,10 +12,15 @@
 <h3><%=username%>, your purchase was successful!</h3>
 <h4>Summary of Purchase:</h4>
 <%
+		String uid = "" + session.getAttribute("uid");
+		if(uid.equals("null")) //redirect if not logged in
+		{
+			response.sendRedirect("login.jsp");
+		}
+	
 		Connection conn = null;
 		PreparedStatement ps1 = null;
 		ResultSet rs1 = null;
-		String uid = "" + session.getAttribute("uid");
 		try
 		{
 		Class.forName("org.postgresql.Driver");
