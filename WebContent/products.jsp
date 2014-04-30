@@ -171,10 +171,11 @@
 						Class.forName("org.postgresql.Driver");
 						statement = conn.createStatement();
 						//need a transaction to add in products and product_categories
-						sql =	"INSERT INTO products (name, img_url, description, price) " +
-								"SELECT ?,?,?,?";
+						sql =	"INSERT INTO products (name, sku, img_url, description, price) " +
+								"SELECT ?,?,?,?,?";
 						d_pstmt = conn.prepareStatement(sql);
 						d_pstmt.setString(1, ""+request.getParameter("name"));
+						d_pstmt.setString(1, ""+request.getParameter("sku"));
 						d_pstmt.setString(2, ""+request.getParameter("img_url"));
 						d_pstmt.setString(3, ""+request.getParameter("description"));
 						d_pstmt.setString(4, ""+request.getParameter("price"));

@@ -123,7 +123,7 @@
 			String sql = null;
 			
 			try {
-				// Registering Postgresql JDBC driver with the DriverManager
+				// signuping Postgresql JDBC driver with the DriverManager
 				Class.forName("org.postgresql.Driver");
 
 				// Open a connection to the database using DriverManager
@@ -157,7 +157,7 @@
 				}
 				else
 				{
-					messages.append(", ").append("User " + name + " successfully registered");
+					messages.append(", ").append("User " + name + " successfully signed up");
 					message_type = "success";
 				}
 				statement.close();
@@ -176,6 +176,15 @@
 		}
 	}
 	output = messages.toString().substring(1);
+	
+	//Add this for the user requirements, no data checking
+	if(message_type.equals("success"))
+	{
+		output = "You have successfully signed up";
+	}
+	else{
+		output = "Your signup failed";
+	}
 }	
 %>
 
@@ -192,7 +201,7 @@
 	<!-- User registration  -->
 	<div class="col-md-4 column">
 		<h2>New User Registration</h2>
-		<form action="register.jsp" method="GET">
+		<form action="signup.jsp" method="GET">
 
 			<!-- Username -->
 			<div class="form-group">

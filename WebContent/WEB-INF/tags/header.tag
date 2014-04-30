@@ -46,7 +46,7 @@
       </ul>
       <form class="navbar-form navbar-left" role="login">
         <a class="btn btn-default" href="/CSE135Project/login.jsp" >Log In</a>
-        <a class="btn btn-default" href="/CSE135Project/register.jsp" >Register</a>
+        <a class="btn btn-default" href="/CSE135Project/signup.jsp" >Signup</a>
       </form>
       <ul class="nav navbar-nav navbar-right">
       	<li><a href="#"><%=message %></a></li>
