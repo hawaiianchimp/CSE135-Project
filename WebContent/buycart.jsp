@@ -14,6 +14,7 @@
 	{
 		response.sendRedirect("login.jsp");
 	}
+	
 	System.out.println("action: " + action);
 	Connection conn = null;
 	PreparedStatement ps1 = null;
