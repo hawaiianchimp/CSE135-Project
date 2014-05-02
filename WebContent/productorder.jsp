@@ -149,7 +149,7 @@
 						<h2>Your Shopping Cart</h2>
 						<table>
 						<tr>
-						<th>Image</th>
+						<%-- <th>Image</th> --%>
 						<th>SKU</th>
 						<th>Name</th>
 						<th>Price</th>
@@ -162,7 +162,7 @@
 						{
 	%>
 							<tr>
-								<td><%=rs1.getString("img_url")%></td>
+								<%-- <td><%=rs1.getString("img_url")%></td> --%>
 								<td><%=rs1.getString("sku")%></td>
 								<td><%=rs1.getString("name")%></td>
 								<td><%=rs1.getDouble("price")%></td>
@@ -183,14 +183,14 @@
 						rs2.next(); 
 	%>
 							<tr>
-								<th>Image</th>
+								<%-- <th>Image</th> --%>
 								<th>SKU</th>
 								<th>Name</th>
 								<th>Price</th>
 								<th>Quantity</th>
 							</tr>
 							<tr>
-								<td><%=rs2.getString("img_url")%></td>
+								<%-- <td><%=rs2.getString("img_url")%></td> --%>
 								<td><%=rs2.getString("sku")%></td>
 								<td><%=rs2.getString("name")%></td>
 								<td><%=rs2.getDouble("price")%></td>
