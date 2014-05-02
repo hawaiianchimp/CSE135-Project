@@ -16,7 +16,7 @@
 				${description}
 			</p>
 			<p>
-				<a class="btn btn-primary" href="productorder.jsp?product=${pid}&cid=${cid}">Add to Cart</a>
+				<a class="btn btn-primary" href="setorder.jsp?product=${pid}&cid=${cid}">Add to Cart</a>
 			</p>
 		</div>
 	</div>
