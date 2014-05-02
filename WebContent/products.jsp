@@ -72,14 +72,16 @@
 						<%
 					d_pstmt.close();
 					// Close the ResultSet
-					conn.close();
 					}
 					catch(SQLException e){
 						e.printStackTrace();
+						conn.rollback();
 			   	     	%>
 						<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
 						<%
 					}
+					conn.setAutoCommit(true);
+					conn.close();
 					
 				}	
 				else

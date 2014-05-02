@@ -93,10 +93,12 @@
 							System.out.println("SUP HOMIE");
 							//Add to carts_products
 							quantity = Integer.parseInt(request.getParameter("quantity"));
+							conn.setAutoCommit(false);
 							pstmt3 = conn.prepareStatement("INSERT INTO carts_products VALUES (? , ?)");
 							pstmt4 = conn.prepareStatement("SELECT carts.cart_id FROM carts WHERE carts.uid = ?");
 							pstmt4.setInt(1, Integer.parseInt(uid));
 							rs4 = pstmt4.executeQuery();
+							conn.commit();
 							System.out.println("successful");
 							rs4.next();
 							System.out.println("uid: " + uid);
@@ -107,17 +109,17 @@
 							System.out.println("here");
 							for (int i = 0; i < quantity; i++)
 								pstmt3.executeUpdate();
+							conn.commit();
 							response.sendRedirect("http://localhost:8080/CSE135Project/categories.jsp");
 							rs4.close();
-							conn.close();
 							pstmt4.close();
 						}
 					
 						catch (PSQLException e)
 						{
-	%>
+	%>			
 						<t:message type="danger" message="<%=e.getMessage() %>"/>
-	<%
+	<%						conn.rollback();
 							if (conn != null)
 								conn.close();
 							if (pstmt1 != null)
@@ -135,6 +137,8 @@
 							if (rs4 != null)
 								rs4.close();
 						}
+						conn.setAutoCommit(true);
+						conn.close();
 					}
 				
 					//Display cart contents
