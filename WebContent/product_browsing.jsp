@@ -43,7 +43,7 @@
 		<!-- Category Menu -->
 		<div class="col-md-4 column">
 			<ul class="nav nav-stacked navbar-left nav-pills">
-				<li class="active"><a href="categories.jsp">Categories</a></li>
+				<li class="active"><a href="categories.jsp">All Categories</a></li>
 				
 				<%
 					if (rs.isBeforeFirst()) {

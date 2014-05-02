@@ -358,7 +358,7 @@
 	<!-- category menu -->
 	<div class="col-sm-2">
 		<ul class="nav nav-stacked navbar-left nav-pills">
-		<li class="active"><a href="categories.jsp">Categories</a>
+		<li class="active"><a href="categories.jsp">All Categories</a>
 		</li>
 		<%
 
@@ -383,7 +383,7 @@
 						rscount = String.valueOf(rs.getInt("count"));
 						//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
 					%>
-						<li><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%><span class="badge"><%=rscount %></span></a></li>
+						<li><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%><span class="badge pull-right"><%=rscount %></span></a></li>
 					<%
 					}
 			}
@@ -400,7 +400,6 @@
 		<div class="row">
 				<div class="row">
 					<div class="col-sm-1">
-						<h2>Image</h2>
 					</div>
 					<div class="col-sm-2">
 							<h2>Name</h2>

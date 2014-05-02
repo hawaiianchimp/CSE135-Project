@@ -124,7 +124,7 @@
 				<td><%=rs1.getString("img_url")%></td>
 				<td><%=rs1.getString("sku")%></td>
 				<td><%=rs1.getString("name")%></td>
-				<td><%=rs1.getDouble("price")%></td>
+				<td><%=rs1.getString("price")%></td>
 				<td><%=rs1.getInt("Quantity") %></td>
 				<td><%=rs1.getDouble("price") * rs1.getInt("Quantity")%></td>
 			</tr>
@@ -152,7 +152,7 @@
 					<td><%=rs2.getString("img_url")%></td>
 					<td><%=rs2.getString("sku")%></td>
 					<td><%=rs2.getString("name")%></td>
-					<td><%=rs2.getDouble("price")%></td>
+					<td><%=rs2.getString("price")%></td>
 					<td><input type="text" name="quantity"></td>
 					<td><input type="submit" value="Add to cart"></td>
 				</tr>

@@ -78,7 +78,7 @@
 						rsimg = rs.getString("img_url");
 						rspid = rs.getInt("product_id");
 						rscid = rs.getInt("category_id");
-						rsprice = String.valueOf(rs.getDouble("price"));
+						rsprice = rs.getString("price");
 						if (rsimg == null)
 							rsimg = "default";
 						%>
