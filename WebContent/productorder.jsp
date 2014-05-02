@@ -56,23 +56,6 @@
 				}
 				catch (SQLException e)
 				{
-					e.printStackTrace();
-					if (conn != null)
-						conn.close();
-					if (pstmt1 != null)
-						pstmt1.close();
-					if (pstmt2 != null)
-						pstmt2.close();
-					if (pstmt3 != null)
-						pstmt3.close();
-					if (pstmt4 != null)
-						pstmt4.close();
-					if (rs1 != null)
-						rs1.close();
-					if (rs2 != null)
-						rs2.close();
-					if (rs4 != null)
-						rs4.close();
 					response.sendRedirect("productorder.jsp?error=yes");
 				}
 				
@@ -241,6 +224,28 @@
 							rs2.close();
 						if (rs4 != null)
 							rs4.close();
+						response.sendRedirect("productorder.jsp?error=yes");
+					}
+						
+					finally
+					{
+							conn.setAutoCommit(true);
+							if (conn != null)
+								conn.close();
+							if (pstmt1 != null)
+								pstmt1.close();
+							if (pstmt2 != null)
+								pstmt2.close();
+							if (pstmt3 != null)
+								pstmt3.close();
+							if (pstmt4 != null)
+								pstmt4.close();
+							if (rs1 != null)
+								rs1.close();
+							if (rs2 != null)
+								rs2.close();
+							if (rs4 != null)
+								rs4.close();
 					}
 				}
 			}
