@@ -119,7 +119,7 @@
 							<input id="sku" name="sku" type="text" placeholder="SKU" class="form-control">
 							
 							<label class="control-label" for="img_url">Category</label>
-							<select class="form-control" name="category">
+							<select class="form-control" name="new_category_id">
 								<% 
 								
 								try{	
@@ -130,9 +130,9 @@
 									while(rs.next())
 									{
 										String c = rs.getString("name");
-										String id = rs.getString("category_id");
-										String selected = (c.equals(id)) ? "selected":""; %>
-										<option <%=selected%> value="<%=c %>"><%=c %></option>
+										String old_id = rs.getString("category_id");
+										String selected = (c.equals(old_id)) ? "selected":""; %>
+										<option <%=selected%> value="<%=old_id %>"><%=c %></option>
 								<% }
 									statement.close();
 									rs.close();
@@ -271,19 +271,20 @@
 							<input value="<%=rssku %>" id="sku" name="sku" type="text" placeholder="SKU" class="form-control">
 							
 							<label class="control-label" for="img_url">Category</label>
-							<select class="form-control" name="category">
+							<select class="form-control" name="new_category_id">
 								<% 
 								
 								try{	
-									sql = "SELECT name FROM categories";
+									sql = "SELECT category_id, name FROM categories";
 									d_statement = conn.createStatement();
 									d_rs = statement.executeQuery(sql);
 									ArrayList<String> categories;
 									while(d_rs.next())
 									{
-										String c = rs.getString("name");
+										String c = d_rs.getString("name");
+										String old_id = d_rs.getString("category_id");
 										String selected = (c.equals(rscategory)) ? "selected":""; %>
-										<option <%=selected%> value="<%=c %>"><%=c %></option>
+										<option <%=selected%> value="<%=old_id %>"><%=c %></option>
 								<% }
 									d_statement.close();
 									conn.close();
@@ -365,6 +366,7 @@
 				{
 					try{
 						Class.forName("org.postgresql.Driver");
+						conn.setAutoCommit(false);
 						sql =	"UPDATE products SET (name, sku, img_url, description, price) = " +
 								"(?,?,?,?,?) WHERE product_id = ?";
 						d_pstmt = conn.prepareStatement(sql);
@@ -372,27 +374,30 @@
 						d_pstmt.setString(2, ""+request.getParameter("sku"));
 						d_pstmt.setString(3, ""+request.getParameter("img_url"));
 						d_pstmt.setString(4, ""+request.getParameter("description"));
-						
-						//ERROR HERE with the double casting from string
 						d_pstmt.setDouble(5, Double.valueOf(""+request.getParameter("price")));
-						d_pstmt.setInt(6, Integer.parseInt(request.getParameter("cid")));
+						d_pstmt.setInt(6, Integer.parseInt(request.getParameter("pid")));
+						
+						conn.commit();
+						sql =	"UPDATE products_categories SET (category_id) = " +
+								"(?) WHERE product_id = ?";
+						d_pstmt = conn.prepareStatement(sql);
+						d_pstmt.setInt(1, Integer.parseInt(request.getParameter("new_category_id")));
+						d_pstmt.setInt(2, Integer.parseInt(request.getParameter("pid")));
+						conn.commit();
+						conn.setAutoCommit(true);
+						//ERROR HERE with the double casting from string
 
 						int count = d_pstmt.executeUpdate();
 						d_pstmt.close();
 						conn.close();
-						if(count != 0){
-							%>
-							<t:message type="success" message="Product successfully updated"></t:message>
-							<%
-							}
-						else{
-							%>
-							<t:message type="danger" message="Error occurred in SQL"></t:message>
-							<%
-						}
+						
+						%>
+						<t:message type="success" message="Product successfully updated"></t:message>
+						<%
 					}
 					catch(SQLException e){
 						e.printStackTrace();
+						conn.rollback();
 						%>
 						<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
 						<%
