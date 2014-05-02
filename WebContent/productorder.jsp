@@ -8,6 +8,7 @@
 
 <t:header title="Product Order"/>
 	<%
+
 			String error = "" + request.getParameter("error");
 			String action = "" + request.getParameter("action");
 			String uid = "" + session.getAttribute("uid");
