@@ -45,8 +45,6 @@
 	
 	<% 
 	//TODO still need to implement delete
-	if(!cid.equals("null"))
-	{
 		if(action.equals("delete"))
 		{
 			if(!cid.isEmpty())
@@ -54,24 +52,34 @@
 				if(role.equals("Owner"))
 				{
 					try{
-					Class.forName("org.postgresql.Driver");
-				
-					//Need a transaction to delete from products and products_categories tables
-					conn.setAutoCommit(false);
-					sql = "DELETE FROM products_categories WHERE product_id = ?;";
-					d_pstmt = conn.prepareStatement(sql);
-					d_pstmt.setInt(1, Integer.parseInt(pid));
-					d_pstmt.executeUpdate();
-					sql = "DELETE FROM products WHERE product_id = ?;";
-					d_pstmt.setInt(1, Integer.parseInt(pid));
-					d_pstmt.executeUpdate();
-					conn.commit();
-					conn.setAutoCommit(true);
-						%>
-						<t:message type="success" message="Product successfully deleted"></t:message>
-						<%
-					d_pstmt.close();
-					// Close the ResultSet
+						Class.forName("org.postgresql.Driver");
+					
+						//Need a transaction to delete from products and products_categories tables
+						conn.setAutoCommit(false);
+						sql = "DELETE FROM products_categories WHERE product_id = ?;";
+						d_pstmt = conn.prepareStatement(sql);
+						d_pstmt.setInt(1, Integer.parseInt(pid));
+						int d1 = d_pstmt.executeUpdate();
+						sql = "DELETE FROM products WHERE product_id = ?;";
+						d_pstmt.setInt(1, Integer.parseInt(pid));
+						int d2 = d_pstmt.executeUpdate();
+						
+						if((d1 + d2) == 2)
+						{
+						conn.commit();
+							%>
+							<t:message type="success" message="Product successfully deleted"></t:message>
+							<%
+						// Close the ResultSet
+						}
+						else
+						{
+							conn.rollback();
+								%>
+								<t:message type="danger" message="Product deletion unsuccessful. It might be in one of the customers carts."></t:message>
+								<%
+						}
+						d_pstmt.close();
 					}
 					catch(SQLException e){
 						e.printStackTrace();
@@ -240,17 +248,16 @@
 		//TODO still need to implement udpate modal
 		if(action.equals("update"))
 		{
-			if(!cid.isEmpty())
+			if(!pid.isEmpty())
 			{
 				if(role.equals("Owner"))
 				{
 					try{
 					Class.forName("org.postgresql.Driver");
 					statement = conn.createStatement();
-					sql = "SELECT p.*, categories.name AS category_name  FROM (SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id=?) WHERE products_categories.product_id=products.product_id AND products.product_id = ?) AS p LEFT JOIN categories ON (p.category_id = categories.category_ID);";
+					sql = "SELECT * FROM (SELECT * FROM (products NATURAL JOIN products_categories) AS product_join NATURAL JOIN (SELECT name AS category_name, category_id FROM categories) AS c) AS p_join WHERE p_join.product_id = ?";
 					d_pstmt = conn.prepareStatement(sql);
-					d_pstmt.setInt(1, Integer.parseInt(cid));
-					d_pstmt.setInt(2, Integer.parseInt(pid));
+					d_pstmt.setInt(1, Integer.parseInt(pid));
 					rs = d_pstmt.executeQuery();
 					
 					if(rs.next())
@@ -415,7 +422,6 @@
 			<%
 				}
 		}
-	}
 	
 	
 	
@@ -552,24 +558,30 @@
 					if (rs.isBeforeFirst()) {
 						String rsname, rsdescription, rsimg, rssku, rspid, rsprice;
 						rs.next();%>
-								<div class="row">
-										<div class="col-sm-1">
-										</div>
-										<div class="col-sm-1">
+							<table class="table table-condensed">
+								<thead>
+									<tr>
+										<td>
+										</td>
+										<td>
 												<h3>Price</h3>
-										</div>
-										<div class="col-sm-2">
+										</td>
+										<td>
 												<h3>Name</h3>
-										</div>
-										<div class="col-sm-4">
+										</td>
+										<td>
+												<h3>SKU</h3>
+										</td>
+										<td>
 											<p>
 												<h3>Description</h3>
 											</p>
-										</div>
-										<div class="col-sm-4">
-										</div>
-								</div>
-								<hr>
+										</td>
+										<td>
+										</td>
+									</tr>
+								</thead>
+								
 						<%
 						rs.beforeFirst();
 						while (rs.next()) {
@@ -583,42 +595,55 @@
 							if (rsimg == null)
 								rsimg = "default";
 							%>
-							<div class="row">
-									<div class="col-sm-1">
+							<tr>
+									<td>
 									<img style="height:45px" src="img/products/<%=rsimg %>.png">
-									</div>
-									<div class="col-sm-1">
+									</td>
+									<td>
 										<span class="badge badge-success">
 											$<%=rsprice %>
 										</span>
-									</div>
-									<div class="col-sm-2">
+									</td>
+									<td>
+										<p>
 											<%=rsname %>
-									</div>
-									<div class="col-sm-4">
+										</p>
+									</td>
+									<td>
+										<p>
+											<%=rssku %>
+										</p>
+									</td>
+									<td>
 										<p>
 											<%=rsdescription %>
 										</p>
-									</div>
-									<div class="col-sm-4">
+									</td>
+									<td>
 										<p>
 											<% if(role.equals("Owner"))
 											{ %>
-												<a class="btn btn-success" href="products.jsp?action=update&cid=<%=cid%>&pid=<%=rspid %>">Update</a>
-												<a class="btn btn-danger" href="products.jsp?action=delete&cid=<%=cid%>&pid=<%=rspid %>">Delete</a>
+												<form class="form-vertical" action="products.jsp" method="GET">
+													<input type="hidden" name="pid" value="<%=rspid %>">
+													<input type="hidden" name="cid" value="<%=cid %>">
+													<input type="hidden" name="keyword" value="<%=keyword %>">
+													<input type="submit" class="btn btn-success" name="action" value="update" class="form-control"/>
+													<input type="submit" class="btn btn-danger" name="action" value="delete" class="form-control"/>
+												</form>
 											<% }
 											else
 											{ %>
-												<form class="" action="productorder.jsp" method="POST">
+												<form class="form-vertical" action="productorder.jsp" method="POST">
 													<input type="hidden" name="action" value="order">
 													<input type="hidden" name="product" value="<%=rspid %>">
 													<input type="hidden" name="cid" value="<%=cid %>">
-													<input type="submit" class="btn btn-primary" value="Add To Cart">
+													<input type="hidden" name="keyword" value="<%=keyword %>">
+													<input type="submit" class="btn btn-primary" value="Add To Cart" class="form-control"/>
 												</form>
 											<% }%>
 										</p>
-									</div>
-							</div>
+									</td>
+							</tr>
 						<%}
 					} 
 					else 
@@ -650,25 +675,23 @@
 				}
 
 				if (role.equals("Owner")) {
-			%>
-			<div class="row">
-									<div class="col-sm-1">
-										<img style="height:45px" src="img/plus.png">
-									</div>
-									<div class="col-sm-1">
-									</div>
-									<div class="col-sm-2">
-											Add new product
-									</div>
-									<div class="col-sm-4">
-										<p>
-											Add a new product to the list
-										</p>
-									</div>
-									<div class="col-sm-4">
-										<a class="btn btn-success" href="products.jsp?cid=<%=cid %>&action=add">Add Item</a>
-									</div>
+					%>
+						<tr>
+							<td>
+								<img style="height:45px" src="img/plus.png">
+							</td>
+							<td>
+							</td>
+							<td>
+							</td>
+							<td>
 							</div>
+							</td>
+							<td>
+								<a class="btn btn-success" href="products.jsp?cid=<%=cid %>&action=add">Add Item</a>
+							</td>
+						</tr>
+					</table>
 
 			<%
 				}
