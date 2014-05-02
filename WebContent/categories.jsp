@@ -15,6 +15,7 @@
 	String role = "" + session.getAttribute("role");
 	String uid = "" + session.getAttribute("uid");
 	String keyword = "" + request.getAttribute("keyword");
+	keyword = (keyword.equals("null"))? "":keyword;
 	
 	if(uid.equals("null")) //redirect if not logged in
 	{
