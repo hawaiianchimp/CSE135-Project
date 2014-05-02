@@ -15,7 +15,7 @@
 	String uid = "" + session.getAttribute("uid");
 	if(uid.equals("null")) //redirect if not logged in
 	{
-		response.sendRedirect("login.jsp");
+		response.sendRedirect("redirect.jsp");
 	}
 
 	String role = ""+session.getAttribute("role");

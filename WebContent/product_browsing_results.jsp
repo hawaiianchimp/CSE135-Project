@@ -21,7 +21,7 @@
 	String uid = "" + session.getAttribute("uid");
 	if(uid.equals("null")) 
 	{
-		response.sendRedirect("login.jsp");
+		response.sendRedirect("redirect.jsp");
 	}
 	
 	String[] keywords = request.getParameter("keyword").split(" ");

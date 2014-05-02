@@ -18,7 +18,7 @@
 	
 	if(uid.equals("null")) //redirect if not logged in
 	{
-		response.sendRedirect("login.jsp");
+		response.sendRedirect("redirect.jsp");
 	}
 	
 	String action = ""+request.getParameter("action");

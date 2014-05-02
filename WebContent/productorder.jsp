@@ -9,6 +9,7 @@
 <t:header title="Product Order"/>
 	<%
 			String error = "" + request.getAttribute("error");
+			String uid = "" + session.getAttribute("uid");
 			if (error.equals("yes"))
 			{
 				%>
@@ -18,10 +19,8 @@
 			else 
 			{
 				//redirect if not logged in
-				String uid = "" + session.getAttribute("uid");
-				
 				if(uid.equals("null"))
-					response.sendRedirect("login.jsp");
+					response.sendRedirect("redirect.jsp");
 			}
 			
 			
