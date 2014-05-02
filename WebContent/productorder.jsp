@@ -10,7 +10,8 @@
 	<%
 			String error = "" + request.getAttribute("error");
 			String uid = "" + session.getAttribute("uid");
-			if (error.equals("yes"))
+			String action = "" + session.getAttribute("action");
+			if (error.equals("yes") || ((action.equals("order")) == false && (action.equals("insert")) == false))
 			{
 				%>
 				<h1>Error: Request Is Invalid</h1>
@@ -36,7 +37,6 @@
 				ResultSet rs4 = null;
 			
 				String product = "" + request.getParameter("product");
-				String action = "" + request.getParameter("action");
 				int quantity;
 				
 				try
@@ -58,29 +58,12 @@
 				}
 				catch (SQLException e)
 				{
-					e.printStackTrace();
-					if (conn != null)
-						conn.close();
-					if (pstmt1 != null)
-						pstmt1.close();
-					if (pstmt2 != null)
-						pstmt2.close();
-					if (pstmt3 != null)
-						pstmt3.close();
-					if (pstmt4 != null)
-						pstmt4.close();
-					if (rs1 != null)
-						rs1.close();
-					if (rs2 != null)
-						rs2.close();
-					if (rs4 != null)
-						rs4.close();
 					response.sendRedirect("productorder.jsp?error=yes");
 				}
 				
 				//Insert data if specified, and redirect back to products.jsp
-				if (action.equals("insert"))
-				{
+					if (action.equals("insert"))
+					{
 						try
 						{
 							//Add to carts_products
@@ -98,16 +81,11 @@
 							for (int i = 0; i < quantity; i++)
 								pstmt3.executeUpdate();
 							conn.commit();
-							response.sendRedirect("http://localhost:8080/CSE135Project/categories.jsp");
-							rs4.close();
-							pstmt4.close();
 						}
 					
 						catch (SQLException e)
-						{
-	%>
-						<t:message type="danger" message="<%=e.getMessage() %>"/>
-	<%						conn.rollback();
+						{			
+							conn.rollback();
 							if (conn != null)
 								conn.close();
 							if (pstmt1 != null)
@@ -124,6 +102,7 @@
 								rs2.close();
 							if (rs4 != null)
 								rs4.close();
+							response.sendRedirect("productorder.jsp?error=yes");
 						}
 						
 						finally
@@ -145,8 +124,9 @@
 								rs2.close();
 							if (rs4 != null)
 								rs4.close();
-							
 						}
+						
+						response.sendRedirect("http://localhost:8080/CSE135Project/categories.jsp");
 					}
 				
 					//Display cart contents
@@ -166,7 +146,7 @@
 						rs1 = pstmt1.executeQuery();
 			
 						//Prepared Statement 2: Show product information for product desired to add to cart
-						//Parameters: 1) Product SKU
+						//Parameters: 1) Product ID
 						pstmt2 = conn.prepareStatement("SELECT * from products WHERE products.product_id = ?");
 						pstmt2.setInt(1, Integer.parseInt(product));
 						rs2 = pstmt2.executeQuery();
@@ -246,6 +226,28 @@
 							rs2.close();
 						if (rs4 != null)
 							rs4.close();
+						response.sendRedirect("productorder.jsp?error=yes");
+					}
+						
+					finally
+					{
+							conn.setAutoCommit(true);
+							if (conn != null)
+								conn.close();
+							if (pstmt1 != null)
+								pstmt1.close();
+							if (pstmt2 != null)
+								pstmt2.close();
+							if (pstmt3 != null)
+								pstmt3.close();
+							if (pstmt4 != null)
+								pstmt4.close();
+							if (rs1 != null)
+								rs1.close();
+							if (rs2 != null)
+								rs2.close();
+							if (rs4 != null)
+								rs4.close();
 					}
 				}
 		%>

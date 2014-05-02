@@ -101,14 +101,21 @@
 								</p>
 							</div>
 							<div class="col-sm-4">
-								<p>
-									<a class="btn btn-primary" href="setorder.jsp?product=<%=rspid %>&cid=<%=rscid %>">Add to Cart</a>
-									<% if(role.equals("Owner"))
+						
+									<form class="" action="productorder.jsp" method="POST">
+										<input type="hidden" name="action" value="order">
+										<input type="hidden" name="product" value="<%=rspid %>">
+										<input type="hidden" name="cid" value="<%=rscid %>">
+										<input type="submit" class="btn btn-primary" value="Add To Cart">
+									</form>
+									
+									
+									<% 
+									if(role.equals("Owner"))
 									{ %>
 										<a class="btn btn-success" href="products.jsp?action=update&cid=<%=rscid%>&pid=<%=rspid %>">Update</a>
 										<a class="btn btn-danger" href="products.jsp?action=delete&cid=<%=rscid%>&pid=<%=rspid %>">Delete</a>
 									<% }%>
-								</p>
 							</div>
 						</div>
 						<%

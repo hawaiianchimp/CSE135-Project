@@ -113,7 +113,8 @@
 						<fieldset>
 							<!-- Text input-->
 							<input type="hidden" name="cid" value="<%=cid %>"/>
-							<input type="hidden" name="pid" value="<%=pid %>"/>
+							<input type="hidden" name="pid" value="<%=pid %>"/>	
+		        			<input type="hidden" name="category" value="<%=category_name %>"/>
 							<label class="control-label" for="name">Name</label>
 							<input id="name" name="name" type="text" placeholder="Name" class="form-control">
 							
@@ -266,6 +267,7 @@
 							<!-- Text input-->
 							<input type="hidden" name="cid" value="<%=cid %>"/>
 							<input type="hidden" name="pid" value="<%=pid %>"/>
+		        			<input type="hidden" name="category" value="<%=category_name %>"/>
 							<label class="control-label" for="name">Name</label>
 							<input value="<%=rsname %>" id="name" name="name" type="text" placeholder="Name" class="form-control">
 							
@@ -452,6 +454,8 @@
 			<form class="navbar-form navbar-left" role="search" action="products.jsp">
 		        <div class="form-group">
 		        	<input type="hidden" name="cid" value="<%=cid %>"/>
+		        	<input type="hidden" name="pid" value="<%=pid %>"/>
+		        	<input type="hidden" name="category" value="<%=category_name %>"/>
 		          <input name="keyword" type="text" class="form-control" placeholder="Search" value="<%= keyword%>">
 		        </div>
 		        <input type="submit" value="Search" class="btn btn-default"/>
