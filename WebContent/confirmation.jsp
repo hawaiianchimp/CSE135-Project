@@ -82,7 +82,7 @@
 	
 	%>
 	</table>
-	<form action="products_browsing.jsp">
+	<form action="product_browsing.jsp">
 				<input type="submit" value="Back to Browsing">
 			</form>
 <t:footer/>
