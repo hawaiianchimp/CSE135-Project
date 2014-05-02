@@ -550,19 +550,7 @@
 					
 					if (rs.isBeforeFirst()) {
 						String rsname, rsdescription, rsimg, rssku, rspid, rsprice;
-						rs.next();
-						try{
-							if(rs.findColumn("category_name") != 0)
-							{
-							%> <h1><%=rs.getString("category_name") %></h1> 
-							<% 
-							}
-						}
-						catch(SQLException e){
-							%>
-							<h1><%= e.getMessage()%></h1>
-							<%
-						}%> 
+						rs.next();%>
 								<div class="row">
 										<div class="col-sm-1">
 										</div>
@@ -620,7 +608,12 @@
 											<% }
 											else
 											{ %>
-												<a class="btn btn-primary" href="productorder.jsp?product=<%=rspid %>&cid=<%=cid %>">Product Link</a>
+												<form class="" action="productorder.jsp" method="POST">
+													<input type="hidden" name="action" value="order">
+													<input type="hidden" name="product" value="<%=rspid %>">
+													<input type="hidden" name="cid" value="<%=cid %>">
+													<input type="submit" class="btn btn-primary" value="Add To Cart">
+												</form>
 											<% }%>
 										</p>
 									</div>
