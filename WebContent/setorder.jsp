@@ -11,10 +11,11 @@
 <body>
 
 <%
-	String pid = "" + request.getAttribute("pid");
+	String pid = "" + request.getAttribute("product");
+	System.out.println(pid);
 	String cid = "" + request.getAttribute("cid");
 	session.setAttribute("order", "true");
-	response.sendRedirect("productorder.jsp?product=${pid}&cid=${cid}");	
+	response.sendRedirect("productorder.jsp?product=" + pid + "&cid=" + cid);	
 %>
 
 </body>

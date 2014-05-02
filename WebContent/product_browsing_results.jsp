@@ -77,6 +77,7 @@
 						rsdescription = rs.getString("description");
 						rsimg = rs.getString("img_url");
 						rspid = rs.getInt("product_id");
+						System.out.println(rspid);
 						rscid = rs.getInt("category_id");
 						rsprice = rs.getString("price");
 						if (rsimg == null)
@@ -101,7 +102,7 @@
 							</div>
 							<div class="col-sm-4">
 								<p>
-									<a class="btn btn-primary" href="productorder.jsp?product=<%=rspid %>&cid=<%=rscid %>">Add to Cart</a>
+									<a class="btn btn-primary" href="setorder.jsp?product=<%=rspid %>&cid=<%=rscid %>">Add to Cart</a>
 									<% if(role.equals("Owner"))
 									{ %>
 										<a class="btn btn-success" href="products.jsp?action=update&cid=<%=rscid%>&pid=<%=rspid %>">Update</a>
