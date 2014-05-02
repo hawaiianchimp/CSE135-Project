@@ -130,20 +130,6 @@
 			if(role.equals("Owner"))
 			{
 				try{					
-					PreparedStatement check_pstmt = conn.prepareStatement("SELECT name FROM categories");
-					String input_c_name = ""+request.getParameter("name");
-					ResultSet check_rs = check_pstmt.executeQuery();
-					
-					Boolean duplicate_name = false;
-					while(check_rs.next())
-					{
-						String rs_c_name = check_rs.getString("name").toLowerCase();
-						if(input_c_name.toLowerCase().equals(rs_c_name))
-							duplicate_name = true;	
-					}
-					
-					if(duplicate_name==false)
-					{
 						sql =	"INSERT INTO categories (name, img_url, description) " +
 								"SELECT ?,?,?";
 						d_pstmt = conn.prepareStatement(sql);
@@ -166,16 +152,6 @@
 						}
 
 						d_pstmt.close();
-					}
-					else
-					{
-						%>
-						<t:message type="danger" message="Duplicate name found. Please enter a unique category name."></t:message>
-						<%	
-					}
-
-					check_pstmt.close();
-					check_rs.close();
 				}
 				catch(SQLException e){
 					e.printStackTrace();
@@ -280,21 +256,7 @@
 	{
 			if(role.equals("Owner"))
 			{
-				try{					
-					PreparedStatement check_pstmt = conn.prepareStatement("SELECT name FROM categories");
-					String input_c_name = ""+request.getParameter("name");
-					ResultSet check_rs = check_pstmt.executeQuery();
-					
-					Boolean duplicate_name = false;
-					while(check_rs.next())
-					{
-						String rs_c_name = check_rs.getString("name").toLowerCase();
-						if(input_c_name.toLowerCase().equals(rs_c_name))
-							duplicate_name = true;	
-					}
-					
-					if(duplicate_name==false)
-					{
+				try{	
 						sql =	"UPDATE categories SET (name, img_url, description) = " +
 								"(?,?,?) WHERE category_id = ?";
 						d_pstmt = conn.prepareStatement(sql);
@@ -316,13 +278,6 @@
 							<%
 							
 						}
-					}
-					else
-					{
-						%>
-						<t:message type="danger" message="Duplicate name found. Please enter a unique category name."></t:message>
-						<%	
-					}
 				}
 				
 				catch(SQLException e){
