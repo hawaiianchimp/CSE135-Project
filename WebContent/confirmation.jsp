@@ -7,6 +7,15 @@
 <body>
 <t:header title="Confirmation of Purchase"/>
 <%
+	String conf = "" + request.getParameter("conf");
+	if (conf.equals("true") == false)
+	{
+		%>
+		<h1>Error: Request Not Valid</h1>
+		<%
+	}
+	else
+	{
 	String username = "" + session.getAttribute("name");
 %>
 <h3><%=username%>, your purchase was successful!</h3>
@@ -16,7 +25,7 @@
 		String cart_id = "" + session.getAttribute("cart_id");
 		if(uid.equals("null")) //redirect if not logged in
 		{
-			response.sendRedirect("login.jsp");
+			response.sendRedirect("redirect.jsp");
 		}
 	
 		Connection conn = null;
@@ -79,12 +88,12 @@
 		if (conn != null)
 			conn.close();
 	}
-	
 	%>
 	</table>
-	<form action="categories.jsp">
+	<form action="product_browsing.jsp">
 				<input type="submit" value="Back to Browsing">
 			</form>
+			<% } %>
 <t:footer/>
 </body>
 </html>

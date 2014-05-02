@@ -12,10 +12,9 @@
 	String uid = "" + session.getAttribute("uid");
 	if (uid.equals("null"))
 	{
-		response.sendRedirect("login.jsp");
+		response.sendRedirect("redirect.jsp");
 	}
 	
-	System.out.println("action: " + action);
 	Connection conn = null;
 	PreparedStatement ps1 = null;
 	ResultSet rs1 = null;
@@ -77,6 +76,7 @@
 		<% if (action.equals("purchase")) { %>
 		<h3>Payment Information</h3>
 		<form method="POST" action="confirmation.jsp">
+			<input type="hidden" name="conf" value="true">
 			<!-- 
 			<label for="owner">Cardholder's Name</label>
 			<input type="text" name="owner">
@@ -167,7 +167,7 @@
 		else
 		{
 			%>
-			<form method="POST" action="categories.jsp">
+			<form method="POST" action="product_browsing.jsp">
 				<input type="submit" value="Back to Browsing">
 			</form>
 			<form method="POST" action="buycart.jsp">
