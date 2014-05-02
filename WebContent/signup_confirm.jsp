@@ -121,7 +121,7 @@
 	<% }
 	
 	else{ %>
-		<h1>Your signup failed!</h1>
+		<t:message type="danger" message="Your signup failed!"/>
 		<!-- <h3>Unfortunately, someone else is using your username. Please go back and choose another username</h3> -->
 		<a class="btn btn-default" href="/CSE135Project/signup.jsp">Go
 		Back</a>
