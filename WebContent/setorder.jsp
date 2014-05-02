@@ -11,6 +11,13 @@
 <body>
 
 <%
+	//redirect if not logged in
+	String uid = "" + session.getAttribute("uid");
+	if(uid.equals("null")) 
+	{
+		response.sendRedirect("redirect.jsp");
+	}
+	
 	String pid = "" + request.getAttribute("product");
 	System.out.println(pid);
 	String cid = "" + request.getAttribute("cid");

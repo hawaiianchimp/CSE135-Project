@@ -106,7 +106,7 @@
 	if(success)
 	{ 
 	%>
-		<h1>Registration Successful!</h1>
+		<h1>You have successfully signed up!</h1>
 		<h3>Thank you for signing up with us!</h3>
 		<%
 		if(role.equals("Owner")) { %>

@@ -121,6 +121,15 @@
 	%>
 		<t:message type="danger" message="<h1>You did not provide a username.</h1>
 		<h3>Please provide a username and try again.</h3>" />
+		<div class="row">
+			<form class="navbar-form navbar-left" role="login" action="login_confirm.jsp" method="POST">
+			  <div class="form-group">
+			  	<input type="text" class="form-control" placeholder="Username" name="username">
+			 	</div>
+			  <button type="submit" class="btn btn-default">Log In</button>
+			  <a class="btn btn-default" href="/CSE135Project/register.jsp" >Register</a>
+			</form>
+		</div>
 		
 	<% 
 	}
@@ -131,6 +140,15 @@
 				"<h3>Please try again.</h3>";
 	%>
 		<t:message type="danger" message="<%=message%>" />
+		<div class="row">
+			<form class="navbar-form navbar-left" role="login" action="login_confirm.jsp" method="POST">
+			  <div class="form-group">
+			  	<input type="text" class="form-control" placeholder="Username" name="username">
+			 	</div>
+			  <button type="submit" class="btn btn-default">Log In</button>
+			  <a class="btn btn-default" href="/CSE135Project/register.jsp" >Register</a>
+			</form>
+		</div>
 	<% 
 	}
 	%>
