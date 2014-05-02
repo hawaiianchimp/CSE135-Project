@@ -67,10 +67,10 @@
 					System.out.print("Log\n role:" + session.getAttribute("role") + "\n");
 					System.out.print("Log\n state:" + session.getAttribute("state") + "\n");
 					System.out.print("Log\n age:" + session.getAttribute("age") + "\n");
-					
-					pstmtcart.close();
-					rscart.close();
 				}
+				
+				pstmtcart.close();
+				rscart.close();
 
 				// Close the ResultSet
 				rs.close();
