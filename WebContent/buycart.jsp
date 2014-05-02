@@ -167,7 +167,7 @@
 		else
 		{
 			%>
-			<form method="POST" action="categories.jsp">
+			<form method="POST" action="product_browsing.jsp">
 				<input type="submit" value="Back to Browsing">
 			</form>
 			<form method="POST" action="buycart.jsp">

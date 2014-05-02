@@ -8,8 +8,10 @@
 
 <t:header title="Product Order"/>
 	<%
-			String error = "" + request.getAttribute("error");
-			String action = "" + session.getAttribute("action");
+			String error = "" + request.getParameter("error");
+			String action = "" + request.getParameter("action");
+			System.out.println("error: " + error);
+			System.out.println("action: " + action);
 			if (error.equals("yes") || ((action.equals("order")) == false && (action.equals("insert")) == false))
 			{
 				%>
@@ -123,8 +125,7 @@
 							if (rs4 != null)
 								rs4.close();
 						}
-						
-						response.sendRedirect("http://localhost:8080/CSE135Project/categories.jsp");
+						response.sendRedirect("product_browsing.jsp");
 					}
 				
 					//Display cart contents
