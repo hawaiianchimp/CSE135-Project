@@ -29,7 +29,6 @@
 					"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 					"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
 	PreparedStatement pstmt = null, d_pstmt = null;
-	Statement statement = null, d_statement = null;
 	ResultSet rs = null;
 	String sql = null;
 	
@@ -49,7 +48,6 @@
 			if(role.equals("Owner"))
 			{
 				try{
-				statement = conn.createStatement();
 				sql = "DELETE FROM categories WHERE category_id = ?;";
 				d_pstmt = conn.prepareStatement(sql);
 				d_pstmt.setInt(1, Integer.parseInt(cid));
@@ -98,7 +96,7 @@
 	if(action.equals("insert"))
 	{
 		%>
-		<t:modal_header modal_title="Inserting Item" />
+		<t:modal_header modal_title="Inserting Category" />
 			<fieldset>
 			<!-- Text input-->
 			
@@ -132,7 +130,6 @@
 			if(role.equals("Owner"))
 			{
 				try{					
-					Statement check_statement = conn.createStatement();
 					PreparedStatement check_pstmt = conn.prepareStatement("SELECT name FROM categories");
 					String input_c_name = ""+request.getParameter("name");
 					ResultSet check_rs = check_pstmt.executeQuery();
@@ -147,7 +144,6 @@
 					
 					if(duplicate_name==false)
 					{
-						statement = conn.createStatement();
 						sql =	"INSERT INTO categories (name, img_url, description) " +
 								"SELECT ?,?,?";
 						d_pstmt = conn.prepareStatement(sql);
@@ -175,6 +171,11 @@
 						<t:message type="danger" message="Duplicate name found. Please enter a unique category name."></t:message>
 						<%	
 					}
+
+					d_pstmt.close();
+					conn.close();
+					check_pstmt.close();
+					check_rs.close();
 				}
 				catch(SQLException e){
 					e.printStackTrace();
@@ -182,6 +183,7 @@
 					<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
 					<%
 				}
+				
 				
 		%>
 		<%}	
@@ -201,7 +203,6 @@
 			if(role.equals("Owner"))
 			{
 				try{
-				statement = conn.createStatement();
 				sql = "SELECT * FROM categories WHERE category_id = ?;";
 				d_pstmt = conn.prepareStatement(sql);
 				d_pstmt.setInt(1, Integer.parseInt(cid));
@@ -280,7 +281,6 @@
 			if(role.equals("Owner"))
 			{
 				try{					
-					Statement check_statement = conn.createStatement();
 					PreparedStatement check_pstmt = conn.prepareStatement("SELECT name FROM categories");
 					String input_c_name = ""+request.getParameter("name");
 					ResultSet check_rs = check_pstmt.executeQuery();
@@ -295,7 +295,6 @@
 					
 					if(duplicate_name==false)
 					{
-						statement = conn.createStatement();
 						sql =	"UPDATE categories SET (name, img_url, description) = " +
 								"(?,?,?) WHERE category_id = ?";
 						d_pstmt = conn.prepareStatement(sql);
@@ -367,7 +366,7 @@
 		try{
 
 			Class.forName("org.postgresql.Driver");
-			statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			sql = "SELECT * FROM categories AS c LEFT JOIN (SELECT p.category_id, COUNT(p.category_id) FROM products_categories AS p GROUP BY p.category_id) AS p ON (c.category_id = p.category_id);";
 			rs = statement.executeQuery(sql);
 
@@ -490,15 +489,10 @@
 		<div class="row">
 				<div class="row">
 					<div class="col-sm-1">
-						<img style="height:45px" src="img/plus.png">
 					</div>
 					<div class="col-sm-2">
-							Insert new category
 					</div>
 					<div class="col-sm-3">
-						<p>
-							Insert a new category to the list
-						</p>
 					</div>
 					<div class="col-sm-4">	
 						<p>
