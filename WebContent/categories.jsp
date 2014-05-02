@@ -94,7 +94,7 @@
 
 <!-- Show insert modal -->
 <% 
-	System.out.print(action);
+	//System.out.print(action);
 	if(action.equals("insert"))
 	{
 		%>
@@ -343,6 +343,7 @@
 %>
 
 <div class="container">
+
 	<!-- product search -->
 	<div class="row clearfix">
 		<div class="col-sm-12">
