@@ -21,7 +21,7 @@
 	String uid = "" + session.getAttribute("uid");
 	if(uid.equals("null")) 
 	{
-		response.sendRedirect("login.jsp");
+		response.sendRedirect("redirect.jsp");
 	}
 	
 	String[] keywords = request.getParameter("keyword").split(" ");
@@ -77,7 +77,7 @@
 						rsdescription = rs.getString("description");
 						rsimg = rs.getString("img_url");
 						rspid = rs.getInt("product_id");
-						System.out.println(rspid);
+						//System.out.println(rspid);
 						rscid = rs.getInt("category_id");
 						rsprice = rs.getString("price");
 						if (rsimg == null)

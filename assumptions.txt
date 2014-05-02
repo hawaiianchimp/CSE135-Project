@@ -2,3 +2,6 @@ Registration:
 - username cannot contain spaces, otherwise this cause the "signup failure" message
 - age is reported as an integer
 - there is no limit or filter for age
+
+All Product Browsing:
+- user will enter an alphanumeric keyword to search by

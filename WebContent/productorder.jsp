@@ -10,8 +10,7 @@
 	<%
 			String error = "" + request.getParameter("error");
 			String action = "" + request.getParameter("action");
-			System.out.println("error: " + error);
-			System.out.println("action: " + action);
+			String uid = "" + session.getAttribute("uid");
 			if (error.equals("yes") || ((action.equals("order")) == false && (action.equals("insert")) == false))
 			{
 				%>
@@ -21,12 +20,13 @@
 			else 
 			{
 				//redirect if not logged in
-				String uid = "" + session.getAttribute("uid");
-	
-				
-				if (uid.equals("null"))
-					response.sendRedirect("login.jsp");
-				
+				if(uid.equals("null"))
+					response.sendRedirect("redirect.jsp");
+			}
+			
+			
+			//indicate error if page is arrived at by accidental refresh, back button, or directly without selecting "add to cart"
+		
 				Connection conn = null;
 				PreparedStatement pstmt1 = null;
 				PreparedStatement pstmt2 = null;
@@ -43,9 +43,9 @@
 				{
 					//Collect parameters: need user id and product sku to show user's cart as well as add to it
 				
-					System.out.println("User: " + uid);
-					System.out.println("Product: " + product);
-					System.out.println("action: " + action);
+					//System.out.println("User: " + uid);
+					//System.out.println("Product: " + product);
+					//System.out.println("action: " + action);
 					
 					if (uid.equals("null") || product.equals("null"))
 						throw new IOException();
@@ -77,7 +77,7 @@
 							rs4.next();
 							pstmt3.setInt(1, rs4.getInt("cart_id"));
 							pstmt3.setInt(2, Integer.parseInt(product));
-							System.out.println("here");
+							//System.out.println("here");
 							for (int i = 0; i < quantity; i++)
 								pstmt3.executeUpdate();
 							conn.commit();
@@ -249,7 +249,6 @@
 								rs4.close();
 					}
 				}
-			}
 		%>
 		
 <t:footer />

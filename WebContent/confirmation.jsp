@@ -16,7 +16,7 @@
 		String cart_id = "" + session.getAttribute("cart_id");
 		if(uid.equals("null")) //redirect if not logged in
 		{
-			response.sendRedirect("login.jsp");
+			response.sendRedirect("redirect.jsp");
 		}
 	
 		Connection conn = null;
