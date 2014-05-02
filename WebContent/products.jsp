@@ -21,8 +21,11 @@
 	String role = ""+session.getAttribute("role");
 	String action = ""+request.getParameter("action");
 	String submit = ""+request.getParameter("submit");
+	String category_name = ""+request.getParameter("category");
 	String cid = ""+request.getParameter("cid");
 	String pid = ""+request.getParameter("pid");
+	String keyword = ""+request.getParameter("keyword");
+	keyword = (keyword.equals("null"))? "":keyword;
 	
 	Connection conn = DriverManager.getConnection(
 					"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
@@ -435,31 +438,37 @@
 %>
 
 <div class="row clearfix">
-	<!-- category product search -->
-	<div class="row">
-		<div class="col-md-4">
-			<a class="btn btn-default" href="product_browsing_category.jsp?cid=<%=""+request.getParameter("cid")%>&category=<%=""+request.getParameter("category") %>" >Product Search within <%=""+request.getParameter("category") %></a>
+	
+	<!-- product search -->
+	<div class="row clearfix">
+		<div class="col-sm-12">
+			<form class="navbar-form navbar-left" role="search" action="products.jsp">
+		        <div class="form-group">
+		        	<input type="hidden" name="cid" value="<%=cid %>"/>
+		          <input name="keyword" type="text" class="form-control" placeholder="Search" value="<%= keyword%>">
+		        </div>
+		        <input type="submit" value="Search" class="btn btn-default"/>
+		      </form>
 		</div>
-		<div class="col-md-4"></div>
-		<div class="col-md-4"></div>
 	</div>
 
 	<!-- category menu -->
 	<div class="col-sm-2">
 		<ul class="nav nav-stacked navbar-left nav-pills">
-		<li class="active"><a href="categories.jsp">Categories</a>
+		<li><a href="categories.jsp">Categories</a>
 		</li>
 		<%
 			if (c_rs.isBeforeFirst()) {
-					String rsname, rsid, rscount;
+					String rsname, rsid, rscount,active;
 					while (c_rs.next()) {
 						rsname = c_rs.getString("name");
+						active = (rsname.equals(category_name))? "class='active' ":"";
 						rsid = String.valueOf(c_rs.getInt("category_id"));
 						session.setAttribute("cid", rsid);
 						rscount = String.valueOf(c_rs.getInt("count"));
 						//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
 					%>
-						<li><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%> <span class="badge"><%=rscount %></span></a></li>
+						<li <%= active%>><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%> <span class="badge"><%=rscount %></span></a></li>
 					<%
 					}
 			}
@@ -482,9 +491,6 @@
 		<!-- products -->
 		<div class="col-sm-10">
 			<%
-
-			if(!cid.equals("null"))
-			{
 					try {
 						// Registering Postgresql JDBC driver with the DriverManager
 						Class.forName("org.postgresql.Driver");
@@ -499,13 +505,34 @@
 
 						// Use the created statement to SELECT
 						// the student attributes FROM the Student table.
+							if(!cid.equals("null"))
+							{
+
+								if(keyword.isEmpty())
+								{
+									sql = "SELECT p.*, categories.name AS category_name  FROM (SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id="+ cid+") WHERE products_categories.product_id=products.product_id) AS p LEFT JOIN categories ON (p.category_id = categories.category_ID)";
+								}
+								else
+								{
+									sql = "SELECT p.*, categories.name AS category_name  FROM (SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id="+ cid+") WHERE products_categories.product_id=products.product_id AND (products.name ILIKE '%"+keyword+"%')) AS p LEFT JOIN categories ON (p.category_id = categories.category_ID)";
+								}
+							}
+							else
+							{
+								if(!keyword.isEmpty())
+								{
+									sql = "SELECT * FROM products WHERE products.name ILIKE '%"+ keyword+ "%'";
+								}
+								else
+								{
+									sql = "SELECT * FROM products";
+								}
+							}
 						
-						sql = "SELECT p.*, categories.name AS category_name  FROM (SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id=?) WHERE products_categories.product_id=products.product_id) AS p LEFT JOIN categories ON (p.category_id = categories.category_ID)";
+						
 						pstmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
 
-						int category_id = Integer.parseInt(cid);
-						pstmt.setInt(1, category_id);
 						rs = pstmt.executeQuery();
 					
 					
@@ -513,7 +540,18 @@
 					if (rs.isBeforeFirst()) {
 						String rsname, rsdescription, rsimg, rssku, rspid, rsprice;
 						rs.next();
-						%> <h1><%=rs.getString("category_name") %></h1> 
+						try{
+							if(rs.findColumn("category_name") != 0)
+							{
+							%> <h1><%=rs.getString("category_name") %></h1> 
+							<% 
+							}
+						}
+						catch(SQLException e){
+							%>
+							<h1><%= e.getMessage()%></h1>
+							<%
+						}%> 
 								<div class="row">
 										<div class="col-sm-1">
 											<h3>Image</h3>
@@ -628,17 +666,8 @@
 									</div>
 							</div>
 
-
-
-
-
 			<%
 				}
-		
-		}
-		else{%>
-			<t:message type="warning" message="No category selected, please select a category"></t:message>
-		<%}
 		%>
 		</div>
 	</div>

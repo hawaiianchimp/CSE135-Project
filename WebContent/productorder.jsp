@@ -72,7 +72,7 @@
 					System.out.println("here");
 					for (int i = 0; i < quantity; i++)
 						pstmt3.executeUpdate();
-					response.sendRedirect("http://localhost:8080/CSE135Project/categories.jsp");
+					response.sendRedirect("http://localhost:8080/CSE135Project/product_browsing.jsp");
 					rs4.close();
 					conn.close();
 					pstmt4.close();

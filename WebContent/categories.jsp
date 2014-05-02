@@ -14,6 +14,7 @@
 	Class.forName("org.postgresql.Driver");
 	String role = "" + session.getAttribute("role");
 	String uid = "" + session.getAttribute("uid");
+	String keyword = "" + request.getAttribute("keyword");
 	
 	if(uid.equals("null")) //redirect if not logged in
 	{
@@ -343,7 +344,15 @@
 <div class="container">
 	<!-- product search -->
 	<div class="row clearfix">
-		<a class="btn btn-default" href="/CSE135Project/product_browsing.jsp" >Product Search</a>
+		<div class="col-sm-12">
+			<form class="navbar-form navbar-left" role="search" action="products.jsp">
+		        <div class="form-group">
+		        	<input type="hidden" name="cid" value="<%=cid %>"/>
+		          <input name="keyword" type="text" class="form-control" placeholder="Search" value="<%= keyword%>">
+		        </div>
+		        <input type="submit" value="Search" class="btn btn-default"/>
+		      </form>
+		</div>
 	</div>
 	
 	<!-- category menu -->
