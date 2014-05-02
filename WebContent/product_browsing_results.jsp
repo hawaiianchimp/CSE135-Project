@@ -79,7 +79,7 @@
 						rspid = rs.getInt("product_id");
 						System.out.println(rspid);
 						rscid = rs.getInt("category_id");
-						rsprice = String.valueOf(rs.getDouble("price"));
+						rsprice = rs.getString("price");
 						if (rsimg == null)
 							rsimg = "default";
 						%>

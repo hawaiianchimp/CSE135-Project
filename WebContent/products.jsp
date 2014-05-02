@@ -460,7 +460,7 @@
 	<!-- category menu -->
 	<div class="col-sm-2">
 		<ul class="nav nav-stacked navbar-left nav-pills">
-		<li><a href="categories.jsp">Categories</a>
+		<li><a href="categories.jsp">All Categories</a>
 		</li>
 		<%
 			if (c_rs.isBeforeFirst()) {
@@ -473,7 +473,7 @@
 						rscount = String.valueOf(c_rs.getInt("count"));
 						//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
 					%>
-						<li <%= active%>><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%> <span class="badge"><%=rscount %></span></a></li>
+						<li <%= active%>><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%> <span class="badge pull-right"><%=rscount %></span></a></li>
 					<%
 					}
 			}
@@ -559,7 +559,6 @@
 						}%> 
 								<div class="row">
 										<div class="col-sm-1">
-											<h3>Image</h3>
 										</div>
 										<div class="col-sm-1">
 												<h3>Price</h3>
