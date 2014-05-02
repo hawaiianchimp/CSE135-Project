@@ -352,24 +352,23 @@
 	</div>
 
 	<div class="col-sm-10">
-		<div class="row">
-				<div class="row">
-					<div class="col-sm-1">
-					</div>
-					<div class="col-sm-2">
+		<table class="table">
+		<thead>
+			<tr>
+					
+					<td>
 							<h2>Name</h2>
-					</div>
-					<div class="col-sm-3">
+					</td>
+					<td>
 						<h2>
 							Description
 						</h2>
-					</div>
-					<div class="col-sm-4">	
+					</td>
+					<td>
 						
-					</div>
-				</div>
-		</div>
-		<hr>
+					</td>
+			</tr>
+		</thead>
 		<%
 		rs.beforeFirst();
 		if(rs.isBeforeFirst())
@@ -386,20 +385,19 @@
 						rsimg = "category_default";
 					//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
 				%>
-				<div class="row">
-						<div class="row">
-							<div class="col-sm-1">
+						<tr>
+							<td>
 								<img style="height:45px" src="img/categories/<%=rsimg %>.png">
-							</div>
-							<div class="col-sm-2">
+							</td>
+							<td>
 									<%=rsname %>
-							</div>
-							<div class="col-sm-3">
+							</td>
+							<td>
 								<p>
 									<%=rsdescription %>
 								</p>
-							</div>
-							<div class="col-sm-4">	
+							</td>
+							<td>	
 								<p>
 									<a class="btn btn-primary" href="products.jsp?cid=<%=rsid %>&category=<%= rsname%>">Browse <span class="badge"><%= rscount %></span></a>
 									
@@ -411,9 +409,8 @@
 											<% } 
 										}%>
 								</p>
-							</div>
-						</div>
-				</div>
+							</td>
+						</tr>
 				
 			<%
 				}
@@ -441,22 +438,21 @@
 	
 		
 	if(role.equals("Owner")) {%>
-		<div class="row">
-				<div class="row">
-					<div class="col-sm-1">
-					</div>
-					<div class="col-sm-2">
-					</div>
-					<div class="col-sm-3">
-					</div>
-					<div class="col-sm-4">	
+		<tr>
+					</td>
+					<td>
+					</td>
+					<td>
+					</td>
+					<td>
+					</td>
+					<td>
 						<p>
 							<a class="btn btn-success" href="categories.jsp?action=insert">Insert Item</a>
 						</p>
-					</div>
-				</div>
-		</div>
+					</td>
+		</tr>
 	<%} %>
-	</div>
+	</table>
 </div>
 <t:footer />

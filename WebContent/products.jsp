@@ -60,10 +60,12 @@
 						d_pstmt = conn.prepareStatement(sql);
 						d_pstmt.setInt(1, Integer.parseInt(pid));
 						int d1 = d_pstmt.executeUpdate();
+						System.out.print(d1);
 						sql = "DELETE FROM products WHERE product_id = ?;";
+						d_pstmt = conn.prepareStatement(sql);
 						d_pstmt.setInt(1, Integer.parseInt(pid));
 						int d2 = d_pstmt.executeUpdate();
-						
+						System.out.print(d2);
 						if((d1 + d2) == 2)
 						{
 						conn.commit();
