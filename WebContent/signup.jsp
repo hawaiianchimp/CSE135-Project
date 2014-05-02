@@ -17,27 +17,27 @@
 	<!-- User registration  -->
 	<div class="col-md-4 column">
 		<h2>New User Registration</h2>
-		<form action="signup_confirm.jsp" method="GET">
+		<form action="signup_confirm.jsp" method="POST">
 
 			<!-- Username -->
 			<div class="form-group">
 				<label for="username">Username</label><input type="text"
-					class="form-control" name="username" required="required">
+					class="form-control" name="username">
 			</div>
 
 			<!-- Role -->
 			<div class="form-group">
 				<label for="age">Role</label>
 				<select class="form-control" name="role">
-					<option value="Owner">Owner</option>
 					<option value="Customer">Customer</option>
+					<option value="Owner">Owner</option>
 				</select>
 			</div>
 
 			<!-- Age -->
 			<div class="form-group">
 				<label for="age">Age</label><input type="number"
-					class="form-control" name="age" required="required">
+					class="form-control" name="age">
 			</div>
 			
 			<!-- State -->

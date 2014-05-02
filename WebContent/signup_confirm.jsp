@@ -9,8 +9,24 @@
 	PrintWriter o = response.getWriter();
 
 	boolean success = false;
+	
+	/* fetches all parameters of the form */
 	String name = request.getParameter("username");
-	if (name != null) {
+	String age = request.getParameter("age");
+	String role = request.getParameter("role");
+	String state = request.getParameter("state");
+	
+	/* Checks to see if there are spaces in the username*/
+	boolean noSpace = true;
+	for(int x  = 0; x<name.length(); x++)
+	{
+		char c = name.charAt(x);
+		if(c==' ')
+			noSpace = false;
+	}
+	
+	if (name.length()>0 && age.length()>0 && role.length()>0 && state.length()>0 && noSpace) {
+		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -22,10 +38,6 @@
 		PreparedStatement psuid = null;
 		ResultSet rsuid = null;
 		String sqluid = null;
-	
-		String age = request.getParameter("age");
-		String role = request.getParameter("role");
-		String state = request.getParameter("state");
 
 		try {
 			// Registering Postgresql JDBC driver with the DriverManager
@@ -97,7 +109,6 @@
 		<h1>Registration Successful!</h1>
 		<h3>Thank you for signing up with us!</h3>
 		<%
-		String role = ""+session.getAttribute("role");
 		if(role.equals("Owner")) { %>
 			<a class="btn btn-default" href="/CSE135Project/categories.jsp">Go to Categories</a>
 		<% }
