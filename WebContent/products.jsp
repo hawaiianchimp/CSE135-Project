@@ -134,7 +134,7 @@
 									{
 										String c = rs.getString("name");
 										String old_id = rs.getString("category_id");
-										String selected = (c.equals(old_id)) ? "selected":""; %>
+										String selected = (old_id.equals(cid)) ? "selected":""; %>
 										<option <%=selected%> value="<%=old_id %>"><%=c %></option>
 								<% }
 									statement.close();
