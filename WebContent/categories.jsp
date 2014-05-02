@@ -19,7 +19,7 @@
 	
 	if(uid.equals("null")) //redirect if not logged in
 	{
-		response.sendRedirect("redirect.jsp");
+		response.sendRedirect("login.jsp");
 	}
 	
 	String action = ""+request.getParameter("action");
@@ -92,7 +92,7 @@
 
 <!-- Show insert modal -->
 <% 
-	//System.out.print(action);
+	System.out.print(action);
 	if(action.equals("insert"))
 	{
 		%>
@@ -164,6 +164,8 @@
 							<%
 							
 						}
+
+						d_pstmt.close();
 					}
 					else
 					{
@@ -172,8 +174,6 @@
 						<%	
 					}
 
-					d_pstmt.close();
-					conn.close();
 					check_pstmt.close();
 					check_rs.close();
 				}
@@ -342,7 +342,6 @@
 %>
 
 <div class="container">
-
 	<!-- product search -->
 	<div class="row clearfix">
 		<div class="col-sm-12">
@@ -497,7 +496,7 @@
 					</div>
 					<div class="col-sm-4">	
 						<p>
-							<a class="btn btn-success" href="categories.jsp?action=insert">Insert Category</a>
+							<a class="btn btn-success" href="categories.jsp?action=insert">Insert Item</a>
 						</p>
 					</div>
 				</div>

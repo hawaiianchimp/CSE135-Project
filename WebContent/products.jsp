@@ -21,7 +21,7 @@
 	String role = ""+session.getAttribute("role");
 	String action = ""+request.getParameter("action");
 	String submit = ""+request.getParameter("submit");
-	String category_name = ""+request.getParameter("category");
+	String category_name = ((""+request.getParameter("category")).equals("null")) ? "all":""+request.getParameter("category");
 	String cid = ""+request.getParameter("cid");
 	String pid = ""+request.getParameter("pid");
 	String keyword = ""+request.getParameter("keyword");
@@ -191,7 +191,8 @@
 						pstmt.setString(2, ""+request.getParameter("sku"));
 						pstmt.setString(3, ""+request.getParameter("img_url"));
 						pstmt.setString(4, ""+request.getParameter("description"));
-						pstmt.setDouble(5, Double.parseDouble(""+request.getParameter("price")));
+						Double p = ((""+request.getParameter("price")).isEmpty()) ? 0:Double.parseDouble(""+request.getParameter("price"));
+						pstmt.setDouble(5, p);
 						Integer product_id;
 						if(pstmt.execute())
 						{
