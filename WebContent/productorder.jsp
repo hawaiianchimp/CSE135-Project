@@ -8,29 +8,24 @@
 
 <t:header title="Product Order"/>
 	<%
-			//redirect if not logged in
-			String uid = "" + session.getAttribute("uid");
-			if(uid.equals("null")) 
+			String error = "" + request.getAttribute("error");
+			if (error.equals("yes"))
 			{
-				response.sendRedirect("login.jsp");
+				%>
+				<h1>Error: Request Is Invalid</h1>
+				<%
 			}
+			else 
+			{
+				//redirect if not logged in
+				String uid = "" + session.getAttribute("uid");
+				
+				if(uid.equals("null"))
+					response.sendRedirect("login.jsp");
+			}
+			
 			
 			//indicate error if page is arrived at by accidental refresh, back button, or directly without selecting "add to cart"
-			String order = "" + session.getAttribute("order");
-			if (order.equals("true") == false)
-			{
-	%>
-					<h1>Error: Request is invalid</h1>
-					<form action="product_browsing.jsp">
-						<input type="submit" value="Back to Browsing">
-					</form>
-	<%
-			}
-			
-			else
-			{
-			
-				session.setAttribute("order", "false");
 		
 				Connection conn = null;
 				PreparedStatement pstmt1 = null;
@@ -44,7 +39,7 @@
 				String product = "" + request.getParameter("product");
 				String action = "" + request.getParameter("action");
 				int quantity;
-		
+				
 				try
 				{
 					//Collect parameters: need user id and product sku to show user's cart as well as add to it
@@ -62,7 +57,7 @@
 						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
 					
 				}
-				catch (Exception e)
+				catch (SQLException e)
 				{
 					e.printStackTrace();
 					if (conn != null)
@@ -81,16 +76,14 @@
 						rs2.close();
 					if (rs4 != null)
 						rs4.close();
+					response.sendRedirect("productorder.jsp?error=yes");
 				}
 				
 				//Insert data if specified, and redirect back to products.jsp
-				System.out.println("Before");
-
-					if (!(action.equals("null")) && action.equals("insert"))
-					{
+				if (action.equals("insert"))
+				{
 						try
 						{
-							System.out.println("SUP HOMIE");
 							//Add to carts_products
 							quantity = Integer.parseInt(request.getParameter("quantity"));
 							conn.setAutoCommit(false);
@@ -99,12 +92,8 @@
 							pstmt4.setInt(1, Integer.parseInt(uid));
 							rs4 = pstmt4.executeQuery();
 							conn.commit();
-							System.out.println("successful");
 							rs4.next();
-							System.out.println("uid: " + uid);
-							System.out.println("before p3");
 							pstmt3.setInt(1, rs4.getInt("cart_id"));
-							System.out.println("before p3");
 							pstmt3.setInt(2, Integer.parseInt(product));
 							System.out.println("here");
 							for (int i = 0; i < quantity; i++)
@@ -115,9 +104,9 @@
 							pstmt4.close();
 						}
 					
-						catch (PSQLException e)
+						catch (SQLException e)
 						{
-	%>			
+	%>
 						<t:message type="danger" message="<%=e.getMessage() %>"/>
 	<%						conn.rollback();
 							if (conn != null)
@@ -137,8 +126,28 @@
 							if (rs4 != null)
 								rs4.close();
 						}
-						conn.setAutoCommit(true);
-						conn.close();
+						
+						finally
+						{
+							conn.setAutoCommit(true);
+							if (conn != null)
+								conn.close();
+							if (pstmt1 != null)
+								pstmt1.close();
+							if (pstmt2 != null)
+								pstmt2.close();
+							if (pstmt3 != null)
+								pstmt3.close();
+							if (pstmt4 != null)
+								pstmt4.close();
+							if (rs1 != null)
+								rs1.close();
+							if (rs2 != null)
+								rs2.close();
+							if (rs4 != null)
+								rs4.close();
+							
+						}
 					}
 				
 					//Display cart contents
@@ -240,10 +249,6 @@
 							rs4.close();
 					}
 				}
-			}
-			
-	
-		
 		%>
 		
 <t:footer />
