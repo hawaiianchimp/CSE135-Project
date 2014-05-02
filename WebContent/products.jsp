@@ -86,8 +86,9 @@
 					catch(SQLException e){
 						e.printStackTrace();
 						conn.rollback();
+						String message = "Failure to Delete Product: " + e.getMessage();
 			   	     	%>
-						<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
+						<t:message type="danger" message="<%=message %>"></t:message>
 						<%
 					}
 					conn.setAutoCommit(true);
@@ -154,6 +155,11 @@
 								catch(PSQLException e)
 								{
 									e.printStackTrace();
+
+									String message = "Failure to Delete Product: " + e.getMessage();
+						   	     	%>
+									<t:message type="danger" message="<%=message %>"></t:message>
+									<%
 								}%>
 								
 								
@@ -189,7 +195,21 @@
 		{
 				if(role.equals("Owner"))
 				{
+
 					try{
+						if((""+request.getParameter("name")).isEmpty()){
+							throw new SQLException("Name cannot be empty");
+						}
+						if((""+request.getParameter("sku")).isEmpty()){
+							throw new SQLException("sku cannot be empty");
+						}
+						if((""+request.getParameter("description")).isEmpty()){
+							throw new SQLException("description cannot be empty");
+						}
+						pstmt.setString(2, ""+request.getParameter("sku"));
+						pstmt.setString(3, ""+request.getParameter("img_url"));
+						pstmt.setString(4, ""+request.getParameter("description"));
+					
 						Class.forName("org.postgresql.Driver");
 						conn.setAutoCommit(false);
 						//need a transaction to add in products and product_categories
@@ -231,8 +251,9 @@
 					}
 					catch(SQLException e){
 						e.printStackTrace();
-						%>
-						<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
+						String message = "Failure to Insert Product: " + e.getMessage();
+			   	     	%>
+						<t:message type="danger" message="<%=message %>"></t:message>
 						<%
 					}
 					
@@ -255,6 +276,16 @@
 				if(role.equals("Owner"))
 				{
 					try{
+						
+					if((""+request.getParameter("name")).isEmpty()){
+						throw new SQLException("Name cannot be empty");
+					}
+					if((""+request.getParameter("sku")).isEmpty()){
+						throw new SQLException("sku cannot be empty");
+					}
+					if((""+request.getParameter("description")).isEmpty()){
+						throw new SQLException("description cannot be empty");
+					}
 					Class.forName("org.postgresql.Driver");
 					statement = conn.createStatement();
 					sql = "SELECT * FROM (SELECT * FROM (products NATURAL JOIN products_categories) AS product_join NATURAL JOIN (SELECT name AS category_name, category_id FROM categories) AS c) AS p_join WHERE p_join.product_id = ?";
@@ -347,8 +378,9 @@
 					}
 					catch(SQLException e){
 						e.printStackTrace();
+			   	     	String message = "Failure to Update Product: " + e.getMessage();
 			   	     	%>
-						<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
+						<t:message type="danger" message="<%=message %>"></t:message>
 						<%
 					}
 					

@@ -66,8 +66,9 @@
 				}
 				catch(SQLException e){
 					e.printStackTrace();
+		   	     	String message = "Failure to Delete Category: " + e.getMessage();
 		   	     	%>
-					<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
+					<t:message type="danger" message="<%=message %>"></t:message>
 					<%
 				}
 				
@@ -130,6 +131,13 @@
 			if(role.equals("Owner"))
 			{
 				try{					
+					
+					if((""+request.getParameter("name")).isEmpty()){
+						throw new SQLException("Name cannot be empty");
+					}
+					if((""+request.getParameter("description")).isEmpty()){
+						throw new SQLException("description cannot be empty");
+					}
 						sql =	"INSERT INTO categories (name, img_url, description) " +
 								"SELECT ?,?,?";
 						d_pstmt = conn.prepareStatement(sql);
@@ -155,9 +163,10 @@
 				}
 				catch(SQLException e){
 					e.printStackTrace();
-					%>
-					<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
-					<%
+					String message = "Failure to Insert Category: " + e.getMessage();
+			   	     	%>
+						<t:message type="danger" message="<%=message %>"></t:message>
+						<%
 				}
 				
 				
@@ -226,9 +235,10 @@
 				}
 				catch(SQLException e){
 					e.printStackTrace();
-		   	     	%>
-					<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
-					<%
+		   	     	String message = "Failure to retrieve Category: " + e.getMessage();
+			   	     	%>
+						<t:message type="danger" message="<%=message %>"></t:message>
+						<%
 				}
 				
 			}	
@@ -257,6 +267,13 @@
 			if(role.equals("Owner"))
 			{
 				try{	
+
+					if((""+request.getParameter("name")).isEmpty()){
+						throw new SQLException("Name cannot be empty");
+					}
+					if((""+request.getParameter("description")).isEmpty()){
+						throw new SQLException("description cannot be empty");
+					}
 						sql =	"UPDATE categories SET (name, img_url, description) = " +
 								"(?,?,?) WHERE category_id = ?";
 						d_pstmt = conn.prepareStatement(sql);
@@ -274,7 +291,7 @@
 							}
 						else{
 							%>
-							<t:message type="danger" message="Error occurred in SQL"></t:message>
+							<t:message type="danger" message="Failure to Insert: Error occurred in SQL"></t:message>
 							<%
 							
 						}
@@ -282,9 +299,10 @@
 				
 				catch(SQLException e){
 					e.printStackTrace();
-					%>
-					<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
-					<%
+					String message = "Failure to Insert Category: " + e.getMessage();
+			   	     	%>
+						<t:message type="danger" message="<%=message %>"></t:message>
+						<%
 				}
 				
 		%>
