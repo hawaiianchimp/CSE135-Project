@@ -132,7 +132,7 @@
 		%>
 		</table>
 		<h3>Add to cart?</h3>
-		<form action="productorder.jsp" method="GET">
+		<form action="productorder.jsp" method="POST">
 			<input type="hidden" name="action" value="insert">
 			<input type="hidden" name="product" value=<%=product%>>
 			<table>

@@ -14,6 +14,7 @@
 	{
 		response.sendRedirect("login.jsp");
 	}
+	
 	System.out.println("action: " + action);
 	Connection conn = null;
 	PreparedStatement ps1 = null;
@@ -76,6 +77,7 @@
 		<% if (action.equals("purchase")) { %>
 		<h3>Payment Information</h3>
 		<form method="POST" action="confirmation.jsp">
+			<!-- 
 			<label for="owner">Cardholder's Name</label>
 			<input type="text" name="owner">
 			<br>
@@ -87,8 +89,10 @@
   				<option value="amex">American Express</option>
 			</select>
 			<br>
+			-->
 			<label for="cardno">Card Number</label>
 			<input type="text" name="cardno">
+			<!-- 
 			<label for="csv">Card Security Value</label>
 			<input type="text" name="csv">
 			<label for="street">Cardholder's Name</label>
@@ -154,8 +158,8 @@
 				</select>
 				<label for="zip">Zip Code</label>
 				<input type="text" value="zip">	
-				<br>
-				<input type="submit">
+				<br>-->
+				<input type="submit" value="Purchase">
 		</form>
 		
 	<%
