@@ -77,7 +77,7 @@
 						rsdescription = rs.getString("description");
 						rsimg = rs.getString("img_url");
 						rspid = rs.getInt("product_id");
-						System.out.println(rspid);
+						//System.out.println(rspid);
 						rscid = rs.getInt("category_id");
 						rsprice = rs.getString("price");
 						if (rsimg == null)
