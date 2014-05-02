@@ -7,7 +7,16 @@
 <body>
 <t:header title="Confirmation of Purchase"/>
 <%
+	String uid = "" + session.getAttribute("uid");
+	String cart_id = "" + session.getAttribute("cart_id");
 	String conf = "" + request.getParameter("conf");
+	String username = "" + session.getAttribute("name");
+
+	if(uid.equals("null")) //redirect if not logged in
+	{
+		response.sendRedirect("redirect.jsp");
+	}
+	
 	if (conf.equals("true") == false)
 	{
 		%>
@@ -16,18 +25,10 @@
 	}
 	else
 	{
-	String username = "" + session.getAttribute("name");
 %>
 <h3><%=username%>, your purchase was successful!</h3>
 <h4>Summary of Purchase:</h4>
-<%
-		String uid = "" + session.getAttribute("uid");
-		String cart_id = "" + session.getAttribute("cart_id");
-		if(uid.equals("null")) //redirect if not logged in
-		{
-			response.sendRedirect("redirect.jsp");
-		}
-	
+<%	
 		Connection conn = null;
 		PreparedStatement ps1 = null;
 		PreparedStatement ps2 = null;

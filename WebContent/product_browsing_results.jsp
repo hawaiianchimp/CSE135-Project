@@ -7,16 +7,7 @@
 <%@ page import="java.sql.*"%>
 
 
-<% String role = "" + session.getAttribute("role"); 
-	if (role.equals("Owner"))
-	{
-		%><t:header title="Product Search Results" /><%
-	}
-	else{ %>
-		<t:header title="Product Browsing Results" /><%
-	} %>
-<div class="row">
-<%
+<% 
 	//redirect if not logged in
 	String uid = "" + session.getAttribute("uid");
 	if(uid.equals("null")) 
@@ -24,6 +15,26 @@
 		response.sendRedirect("redirect.jsp");
 	}
 	
+	String role = "" + session.getAttribute("role"); 
+	if (role.equals("Owner"))
+	{
+		%><t:header title="Product Search Results" /><%
+	}
+	else{ %>
+		<t:header title="Product Browsing Results" /><%
+	} 
+	
+	//checks if parameter inserted
+	if(request.getParameter("keyword")==null) 
+	{
+		%>
+		<h1>Error: Request Not Valid</h1>
+		<%
+	}
+	else{
+	%>
+<div class="row">
+<%
 	String[] keywords = request.getParameter("keyword").split(" ");
 	String prepared_keywords="%";
 	for(String s : keywords)
@@ -169,3 +180,4 @@
 	
 </div>
 <t:footer />
+<%} //ends else of paramter inserted check %>
