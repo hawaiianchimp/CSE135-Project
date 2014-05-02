@@ -457,7 +457,7 @@
 		        	<input type="hidden" name="cid" value="<%=cid %>"/>
 		        	<input type="hidden" name="pid" value="<%=pid %>"/>
 		        	<input type="hidden" name="category" value="<%=category_name %>"/>
-		          <input name="keyword" type="text" class="form-control" placeholder="Search in <%= category_name%>" value="<%= keyword%>">
+		          <input name="keyword" type="text" class="form-control" placeholder="Search in Current Category" value="<%= keyword%>">
 		        </div>
 		        <input type="submit" value="Search" class="btn btn-default"/>
 		      </form>

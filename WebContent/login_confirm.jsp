@@ -119,8 +119,9 @@
 	
 	else if(logged_in==2){ 
 	%>
-		<t:message type="danger" message="<h1>You did not provide a username.</h1>
-		<h3>Please provide a username and try again.</h3>" />
+		<t:message type="danger" message="<h1>Error: Request Not Valid.</h1>" />
+		<%-- <t:message type="danger" message="<h1>You did not provide a username.</h1>
+		<h3>Please provide a username and try again.</h3>" /> --%>
 		<div class="row">
 			<form class="navbar-form navbar-left" role="login" action="login_confirm.jsp" method="POST">
 			  <div class="form-group">
