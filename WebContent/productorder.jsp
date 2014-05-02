@@ -85,6 +85,7 @@
 				
 				//Insert data if specified, and redirect back to products.jsp
 				System.out.println("Before");
+
 					if (!(action.equals("null")) && action.equals("insert"))
 					{
 						try

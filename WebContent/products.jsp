@@ -21,8 +21,11 @@
 	String role = ""+session.getAttribute("role");
 	String action = ""+request.getParameter("action");
 	String submit = ""+request.getParameter("submit");
+	String category_name = ""+request.getParameter("category");
 	String cid = ""+request.getParameter("cid");
 	String pid = ""+request.getParameter("pid");
+	String keyword = ""+request.getParameter("keyword");
+	keyword = (keyword.equals("null"))? "":keyword;
 	
 	Connection conn = DriverManager.getConnection(
 					"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
@@ -116,7 +119,7 @@
 							<input id="sku" name="sku" type="text" placeholder="SKU" class="form-control">
 							
 							<label class="control-label" for="img_url">Category</label>
-							<select class="form-control" name="category">
+							<select class="form-control" name="new_category_id">
 								<% 
 								
 								try{	
@@ -127,9 +130,9 @@
 									while(rs.next())
 									{
 										String c = rs.getString("name");
-										String id = rs.getString("category_id");
-										String selected = (c.equals(id)) ? "selected":""; %>
-										<option <%=selected%> value="<%=c %>"><%=c %></option>
+										String old_id = rs.getString("category_id");
+										String selected = (c.equals(old_id)) ? "selected":""; %>
+										<option <%=selected%> value="<%=old_id %>"><%=c %></option>
 								<% }
 									statement.close();
 									rs.close();
@@ -268,19 +271,20 @@
 							<input value="<%=rssku %>" id="sku" name="sku" type="text" placeholder="SKU" class="form-control">
 							
 							<label class="control-label" for="img_url">Category</label>
-							<select class="form-control" name="category">
+							<select class="form-control" name="new_category_id">
 								<% 
 								
 								try{	
-									sql = "SELECT name FROM categories";
+									sql = "SELECT category_id, name FROM categories";
 									d_statement = conn.createStatement();
 									d_rs = statement.executeQuery(sql);
 									ArrayList<String> categories;
 									while(d_rs.next())
 									{
-										String c = rs.getString("name");
+										String c = d_rs.getString("name");
+										String old_id = d_rs.getString("category_id");
 										String selected = (c.equals(rscategory)) ? "selected":""; %>
-										<option <%=selected%> value="<%=c %>"><%=c %></option>
+										<option <%=selected%> value="<%=old_id %>"><%=c %></option>
 								<% }
 									d_statement.close();
 									conn.close();
@@ -362,6 +366,7 @@
 				{
 					try{
 						Class.forName("org.postgresql.Driver");
+						conn.setAutoCommit(false);
 						sql =	"UPDATE products SET (name, sku, img_url, description, price) = " +
 								"(?,?,?,?,?) WHERE product_id = ?";
 						d_pstmt = conn.prepareStatement(sql);
@@ -369,27 +374,30 @@
 						d_pstmt.setString(2, ""+request.getParameter("sku"));
 						d_pstmt.setString(3, ""+request.getParameter("img_url"));
 						d_pstmt.setString(4, ""+request.getParameter("description"));
-						
-						//ERROR HERE with the double casting from string
 						d_pstmt.setDouble(5, Double.valueOf(""+request.getParameter("price")));
-						d_pstmt.setInt(6, Integer.parseInt(request.getParameter("cid")));
+						d_pstmt.setInt(6, Integer.parseInt(request.getParameter("pid")));
+						
+						conn.commit();
+						sql =	"UPDATE products_categories SET (category_id) = " +
+								"(?) WHERE product_id = ?";
+						d_pstmt = conn.prepareStatement(sql);
+						d_pstmt.setInt(1, Integer.parseInt(request.getParameter("new_category_id")));
+						d_pstmt.setInt(2, Integer.parseInt(request.getParameter("pid")));
+						conn.commit();
+						conn.setAutoCommit(true);
+						//ERROR HERE with the double casting from string
 
 						int count = d_pstmt.executeUpdate();
 						d_pstmt.close();
 						conn.close();
-						if(count != 0){
-							%>
-							<t:message type="success" message="Product successfully updated"></t:message>
-							<%
-							}
-						else{
-							%>
-							<t:message type="danger" message="Error occurred in SQL"></t:message>
-							<%
-						}
+						
+						%>
+						<t:message type="success" message="Product successfully updated"></t:message>
+						<%
 					}
 					catch(SQLException e){
 						e.printStackTrace();
+						conn.rollback();
 						%>
 						<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
 						<%
@@ -435,31 +443,37 @@
 %>
 
 <div class="row clearfix">
-	<!-- category product search -->
-	<div class="row">
-		<div class="col-md-4">
-			<a class="btn btn-default" href="product_browsing_category.jsp?cid=<%=""+request.getParameter("cid")%>&category=<%=""+request.getParameter("category") %>" >Product Search within <%=""+request.getParameter("category") %></a>
+	
+	<!-- product search -->
+	<div class="row clearfix">
+		<div class="col-sm-12">
+			<form class="navbar-form navbar-left" role="search" action="products.jsp">
+		        <div class="form-group">
+		        	<input type="hidden" name="cid" value="<%=cid %>"/>
+		          <input name="keyword" type="text" class="form-control" placeholder="Search" value="<%= keyword%>">
+		        </div>
+		        <input type="submit" value="Search" class="btn btn-default"/>
+		      </form>
 		</div>
-		<div class="col-md-4"></div>
-		<div class="col-md-4"></div>
 	</div>
 
 	<!-- category menu -->
 	<div class="col-sm-2">
 		<ul class="nav nav-stacked navbar-left nav-pills">
-		<li class="active"><a href="categories.jsp">Categories</a>
+		<li><a href="categories.jsp">Categories</a>
 		</li>
 		<%
 			if (c_rs.isBeforeFirst()) {
-					String rsname, rsid, rscount;
+					String rsname, rsid, rscount,active;
 					while (c_rs.next()) {
 						rsname = c_rs.getString("name");
+						active = (rsname.equals(category_name))? "class='active' ":"";
 						rsid = String.valueOf(c_rs.getInt("category_id"));
 						session.setAttribute("cid", rsid);
 						rscount = String.valueOf(c_rs.getInt("count"));
 						//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
 					%>
-						<li><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%> <span class="badge"><%=rscount %></span></a></li>
+						<li <%= active%>><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%> <span class="badge"><%=rscount %></span></a></li>
 					<%
 					}
 			}
@@ -482,9 +496,6 @@
 		<!-- products -->
 		<div class="col-sm-10">
 			<%
-
-			if(!cid.equals("null"))
-			{
 					try {
 						// Registering Postgresql JDBC driver with the DriverManager
 						Class.forName("org.postgresql.Driver");
@@ -499,13 +510,34 @@
 
 						// Use the created statement to SELECT
 						// the student attributes FROM the Student table.
+							if(!cid.equals("null"))
+							{
+
+								if(keyword.isEmpty())
+								{
+									sql = "SELECT p.*, categories.name AS category_name  FROM (SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id="+ cid+") WHERE products_categories.product_id=products.product_id) AS p LEFT JOIN categories ON (p.category_id = categories.category_ID)";
+								}
+								else
+								{
+									sql = "SELECT p.*, categories.name AS category_name  FROM (SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id="+ cid+") WHERE products_categories.product_id=products.product_id AND (products.name ILIKE '%"+keyword+"%')) AS p LEFT JOIN categories ON (p.category_id = categories.category_ID)";
+								}
+							}
+							else
+							{
+								if(!keyword.isEmpty())
+								{
+									sql = "SELECT * FROM products WHERE products.name ILIKE '%"+ keyword+ "%'";
+								}
+								else
+								{
+									sql = "SELECT * FROM products";
+								}
+							}
 						
-						sql = "SELECT p.*, categories.name AS category_name  FROM (SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id=?) WHERE products_categories.product_id=products.product_id) AS p LEFT JOIN categories ON (p.category_id = categories.category_ID)";
+						
 						pstmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
 
-						int category_id = Integer.parseInt(cid);
-						pstmt.setInt(1, category_id);
 						rs = pstmt.executeQuery();
 					
 					
@@ -513,7 +545,18 @@
 					if (rs.isBeforeFirst()) {
 						String rsname, rsdescription, rsimg, rssku, rspid, rsprice;
 						rs.next();
-						%> <h1><%=rs.getString("category_name") %></h1> 
+						try{
+							if(rs.findColumn("category_name") != 0)
+							{
+							%> <h1><%=rs.getString("category_name") %></h1> 
+							<% 
+							}
+						}
+						catch(SQLException e){
+							%>
+							<h1><%= e.getMessage()%></h1>
+							<%
+						}%> 
 								<div class="row">
 										<div class="col-sm-1">
 											<h3>Image</h3>
@@ -628,17 +671,8 @@
 									</div>
 							</div>
 
-
-
-
-
 			<%
 				}
-		
-		}
-		else{%>
-			<t:message type="warning" message="No category selected, please select a category"></t:message>
-		<%}
 		%>
 		</div>
 	</div>
