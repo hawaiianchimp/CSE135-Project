@@ -379,10 +379,10 @@
 						d_pstmt.setString(2, ""+request.getParameter("sku"));
 						d_pstmt.setString(3, ""+request.getParameter("img_url"));
 						d_pstmt.setString(4, ""+request.getParameter("description"));
-						d_pstmt.setDouble(5, Double.valueOf(""+request.getParameter("price")));
+						Double p = ((""+request.getParameter("price")).isEmpty()) ? 0:Double.parseDouble(""+request.getParameter("price"));
+						d_pstmt.setDouble(5, p);
 						d_pstmt.setInt(6, Integer.parseInt(request.getParameter("pid")));
-						
-						conn.commit();
+						d_pstmt.executeUpdate();
 						sql =	"UPDATE products_categories SET (category_id) = " +
 								"(?) WHERE product_id = ?";
 						d_pstmt = conn.prepareStatement(sql);
@@ -457,7 +457,7 @@
 		        	<input type="hidden" name="cid" value="<%=cid %>"/>
 		        	<input type="hidden" name="pid" value="<%=pid %>"/>
 		        	<input type="hidden" name="category" value="<%=category_name %>"/>
-		          <input name="keyword" type="text" class="form-control" placeholder="Search in Current Category" value="<%= keyword%>">
+		          <input name="keyword" type="text" class="form-control" placeholder="Search in <%= category_name%>" value="<%= keyword%>">
 		        </div>
 		        <input type="submit" value="Search" class="btn btn-default"/>
 		      </form>
