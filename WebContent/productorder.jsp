@@ -8,7 +8,6 @@
 
 <t:header title="Product Order"/>
 	<%
-
 			String error = "" + request.getParameter("error");
 			String action = "" + request.getParameter("action");
 			String uid = "" + session.getAttribute("uid");
@@ -43,10 +42,6 @@
 				try
 				{
 					//Collect parameters: need user id and product sku to show user's cart as well as add to it
-				
-					//System.out.println("User: " + uid);
-					//System.out.println("Product: " + product);
-					//System.out.println("action: " + action);
 					
 					if (uid.equals("null") || product.equals("null"))
 						throw new IOException();
@@ -78,7 +73,7 @@
 							rs4.next();
 							pstmt3.setInt(1, rs4.getInt("cart_id"));
 							pstmt3.setInt(2, Integer.parseInt(product));
-							//System.out.println("here");
+							
 							for (int i = 0; i < quantity; i++)
 								pstmt3.executeUpdate();
 							conn.commit();
