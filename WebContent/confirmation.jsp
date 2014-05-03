@@ -50,7 +50,7 @@
 		ps2 = conn.prepareStatement("DELETE FROM carts_products WHERE cart_id = " + cart_id + " AND product_id = ?");
 		
 		%>
-		<table>
+		<table class="table">
 		<tr>
 			<th>Image</th>
 			<th>SKU</th>
@@ -92,7 +92,7 @@
 	%>
 	</table>
 	<form action="product_browsing.jsp">
-				<input type="submit" value="Back to Browsing">
+				<input class="btn btn-default" type="submit" value="Back to Browsing">
 			</form>
 			<% } %>
 <t:footer/>

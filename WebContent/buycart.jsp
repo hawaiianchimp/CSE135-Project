@@ -51,7 +51,7 @@
 		<h2>View Shopping Cart</h2>
 		<% }%>
 	
-	<table>
+	<table class="table">
 			<tr>
 				<th>SKU</th>
 				<th>Name</th>
@@ -90,11 +90,11 @@
 		<%} %>
 		<% if (action.equals("purchase")) { %>
 		<h3>Payment Information</h3>
-		<form method="POST" action="confirmation.jsp">
+		<form class="form-horizontal" method="POST" action="confirmation.jsp">
 			<input type="hidden" name="conf" value="true">
 			<label for="cardno">Card Number</label>
-			<input type="text" name="cardno">
-			<input type="submit" value="Purchase">
+			<input class="form-control" type="text" name="cardno" placeholder="XXXX-XXXX-XXXX-XXXX">
+			<input class="btn btn-primary" type="submit" value="Purchase">
 		</form>
 		
 	<%
@@ -103,11 +103,11 @@
 		{
 			%>
 			<form method="POST" action="product_browsing.jsp">
-				<input type="submit" value="Back to Browsing">
+				<input class="btn btn-default" type="submit" value="Back to Browsing">
 			</form>
 			<form method="POST" action="buycart.jsp">
 				<input type="hidden" name="action" value="purchase">
-				<input type="submit" value="Purchase Cart">
+				<input class="btn btn-success" type="submit" value="Purchase Cart">
 			</form>
 	<%
 		}

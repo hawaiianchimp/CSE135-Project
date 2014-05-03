@@ -147,7 +147,7 @@
 						rs2 = pstmt2.executeQuery();
 	%>
 						<h2>Your Shopping Cart</h2>
-						<table>
+						<table class="table">
 						<tr>
 						<%-- <th>Image</th> --%>
 						<th>SKU</th>
@@ -176,7 +176,7 @@
 						<form action="productorder.jsp" method="POST">
 							<input type="hidden" name="action" value="insert">
 							<input type="hidden" name="product" value=<%=product%>>
-						<table>
+						<table class="table">
 	<% 
 						pstmt2.setInt(1, Integer.parseInt(product)); 
 						rs2 = pstmt2.executeQuery();
@@ -195,7 +195,7 @@
 								<td><%=rs2.getString("name")%></td>
 								<td><%=rs2.getDouble("price")%></td>
 								<td><input type="text" name="quantity"></td>
-								<td><input type="submit" value="Add to cart"></td>
+								<td><input class="btn btn-primary" type="submit" value="Add to cart"></td>
 							</tr>
 						</table>
 					</form>
