@@ -59,9 +59,11 @@
       </form>
       <ul class="nav navbar-nav navbar-right">
       	<li><a href="#"><%=message %></a></li>
+      	<% if(role.equals("Customer")){ %>
         <li>
           <a href="buycart.jsp?action=view">Buy Shopping Cart</a>
         </li>
+        <%} %>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
