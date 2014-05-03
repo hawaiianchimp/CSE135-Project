@@ -118,20 +118,20 @@
 			<h3>Thank you for signing up with us!</h3>
 			<%
 			if(role.equals("Owner")) { %>
-				<a class="btn btn-default" href="/CSE135Project/categories.jsp">Go to Categories</a>
+				<a class="btn btn-default" href="categories.jsp">Go to Categories</a>
 			<% }
 			if(role.equals("Customer")) { %>
-				<a class="btn btn-default" href="/CSE135Project/product_browsing.jsp" >Go to Product Browsing</a>
+				<a class="btn btn-default" href="product_browsing.jsp" >Go to Product Browsing</a>
 			<%}%>
 			
-			<a class="btn btn-default" href="/CSE135Project/login.jsp" >Go to Log In</a>
+			<a class="btn btn-default" href="login.jsp" >Go to Log In</a>
 			
 		<% }
 		
 		else{ %>
 			<t:message type="danger" message="Your signup failed!"/>
 			<!-- <h3>Unfortunately, someone else is using your username. Please go back and choose another username</h3> -->
-			<a class="btn btn-default" href="/CSE135Project/signup.jsp">Go
+			<a class="btn btn-default" href="signup.jsp">Go
 			Back</a>
 		<% } %>
 	<t:footer/>

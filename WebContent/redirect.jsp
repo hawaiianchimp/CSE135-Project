@@ -5,7 +5,7 @@
 <t:header title='Please Log In'/>
 	<div class = "row clearfix">
 		<div class = "col-md-6">
-			<a class="btn btn-default" href="/CSE135Project/login.jsp" >Log In</a>
+			<a class="btn btn-default" href="login.jsp" >Log In</a>
 		</div>
 		<div class = "col-md-6"></div>
 	</div>

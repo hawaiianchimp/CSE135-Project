@@ -7,7 +7,7 @@
 	  	<input type="text" class="form-control" placeholder="Username" name="username">
 	 	</div>
 	  <button type="submit" class="btn btn-default">Log In</button>
-	  <a class="btn btn-default" href="/CSE135Project/signup.jsp" >Signup</a>
+	  <a class="btn btn-default" href="signup.jsp" >Signup</a>
 	</form>
 </div>
 <t:footer />

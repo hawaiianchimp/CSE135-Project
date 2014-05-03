@@ -100,7 +100,7 @@
 
 			<!-- Buttons -->
 			<button type="submit" class="btn btn-primary">Submit</button>
-			<a class="btn btn-default" href="/CSE135Project/index.html">Cancel</a>
+			<a class="btn btn-default" href="index.html">Cancel</a>
 
 		</form>
 	</div>

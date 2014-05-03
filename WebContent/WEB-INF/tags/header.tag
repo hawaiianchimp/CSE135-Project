@@ -37,7 +37,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/CSE135Project/index.jsp">CSE135</a>
+      <a class="navbar-brand" href="index.jsp">CSE135</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -54,8 +54,8 @@
       <%} %>
       </ul>
       <form class="navbar-form navbar-left" role="login">
-        <a class="btn btn-default" href="/CSE135Project/login.jsp" >Log In</a>
-        <a class="btn btn-default" href="/CSE135Project/signup.jsp" >Signup</a>
+        <a class="btn btn-default" href="login.jsp" >Log In</a>
+        <a class="btn btn-default" href="signup.jsp" >Signup</a>
       </form>
       <ul class="nav navbar-nav navbar-right">
       	<li><a href="#"><%=message %></a></li>

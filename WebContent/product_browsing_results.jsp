@@ -48,7 +48,7 @@
 	{
 		%>
 		<t:message type="warning" message="Please log in first for product browsing function." />
-		<a class="btn btn-default" href="/CSE135Project/login.jsp" >Log In</a>
+		<a class="btn btn-default" href="login.jsp" >Log In</a>
 		<%
 	}
 	else
@@ -169,12 +169,12 @@
 	if (role.equals("Owner"))
 	{
 		%>
-		<a class="btn btn-default" href="/CSE135Project/product_browsing.jsp" >Back to Product Searching</a>
-		<a class="btn btn-default" href="/CSE135Project/categories.jsp" >Back to Categories</a>
+		<a class="btn btn-default" href="product_browsing.jsp" >Back to Product Searching</a>
+		<a class="btn btn-default" href="categories.jsp" >Back to Categories</a>
 		<%
 	}
 	else{ %>
-		<a class="btn btn-default" href="/CSE135Project/product_browsing.jsp" >Back to Product Browsing</a><%
+		<a class="btn btn-default" href="product_browsing.jsp" >Back to Product Browsing</a><%
 	} %>
 	
 	

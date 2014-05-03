@@ -103,15 +103,15 @@
 	%>
 		<t:message type="success" message="<%=welcome_message %>" />
 		<h3>What would you like to do today?</h3>
-		<a class="btn btn-default" href="/CSE135Project/index.jsp">Home</a>
+		<a class="btn btn-default" href="index.jsp">Home</a>
 		<%
 		String role = ""+session.getAttribute("role");
 		if(role.equals("Owner")){
 		%>
-		<a class="btn btn-default" href="/CSE135Project/categories.jsp">Go to Categories</a>
+		<a class="btn btn-default" href="categories.jsp">Go to Categories</a>
 		<%}
 		if(role.equals("Customer")) { %>
-		<a class="btn btn-default" href="/CSE135Project/product_browsing.jsp" >Go to Product Browsing</a>
+		<a class="btn btn-default" href="product_browsing.jsp" >Go to Product Browsing</a>
 		<a class="btn btn-default" href="buycart.jsp?action=view">Go to Shopping Cart</a>
 		<%}%>
 	<% 
@@ -128,7 +128,7 @@
 			  	<input type="text" class="form-control" placeholder="Username" name="username">
 			 	</div>
 			  <button type="submit" class="btn btn-default">Log In</button>
-			  <a class="btn btn-default" href="/CSE135Project/signup.jsp" >Signup</a>
+			  <a class="btn btn-default" href="signup.jsp" >Signup</a>
 			</form>
 		</div>
 		
@@ -147,7 +147,7 @@
 			  	<input type="text" class="form-control" placeholder="Username" name="username">
 			 	</div>
 			  <button type="submit" class="btn btn-default">Log In</button>
-			  <a class="btn btn-default" href="/CSE135Project/signup.jsp" >Signup</a>
+			  <a class="btn btn-default" href="signup.jsp" >Signup</a>
 			</form>
 		</div>
 	<% 
