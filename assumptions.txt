@@ -5,3 +5,6 @@ Registration:
 
 All Product Browsing:
 - user will enter an alphanumeric keyword to search by
+
+Owner:
+	Deletion of product is not allowed if it exists in users cart.
