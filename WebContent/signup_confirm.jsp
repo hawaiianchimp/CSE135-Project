@@ -32,7 +32,7 @@
 	{
 		%>
 		<t:header title='Registration Confirmation'/>
-			<h1>Error: Request Not Valid</h1>
+			<t:message type="danger" message="Error: Request Not Valid"/>
 		<t:footer />	
 		<%
 	}
@@ -42,17 +42,8 @@
 		if (name.length()>0 && age.length()>0 && role.length()>0 && state.length()>0 && noSpace) {
 			
 			Connection conn = null;
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			String sql = null;
-			
-			//Add cart information
-			PreparedStatement pscart = null;
-			String sqlcart = null;
-			PreparedStatement psuid = null;
-			ResultSet rsuid = null;
-			String sqluid = null;
-	
+			String sql = "";
+			PreparedStatement pstmt = null; 
 			try {
 				// Registering Postgresql JDBC driver with the DriverManager
 				Class.forName("org.postgresql.Driver");
@@ -61,11 +52,10 @@
 				conn = DriverManager.getConnection(
 						"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); //TODO: Change name of database accordingly
-				
+
 				if (name != null) {
 					// Create the statement
-					
-					Statement statement = conn.createStatement();
+					conn.setAutoCommit(false);
 					// Insert the user into table users, only if it does not already exist
 					sql =	"INSERT INTO users (name, role, age, state) " +
 							"SELECT ?,?,?,? " +
@@ -79,33 +69,37 @@
 					pstmt.setString(4, state);
 					pstmt.setString(5, name);
 	
-					int count = pstmt.executeUpdate();
+					int count1 = pstmt.executeUpdate();
+					System.out.print(count1);
 					//out.println("<h1>" + "test" + "</h1>");
 					//if no rows have been updated, that is because the name already exists.
-					if(count>0)
-						success=true;
 					
-					sqlcart = "INSERT INTO carts (uid) VALUES (?)";
-					pscart = conn.prepareStatement(sqlcart);
+					sql = "INSERT INTO carts (uid) SELECT uid FROM users WHERE name = ?";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setString(1, name);
+					int count2 = pstmt.executeUpdate();
+					System.out.print(count2);
+
+					if(count1 + count2 == 2)
+					{
+						conn.commit();
+						success = true;
+					}
+					else
+					{
+						conn.rollback();
+						throw new SQLException("Your signup failed!");
+					}
+
 					
-					sqluid = "SELECT uid FROM users WHERE name = ?";
-					psuid = conn.prepareStatement(sqluid);
-					psuid.setString(1, name);
-					rsuid = psuid.executeQuery();
-					rsuid.next();
-					pscart.setInt(1, rsuid.getInt("uid")); 
-					pscart.executeUpdate();
-					
-					pscart.close();
-					psuid.close();
-					rsuid.close();
-					
-					statement.close();
 					conn.close();
 				}
 			} catch (SQLException e) {
 	            e.printStackTrace();
-	            out.println("<h1>" + "Shit happened" + "</h1>");
+	            String message = "Failure to Insert Category: " + e.getMessage();
+			   	     	%>
+						<t:message type="danger" message="<%=message %>"></t:message>
+						<%
 	            
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
@@ -120,7 +114,7 @@
 		if(success)
 		{ 
 		%>
-			<h1>You have successfully signed up!</h1>
+			<t:message type="success" message="You have successfully signed up!" />
 			<h3>Thank you for signing up with us!</h3>
 			<%
 			if(role.equals("Owner")) { %>

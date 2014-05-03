@@ -333,7 +333,7 @@ COPY users (uid, name, role, state, date, age) FROM stdin;
 7	Jason	Owner	AL	\N	45
 8	test	Customer	GA	\N	12
 9	owner	Owner	CA	\N	21
-10	I'mSoCool	Customer	AL	\N	123
+10	ImSoCool	Customer	AL	\N	123
 11	Owner	Owner	AZ	\N	55
 12	user1	Owner	AL	\N	10
 13	user2	Customer	AL	\N	10
