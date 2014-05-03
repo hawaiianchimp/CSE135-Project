@@ -206,9 +206,6 @@
 						if((""+request.getParameter("description")).isEmpty()){
 							throw new SQLException("description cannot be empty");
 						}
-						pstmt.setString(2, ""+request.getParameter("sku"));
-						pstmt.setString(3, ""+request.getParameter("img_url"));
-						pstmt.setString(4, ""+request.getParameter("description"));
 					
 						Class.forName("org.postgresql.Driver");
 						conn.setAutoCommit(false);
@@ -232,7 +229,8 @@
 							sql =	"INSERT INTO products_categories (category_id, product_id) " +
 									"SELECT ?,?";
 							pstmt = conn.prepareStatement(sql);
-							pstmt.setInt(1, Integer.parseInt(cid));
+							String new_id = (""+request.getParameter("new_category_id"));
+							pstmt.setInt(1, Integer.parseInt(new_id));
 							pstmt.setInt(2, product_id);
 								if(pstmt.executeUpdate() != 0)
 								{

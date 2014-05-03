@@ -466,7 +466,7 @@
 					</td>
 					<td>
 						<p>
-							<a class="btn btn-success" href="categories.jsp?action=insert">Insert Item</a>
+							<a class="btn btn-success" href="categories.jsp?action=insert">Insert Category</a>
 						</p>
 					</td>
 		</tr>
