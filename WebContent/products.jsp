@@ -427,11 +427,12 @@
 						d_pstmt = conn.prepareStatement(sql);
 						d_pstmt.setInt(1, Integer.parseInt(request.getParameter("new_category_id")));
 						d_pstmt.setInt(2, Integer.parseInt(request.getParameter("pid")));
-						conn.commit();
-						conn.setAutoCommit(true);
-						//ERROR HERE with the double casting from string
 
 						int count = d_pstmt.executeUpdate();
+						conn.commit();
+						//ERROR HERE with the double casting from string
+
+						conn.setAutoCommit(true);
 						d_pstmt.close();
 						conn.close();
 						

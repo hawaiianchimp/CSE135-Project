@@ -6,7 +6,7 @@
 <%@ page import="java.sql.*" %>
 
 <%
-	PrintWriter o = response.getWriter();
+	//PrintWriter o = response.getWriter();
 
 	boolean success = false;
 	
@@ -51,7 +51,7 @@
 				// Open a connection to the database using DriverManager
 				conn = DriverManager.getConnection(
 						"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); //TODO: Change name of database accordingly
+						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); 
 
 				if (name != null) {
 					// Create the statement
@@ -91,12 +91,12 @@
 						throw new SQLException("Your signup failed!");
 					}
 
-					
+					conn.setAutoCommit(true);
 					conn.close();
 				}
 			} catch (SQLException e) {
 	            e.printStackTrace();
-	            String message = "Failure to Insert Category: " + e.getMessage();
+	            String message = "Failure: Your signup failed " + e.getMessage();
 			   	     	%>
 						<t:message type="danger" message="<%=message %>"></t:message>
 						<%

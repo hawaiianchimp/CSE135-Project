@@ -8,7 +8,7 @@
 <t:header title="Shopping Cart"/>
 <% 
 	//redirect if not logged in
-	String action = request.getParameter("action");
+	String action = "" + request.getParameter("action");
 	String uid = "" + session.getAttribute("uid");
 	if (uid.equals("null"))
 	{
@@ -25,7 +25,7 @@
 	try
 	{
 	
-	if (action != null && (action.equals("view") || action.equals("purchase")))
+	if (((action.equals("null")) == false && (action.equals("view")) || action.equals("purchase")))
 	{
 		Class.forName("org.postgresql.Driver");
 		conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
@@ -111,6 +111,13 @@
 			</form>
 	<%
 		}
+	}
+	
+	else
+	{
+		%>
+		<h1>Error: Request Not Valid</h1>
+		<%
 	}
 	}
 	catch (Exception e)

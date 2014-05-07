@@ -1,28 +1,29 @@
 <%@page import="org.postgresql.util.PSQLException"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="java.io.*"%>
 
 
-<t:header title="Product Order"/>
-	<%
+<t:header title="Product Order" />
+<%
 			String error = "" + request.getParameter("error");
 			String action = "" + request.getParameter("action");
 			String uid = "" + session.getAttribute("uid");
 			if (error.equals("yes") || ((action.equals("order")) == false && (action.equals("insert")) == false))
 			{
 				%>
-				<h1>Error: Request Is Invalid</h1>
-				<%
+<h1>Error: Request Is Invalid</h1>
+<%
 			}
 			else 
 			{
+				System.out.println(action.equals("insert"));
 				//redirect if not logged in
 				if(uid.equals("null"))
 					response.sendRedirect("redirect.jsp");
-			}
+			
 			
 			
 			//indicate error if page is arrived at by accidental refresh, back button, or directly without selecting "add to cart"
@@ -55,6 +56,13 @@
 				catch (SQLException e)
 				{
 					response.sendRedirect("productorder.jsp?error=yes");
+				}
+				
+				catch (IOException e)
+				{
+					%>
+<t:message type="danger" message="<%=e.getMessage()%>" />
+<%
 				}
 				
 				//Insert data if specified, and redirect back to products.jsp
@@ -146,61 +154,62 @@
 						pstmt2.setInt(1, Integer.parseInt(product));
 						rs2 = pstmt2.executeQuery();
 	%>
-						<h2>Your Shopping Cart</h2>
-						<table class="table">
-						<tr>
-						<%-- <th>Image</th> --%>
-						<th>SKU</th>
-						<th>Name</th>
-						<th>Price</th>
-						<th>Quantity</th>
-						<th>Total</th>
-						</tr>
+<h2>Your Shopping Cart</h2>
+<table class="table">
+	<tr>
+		<%-- <th>Image</th> --%>
+		<th>SKU</th>
+		<th>Name</th>
+		<th>Price</th>
+		<th>Quantity</th>
+		<th>Total</th>
+	</tr>
 	<% 
 						//Iterate through all tuples to display contents of cart
 						while (rs1.next())
 						{
 	%>
-							<tr>
-								<%-- <td><%=rs1.getString("img_url")%></td> --%>
-								<td><%=rs1.getString("sku")%></td>
-								<td><%=rs1.getString("name")%></td>
-								<td><%=rs1.getDouble("price")%></td>
-								<td><%=rs1.getInt("Quantity") %></td>
-								<td><%=rs1.getDouble("price") * rs1.getInt("Quantity")%></td>
-							</tr>
+	<tr>
+		<%-- <td><%=rs1.getString("img_url")%></td> --%>
+		<td><%=rs1.getString("sku")%></td>
+		<td><%=rs1.getString("name")%></td>
+		<td><%=rs1.getDouble("price")%></td>
+		<td><%=rs1.getInt("Quantity") %></td>
+		<td><%=rs1.getDouble("price") * rs1.getInt("Quantity")%></td>
+	</tr>
 	<% 					} 
 	%>
-						</table>
-						<h3>Add to cart?</h3>
-						<form action="productorder.jsp" method="POST">
-							<input type="hidden" name="action" value="insert">
-							<input type="hidden" name="product" value=<%=product%>>
-						<table class="table">
-	<% 
+</table>
+<h3>Add to cart?</h3>
+<form action="productorder.jsp" method="POST">
+	<input type="hidden" name="action" value="insert"> <input
+		type="hidden" name="product" value=<%=product%>>
+	<table class="table">
+		<% 
 						pstmt2.setInt(1, Integer.parseInt(product)); 
 						rs2 = pstmt2.executeQuery();
 						rs2.next(); 
 	%>
-							<tr>
-								<%-- <th>Image</th> --%>
-								<th>SKU</th>
-								<th>Name</th>
-								<th>Price</th>
-								<th>Quantity</th>
-							</tr>
-							<tr>
-								<%-- <td><%=rs2.getString("img_url")%></td> --%>
-								<td><%=rs2.getString("sku")%></td>
-								<td><%=rs2.getString("name")%></td>
-								<td><%=rs2.getDouble("price")%></td>
-								<td><input type="text" name="quantity"></td>
-								<td><input class="btn btn-primary" type="submit" value="Add to cart"></td>
-							</tr>
-						</table>
-					</form>
+		<tr>
+			<%-- <th>Image</th> --%>
+			<th>SKU</th>
+			<th>Name</th>
+			<th>Price</th>
+			<th>Quantity</th>
+		</tr>
+		<tr>
+			<%-- <td><%=rs2.getString("img_url")%></td> --%>
+			<td><%=rs2.getString("sku")%></td>
+			<td><%=rs2.getString("name")%></td>
+			<td><%=rs2.getDouble("price")%></td>
+			<td><input type="text" name="quantity"></td>
+			<td><input class="btn btn-primary" type="submit"
+				value="Add to cart"></td>
+		</tr>
+	</table>
+</form>
 
-	<%				}
+<%				}
 					
 					catch (Exception e)
 					{
@@ -226,7 +235,8 @@
 						
 					finally
 					{
-							conn.setAutoCommit(true);
+							if (conn != null)
+								conn.setAutoCommit(true);
 							if (conn != null)
 								conn.close();
 							if (pstmt1 != null)
@@ -245,6 +255,7 @@
 								rs4.close();
 					}
 				}
+			}
 		%>
-		
+
 <t:footer />
