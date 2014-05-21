@@ -1,1 +1,1 @@
-/usr/local/Cellar/postgresql/9.3.4/bin/postgres "-D" "db"
+/usr/local/Cellar/postgresql/9.3.4/bin/postgres "-D" "Documents/workspace-jee/CSE135Project/db"
