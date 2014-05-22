@@ -7,7 +7,7 @@
 <%@ page import="java.sql.*"%>
 
 <% String role = "" + session.getAttribute("role");
-	if (role.equals("Owner"))
+	if (role.equals("owner"))
 	{
 		%><t:header title="Product Search" /><%
 	}
@@ -78,7 +78,7 @@
 		
 		<div class="col-md-4 column">
 			<%
-			if (role.equals("Owner"))
+			if (role.equals("owner"))
 			{
 				%><h3>Search All Categories</h3><%
 			}

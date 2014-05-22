@@ -49,11 +49,11 @@ CREATE TABLE carts_products (
 );
 
 
-INSERT INTO users (uid, name, role, state, age) SELECT 1,	'Sean',		'Owner',	'HI', 23;
-INSERT INTO users (uid, name, role, state, age) SELECT 2,	'Vineel',	'Owner',	'CA', 25;
-INSERT INTO users (uid, name, role, state, age) SELECT 3,	'Bonnie',	'Customer',	'CA', 22;
-INSERT INTO users (uid, name, role, state, age) SELECT 4,	'owner',	'Owner',	'CA', 21;
-INSERT INTO users (uid, name, role, state, age) SELECT 5,	'customer',	'Customer',	'CA', 26;
+INSERT INTO users (uid, name, role, state, age) SELECT 1,	'Sean',		'owner',	'HI', 23;
+INSERT INTO users (uid, name, role, state, age) SELECT 2,	'Vineel',	'owner',	'CA', 25;
+INSERT INTO users (uid, name, role, state, age) SELECT 3,	'Bonnie',	'customer',	'CA', 22;
+INSERT INTO users (uid, name, role, state, age) SELECT 4,	'owner',	'owner',	'CA', 21;
+INSERT INTO users (uid, name, role, state, age) SELECT 5,	'customer',	'customer',	'CA', 26;
 
 INSERT INTO carts (cart_id, uid) SELECT 6,  1;
 INSERT INTO carts (cart_id, uid) SELECT 7,	2;

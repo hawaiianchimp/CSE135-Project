@@ -16,7 +16,7 @@
 			<p>
 				${description}
 			</p>
-			<% if(session.getAttribute("role").equals("Owner")){ %>
+			<% if(session.getAttribute("role").equals("owner")){ %>
 			<p>
 				<% //System.out.println("inside if()"); %>
 				<a class="btn btn-primary" href="products.jsp?cid=${cid}&category=${name}">${label}</a>

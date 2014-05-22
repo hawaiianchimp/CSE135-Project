@@ -16,7 +16,7 @@
 	}
 	
 	String role = "" + session.getAttribute("role"); 
-	if (role.equals("Owner"))
+	if (role.equals("owner"))
 	{
 		%><t:header title="Product Search Results" /><%
 	}
@@ -122,7 +122,7 @@
 									
 									
 									<% 
-									if(role.equals("Owner"))
+									if(role.equals("owner"))
 									{ %>
 										<a class="btn btn-success" href="products.jsp?action=update&cid=<%=rscid%>&pid=<%=rspid %>">Update</a>
 										<a class="btn btn-danger" href="products.jsp?action=delete&cid=<%=rscid%>&pid=<%=rspid %>">Delete</a>
@@ -166,7 +166,7 @@
 </div>
 <div class="col-md-12">
 	<%
-	if (role.equals("Owner"))
+	if (role.equals("owner"))
 	{
 		%>
 		<a class="btn btn-default" href="products.jsp" >Back to Product Searching</a>

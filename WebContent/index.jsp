@@ -17,11 +17,11 @@
 	<br>
 	<br>
 	
-	<%if(role.equals("Owner")){%>
+	<%if(role.equals("owner")){%>
 	<span><a href="categories.jsp">Go &raquo;</a></span>
 	<%} %>
 	
-	<%if(role.equals("Customer")){%>
+	<%if(role.equals("customer")){%>
 	<span><a href="products.jsp">Go &raquo;</a></span>
 	<%} %>
 	

@@ -15,9 +15,6 @@
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
-		PreparedStatement pstmtcart = null;
-		ResultSet rscart = null;
 
 		try {
 			// Registering Postgresql JDBC driver with the DriverManager
@@ -52,14 +49,9 @@
 					
 				if(logged_in==1)
 				{
-					pstmtcart = conn.prepareStatement("SELECT * FROM carts WHERE uid = ?");
-					pstmtcart.setInt(1, rs.getInt("uid"));
-					rscart = pstmtcart.executeQuery();
-					rscart.next();
 					
 					session.setAttribute("name", username);
-					session.setAttribute("uid", rs.getInt("uid"));
-					session.setAttribute("cart_id", rscart.getInt("cart_id"));
+					session.setAttribute("id", rs.getInt("id"));
 					session.setAttribute("role", rs.getObject(rs.findColumn("role")));
 					session.setAttribute("state", rs.getObject(rs.findColumn("state")));
 					session.setAttribute("age", rs.getObject(rs.findColumn("age")));
@@ -68,9 +60,6 @@
 					System.out.print("Log\n role:" + session.getAttribute("role") + "\n");
 					System.out.print("Log\n state:" + session.getAttribute("state") + "\n");
 					System.out.print("Log\n age:" + session.getAttribute("age") + "\n"); */
-					
-					pstmtcart.close();
-					rscart.close();
 				}
 
 				// Close the ResultSet
@@ -106,11 +95,11 @@
 		<a class="btn btn-default" href="index.jsp">Home</a>
 		<%
 		String role = ""+session.getAttribute("role");
-		if(role.equals("Owner")){
+		if(role.equals("owner")){
 		%>
 		<a class="btn btn-default" href="categories.jsp">Go to Categories</a>
 		<%}
-		if(role.equals("Customer")) { %>
+		if(role.equals("customer")) { %>
 		<a class="btn btn-default" href="products.jsp" >Go to Product Browsing</a>
 		<a class="btn btn-default" href="buycart.jsp?action=view">Go to Shopping Cart</a>
 		<%}%>

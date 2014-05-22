@@ -36,7 +36,7 @@
 	{
 		if(!cid.isEmpty())
 		{
-			if(role.equals("Owner"))
+			if(role.equals("owner"))
 			{
 				try{
 				Class.forName("org.postgresql.Driver");
@@ -132,7 +132,7 @@
 	//If submit is equal to "add"
 	if(submit.equals("add"))
 	{
-			if(role.equals("Owner"))
+			if(role.equals("owner"))
 			{
 				try{
 					Class.forName("org.postgresql.Driver");
@@ -247,7 +247,7 @@
 							<p>
 								<a class="btn btn-primary" href="products.jsp?cid=<%=rsid %>&category=<%= rsname%>">Browse <span class="badge"><%= rscount %></span></a>
 								
-								<% if(role.equals("Owner"))
+								<% if(role.equals("owner"))
 									{ %>
 										<a class="btn btn-success" href="categories.jsp?action=update&cid=<%=rsid %>">Update</a>
 										<% if(rs.getInt("count") == 0) { %>
@@ -284,7 +284,7 @@
 		}
 	
 		
-	if(role.equals("Owner")) {%>
+	if(role.equals("owner")) {%>
 		<div class="col-md-4">
 			<div class="thumbnail">
 				<img style="height:200px" src="img/categories/plus.png">

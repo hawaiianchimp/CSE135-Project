@@ -6,7 +6,7 @@ Registration:
 All Product Browsing:
 - user will enter an alphanumeric keyword to search by
 
-Owner:
+owner:
 	Deletion of product is not allowed if it exists in users cart.
 	
 If cart is empty, it will still successfully show a cart purchased with no items in the cart.

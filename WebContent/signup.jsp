@@ -29,8 +29,8 @@
 			<div class="form-group">
 				<label for="age">Role</label>
 				<select class="form-control" name="role">
-					<option value="Customer">Customer</option>
-					<option value="Owner">Owner</option>
+					<option value="customer">customer</option>
+					<option value="owner">owner</option>
 				</select>
 			</div>
 

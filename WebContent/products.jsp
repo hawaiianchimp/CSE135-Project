@@ -49,24 +49,19 @@
 		{
 			if(!cid.isEmpty())
 			{
-				if(role.equals("Owner"))
+				if(role.equals("owner"))
 				{
 					try{
 						Class.forName("org.postgresql.Driver");
 					
 						//Need a transaction to delete from products and products_categories tables
 						conn.setAutoCommit(false);
-						sql = "DELETE FROM products_categories WHERE product_id = ?;";
-						d_pstmt = conn.prepareStatement(sql);
-						d_pstmt.setInt(1, Integer.parseInt(pid));
-						int d1 = d_pstmt.executeUpdate();
-						System.out.print(d1);
-						sql = "DELETE FROM products WHERE product_id = ?;";
+						sql = "DELETE FROM products WHERE id = ?;";
 						d_pstmt = conn.prepareStatement(sql);
 						d_pstmt.setInt(1, Integer.parseInt(pid));
 						int d2 = d_pstmt.executeUpdate();
 						System.out.print(d2);
-						if((d1 + d2) == 2)
+						if(d2 == 1)
 						{
 						conn.commit();
 							%>
@@ -132,19 +127,19 @@
 							<label class="control-label" for="name">SKU</label>
 							<input id="sku" name="sku" type="text" placeholder="SKU" class="form-control">
 							
-							<label class="control-label" for="img_url">Category</label>
-							<select class="form-control" name="new_category_id">
+							<label class="control-label" for="category">Category</label>
+							<select class="form-control" name="new_cid">
 								<% 
 								
 								try{	
-									sql = "SELECT category_id, name FROM categories";
+									sql = "SELECT id, name FROM categories";
 									statement = conn.createStatement();
 									rs = statement.executeQuery(sql);
 									ArrayList<String> categories;
 									while(rs.next())
 									{
 										String c = rs.getString("name");
-										String old_id = rs.getString("category_id");
+										String old_id = rs.getString("id");
 										String selected = (old_id.equals(cid)) ? "selected":""; %>
 										<option <%=selected%> value="<%=old_id %>"><%=c %></option>
 								<% }
@@ -176,14 +171,6 @@
 							</div>
 							
 							
-							<label class="control-label" for="img_url">Image</label>
-							<select class="form-control" name="img_url">
-								<%for(String s: images){ %>
-									<option value="<%=s %>"><%=s %></option>
-								<% }%>
-							</select>
-							
-							
 						</fieldset>
 					<t:modal_footer name="add"/>
 	<% }	%>
@@ -193,7 +180,7 @@
 		//TODO still need to implement add submission
 		if(submit.equals("add"))
 		{
-				if(role.equals("Owner"))
+				if(role.equals("owner"))
 				{
 
 					try{
@@ -210,38 +197,24 @@
 						Class.forName("org.postgresql.Driver");
 						conn.setAutoCommit(false);
 						//need a transaction to add in products and product_categories
-						sql =	"INSERT INTO products (name, sku, img_url, description, price) " +
-								"SELECT ?,?,?,?,? RETURNING product_id";
+						sql =	"INSERT INTO products (cid, name, sku, price) " +
+								"SELECT ?,?,?,?";
 						pstmt = conn.prepareStatement(sql);
 						
-						pstmt.setString(1, ""+request.getParameter("name"));
-						pstmt.setString(2, ""+request.getParameter("sku"));
-						pstmt.setString(3, ""+request.getParameter("img_url"));
-						pstmt.setString(4, ""+request.getParameter("description"));
-						Double p = ((""+request.getParameter("price")).isEmpty()) ? 0:Double.parseDouble(""+request.getParameter("price"));
-						pstmt.setDouble(5, p);
+						pstmt.setString(1, ""+request.getParameter("new_cid"));
+						pstmt.setString(2, ""+request.getParameter("name"));
+						pstmt.setString(3, ""+request.getParameter("sku"));
+						Integer p = ((""+request.getParameter("price")).isEmpty()) ? 0:Integer.parseInt(""+request.getParameter("price"));
+						pstmt.setInt(4, p);
 						Integer product_id;
 						if(pstmt.execute())
 						{
-							rs = pstmt.getResultSet();
-							if(rs.next()){ 
-							product_id = rs.getInt("product_id");
-							sql =	"INSERT INTO products_categories (category_id, product_id) " +
-									"SELECT ?,?";
-							pstmt = conn.prepareStatement(sql);
-							String new_id = (""+request.getParameter("new_category_id"));
-							pstmt.setInt(1, Integer.parseInt(new_id));
-							pstmt.setInt(2, product_id);
-								if(pstmt.executeUpdate() != 0)
-								{
-									conn.commit();
-									%><t:message type="success" message="Product successfully added"></t:message><%
-								}
-								else{
-									conn.rollback();
-									%><t:message type="danger" message="Rolling back"></t:message><%
-								}
-							}
+							conn.commit();
+							%><t:message type="success" message="Product successfully added"></t:message><%
+						}
+						else{
+							conn.rollback();
+							%><t:message type="danger" message="Rolling back"></t:message><%
 						}
 						conn.setAutoCommit(true);
 						pstmt.close();
@@ -271,7 +244,7 @@
 		{
 			if(!pid.isEmpty())
 			{
-				if(role.equals("Owner"))
+				if(role.equals("owner"))
 				{
 					try{
 						
@@ -286,17 +259,15 @@
 					}
 					Class.forName("org.postgresql.Driver");
 					statement = conn.createStatement();
-					sql = "SELECT * FROM (SELECT * FROM (products NATURAL JOIN products_categories) AS product_join NATURAL JOIN (SELECT name AS category_name, category_id FROM categories) AS c) AS p_join WHERE p_join.product_id = ?";
+					sql = "SELECT * FROM products WHERE id = ?";
 					d_pstmt = conn.prepareStatement(sql);
 					d_pstmt.setInt(1, Integer.parseInt(pid));
 					rs = d_pstmt.executeQuery();
 					
 					if(rs.next())
 					{
-						String rsname,rsdescription, rsimg, rsprice, rscategory, rssku; 
+						String rsname, rsprice, rscategory, rssku; 
 						rsname = rs.getString("name");
-						rsdescription = rs.getString("description");
-						rsimg = rs.getString("img_url");
 						rsprice = rs.getString("price");
 						rssku = rs.getString("sku");
 						rscategory = rs.getString("category_name");
@@ -313,19 +284,19 @@
 							<label class="control-label" for="name">SKU</label>
 							<input value="<%=rssku %>" id="sku" name="sku" type="text" placeholder="SKU" class="form-control">
 							
-							<label class="control-label" for="img_url">Category</label>
-							<select class="form-control" name="new_category_id">
+							<label class="control-label" for="Category">Category</label>
+							<select class="form-control" name="new_cid">
 								<% 
 								
 								try{	
-									sql = "SELECT category_id, name FROM categories";
+									sql = "SELECT id, name FROM categories";
 									d_statement = conn.createStatement();
 									d_rs = statement.executeQuery(sql);
 									ArrayList<String> categories;
 									while(d_rs.next())
 									{
 										String c = d_rs.getString("name");
-										String old_id = d_rs.getString("category_id");
+										String old_id = d_rs.getString("id");
 										String selected = (c.equals(rscategory)) ? "selected":""; %>
 										<option <%=selected%> value="<%=old_id %>"><%=c %></option>
 								<% }
@@ -342,25 +313,6 @@
 							</select>
 							<label class="control-label" for="price">Price</label>
 							<input value="<%=rsprice %>" id="price" type="text" class="form-control" name="price"/>
-							
-							<!-- Textarea -->
-							<div class="control-group">
-							  <label class="control-label" for="description">Description</label>
-							  <div class="controls">                     
-							    <textarea class="form-control" id="description" name="description"><%=rsdescription %></textarea>
-							  </div>
-							</div>
-							
-							
-							<label class="control-label" for="img_url">Image</label>
-							<select class="form-control" name="img_url">
-								<% String selected = "";
-									for(String s: images){ 
-									selected = (s.equals(rsimg)) ? "selected":""; %>
-									<option <%=selected%> value="<%=s %>"><%=s %></option>
-								<% }%>
-							</select>
-							
 							
 						</fieldset>
 					<t:modal_footer name="update"/>
@@ -406,32 +358,22 @@
 		//If submit is equal to "add"
 		if(submit.equals("update"))
 		{
-				if(role.equals("Owner"))
+				if(role.equals("owner"))
 				{
 					try{
 						Class.forName("org.postgresql.Driver");
 						conn.setAutoCommit(false);
-						sql =	"UPDATE products SET (name, sku, img_url, description, price) = " +
-								"(?,?,?,?,?) WHERE product_id = ?";
+						sql =	"UPDATE products SET (cid, name, sku, price) = " +
+								"(?,?,?,?) WHERE id = ?";
 						d_pstmt = conn.prepareStatement(sql);
-						d_pstmt.setString(1, ""+request.getParameter("name"));
-						d_pstmt.setString(2, ""+request.getParameter("sku"));
-						d_pstmt.setString(3, ""+request.getParameter("img_url"));
-						d_pstmt.setString(4, ""+request.getParameter("description"));
-						Double p = ((""+request.getParameter("price")).isEmpty()) ? 0:Double.parseDouble(""+request.getParameter("price"));
-						d_pstmt.setDouble(5, p);
-						d_pstmt.setInt(6, Integer.parseInt(request.getParameter("pid")));
+						d_pstmt.setInt(1, Integer.parseInt(request.getParameter("new_cid")));
+						d_pstmt.setString(2, ""+request.getParameter("name"));
+						d_pstmt.setString(3, ""+request.getParameter("sku"));
+						Integer p = ((""+request.getParameter("price")).isEmpty()) ? 0:Integer.parseInt(""+request.getParameter("price"));
+						d_pstmt.setInt(4, p);
+						d_pstmt.setInt(5, Integer.parseInt(request.getParameter("pid")));
 						d_pstmt.executeUpdate();
-						sql =	"UPDATE products_categories SET (category_id) = " +
-								"(?) WHERE product_id = ?";
-						d_pstmt = conn.prepareStatement(sql);
-						d_pstmt.setInt(1, Integer.parseInt(request.getParameter("new_category_id")));
-						d_pstmt.setInt(2, Integer.parseInt(request.getParameter("pid")));
-
-						int count = d_pstmt.executeUpdate();
-						conn.commit();
-						//ERROR HERE with the double casting from string
-
+					
 						conn.setAutoCommit(true);
 						d_pstmt.close();
 						conn.close();
@@ -482,7 +424,7 @@
 				.getConnection(
 						"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
-		c_pstmt = c_conn.prepareStatement("SELECT * FROM categories AS c LEFT JOIN (SELECT p.category_id, COUNT(p.category_id) FROM products_categories AS p GROUP BY p.category_id) AS p ON (c.category_id = p.category_id);");
+		c_pstmt = c_conn.prepareStatement("SELECT * FROM categories");
 		c_rs = c_pstmt.executeQuery();
 %>
 
@@ -514,12 +456,11 @@
 					while (c_rs.next()) {
 						rsname = c_rs.getString("name");
 						active = (rsname.equals(category_name))? "class='active' ":"";
-						rsid = String.valueOf(c_rs.getInt("category_id"));
+						rsid = String.valueOf(c_rs.getInt("id"));
 						session.setAttribute("cid", rsid);
-						rscount = String.valueOf(c_rs.getInt("count"));
-						//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
+						rscount = "0";
 					%>
-						<li <%= active%>><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%> <span class="badge pull-right"><%=rscount %></span></a></li>
+						<li <%= active%>><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%></span></a></li>
 					<%
 					}
 			}
@@ -561,11 +502,11 @@
 
 								if(keyword.isEmpty())
 								{
-									sql = "SELECT p.*, categories.name AS category_name  FROM (SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id="+ cid+") WHERE products_categories.product_id=products.product_id) AS p LEFT JOIN categories ON (p.category_id = categories.category_ID)";
+									sql = "SELECT p.*, c.name AS category_name  FROM products AS p, categories AS c WHERE p.cid = c.id AND c.id = " + cid + " ";
 								}
 								else
 								{
-									sql = "SELECT p.*, categories.name AS category_name  FROM (SELECT * FROM products_categories INNER JOIN products ON (products_categories.category_id="+ cid+") WHERE products_categories.product_id=products.product_id AND (products.name ILIKE '%"+keyword+"%')) AS p LEFT JOIN categories ON (p.category_id = categories.category_ID)";
+									sql = "SELECT p.*, c.name AS category_name  FROM products AS p, categories AS c WHERE p.cid = c.id AND c.id = " + cid + " AND p.name ILIKE '%"+keyword+"%'";
 								}
 							}
 							else
@@ -589,7 +530,7 @@
 					
 					
 					if (rs.isBeforeFirst()) {
-						String rsname, rsdescription, rsimg, rssku, rspid, rsprice;
+						String rsname, rssku, rspid, rsprice;
 						rs.next();%>
 							<table class="table table-condensed">
 								<thead>
@@ -606,11 +547,6 @@
 												<h3>SKU</h3>
 										</td>
 										<td>
-											<p>
-												<h3>Description</h3>
-											</p>
-										</td>
-										<td>
 										</td>
 									</tr>
 								</thead>
@@ -619,19 +555,12 @@
 						rs.beforeFirst();
 						while (rs.next()) {
 							rsname = rs.getString("name");
-							rsdescription = rs.getString("description");
-							rsimg = rs.getString("img_url");
 							rssku = rs.getString("sku");
-							rspid = String.valueOf(rs.getInt("product_id"));
-							rsprice = String.valueOf(rs.getDouble("price"));
-	
-							if (rsimg == null)
-								rsimg = "default";
+							rspid = String.valueOf(rs.getInt("id"));
+							rsprice = String.valueOf(rs.getInt("price"));
+
 							%>
 							<tr>
-									<td>
-									<img style="height:45px" src="img/products/<%=rsimg %>.png">
-									</td>
 									<td>
 										<span class="badge badge-success">
 											$<%=rsprice %>
@@ -649,12 +578,7 @@
 									</td>
 									<td>
 										<p>
-											<%=rsdescription %>
-										</p>
-									</td>
-									<td>
-										<p>
-											<% if(role.equals("Owner"))
+											<% if(role.equals("owner"))
 											{ %>
 												<form class="form-vertical" action="products.jsp" method="GET">
 													<input type="hidden" name="pid" value="<%=rspid %>">
@@ -666,7 +590,7 @@
 											<% }
 											else
 											{ %>
-												<form class="form-vertical" action="productorder.jsp" method="POST">
+												<form class="form-vertical" action="productorder.jsp" method="GET">
 													<input type="hidden" name="action" value="order">
 													<input type="hidden" name="product" value="<%=rspid %>">
 													<input type="hidden" name="cid" value="<%=cid %>">
@@ -681,7 +605,7 @@
 					} 
 					else 
 					{
-						if (role.equals("Owner")) 
+						if (role.equals("owner")) 
 						{%>
 							<t:message type="warning" message="No Products in this category, please add a product"></t:message>
 						<%} 
@@ -707,12 +631,9 @@
 					out.println("<h1>org.postgresql.Driver Not Found</h1>");
 				}
 
-				if (role.equals("Owner")) {
+				if (role.equals("owner")) {
 					%>
 						<tr>
-							<td>
-								<img style="height:45px" src="img/plus.png">
-							</td>
 							<td>
 							</td>
 							<td>
@@ -724,11 +645,13 @@
 								<a class="btn btn-success" href="products.jsp?cid=<%=cid %>&action=add">Add Item</a>
 							</td>
 						</tr>
-					</table>
 
 			<%
 				}
 		%>
-		</div>
+		
+		</table>
+		
+	</div>
 	</div>
 <t:footer />

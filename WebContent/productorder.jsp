@@ -10,7 +10,7 @@
 <%
 			String error = "" + request.getParameter("error");
 			String action = "" + request.getParameter("action");
-			String uid = "" + session.getAttribute("uid");
+			String uid = "" + session.getAttribute("id");
 			if (error.equals("yes") || ((action.equals("order")) == false && (action.equals("insert")) == false))
 			{
 				%>
@@ -39,12 +39,13 @@
 			
 				String product = "" + request.getParameter("product");
 				int quantity;
+				int price;
 				
 				try
 				{
 					//Collect parameters: need user id and product sku to show user's cart as well as add to it
 					
-					if (uid.equals("null") || product.equals("null"))
+					if (product.equals("null"))
 						throw new IOException();
 				
 					//Connect to database if parameters exist
@@ -55,7 +56,7 @@
 				}
 				catch (SQLException e)
 				{
-					response.sendRedirect("productorder.jsp?error=yes");
+					%><t:message type="danger" message="<%=e.getMessage() %>"/><%
 				}
 				
 				catch (IOException e)
@@ -70,20 +71,38 @@
 					{
 						try
 						{
-							//Add to carts_products
+							//Add to sales
 							quantity = Integer.parseInt(request.getParameter("quantity"));
+							price = Integer.parseInt(request.getParameter("price"));
 							conn.setAutoCommit(false);
-							pstmt3 = conn.prepareStatement("INSERT INTO carts_products VALUES (? , ?)");
-							pstmt4 = conn.prepareStatement("SELECT carts.cart_id FROM carts WHERE carts.uid = ?");
-							pstmt4.setInt(1, Integer.parseInt(uid));
-							rs4 = pstmt4.executeQuery();
-							conn.commit();
-							rs4.next();
-							pstmt3.setInt(1, rs4.getInt("cart_id"));
-							pstmt3.setInt(2, Integer.parseInt(product));
+							pstmt3 = conn.prepareStatement("UPDATE sales SET quantity=quantity+?, price=? WHERE uid=? AND pid=?;"
+									+ "INSERT INTO sales (uid, pid, quantity, price)"
+								    +  "SELECT ?, ?, ?, ?"
+								    +   "WHERE NOT EXISTS (SELECT 1 FROM sales WHERE uid=? AND pid=?);");
+
 							
-							for (int i = 0; i < quantity; i++)
-								pstmt3.executeUpdate();
+							pstmt3.setInt(1, quantity);
+							pstmt3.setInt(2, price);
+							pstmt3.setInt(3, Integer.parseInt(uid));
+							pstmt3.setInt(4, Integer.parseInt(product));
+							pstmt3.setInt(5, Integer.parseInt(uid));
+							pstmt3.setInt(6, Integer.parseInt(product));
+							pstmt3.setInt(7, quantity);
+							pstmt3.setInt(8, price);
+							pstmt3.setInt(9, Integer.parseInt(uid));
+							pstmt3.setInt(10, Integer.parseInt(product));
+							
+							
+							int result = pstmt3.executeUpdate();
+							if(result > 0)
+							{
+								%><t:message message="Succcess" type="success"/><%
+							}
+							else{
+
+								
+								%><t:message message="Fail" type="danger"/><%
+							}
 							conn.commit();
 						}
 					
@@ -98,15 +117,13 @@
 								pstmt2.close();
 							if (pstmt3 != null)
 								pstmt3.close();
-							if (pstmt4 != null)
-								pstmt4.close();
 							if (rs1 != null)
 								rs1.close();
 							if (rs2 != null)
 								rs2.close();
 							if (rs4 != null)
 								rs4.close();
-							response.sendRedirect("productorder.jsp?error=yes");
+							%><t:message type="danger" message="<%=e.getMessage() %>"/><%
 						}
 						
 						finally
@@ -139,18 +156,16 @@
 						{
 						//Prepared Statement 1: Get product information and quantities in user's cart
 						//Parameters: 1) User ID
-						pstmt1 = conn.prepareStatement("SELECT products.product_id, products.sku, products.img_url, products.name, products.price, COUNT (*) \"Quantity\" FROM users, carts, carts_products, products "
-							+ "WHERE users.uid = ? "
-							+ "AND users.uid = carts.uid "
-							+ "AND carts.cart_id = carts_products.cart_id "
-							+ "AND carts_products.product_id = products.product_id "
-							+ "GROUP BY products.product_id, products.sku, products.img_url, products.name, products.price");
+						pstmt1 = conn.prepareStatement("SELECT products.id, products.sku, products.name, products.price, sales.quantity FROM users, sales, products "
+							+ "WHERE users.id = ? "
+							+ "AND users.id = sales.uid "
+							+ "AND products.id= sales.pid");
 						pstmt1.setInt(1, Integer.parseInt(uid));
 						rs1 = pstmt1.executeQuery();
 			
 						//Prepared Statement 2: Show product information for product desired to add to cart
 						//Parameters: 1) Product ID
-						pstmt2 = conn.prepareStatement("SELECT * from products WHERE products.product_id = ?");
+						pstmt2 = conn.prepareStatement("SELECT * from products WHERE products.id = ?");
 						pstmt2.setInt(1, Integer.parseInt(product));
 						rs2 = pstmt2.executeQuery();
 	%>
@@ -173,15 +188,15 @@
 		<%-- <td><%=rs1.getString("img_url")%></td> --%>
 		<td><%=rs1.getString("sku")%></td>
 		<td><%=rs1.getString("name")%></td>
-		<td><%=rs1.getDouble("price")%></td>
+		<td><%=rs1.getInt("price")%></td>
 		<td><%=rs1.getInt("Quantity") %></td>
-		<td><%=rs1.getDouble("price") * rs1.getInt("Quantity")%></td>
+		<td><%=rs1.getInt("price") * rs1.getInt("Quantity")%></td>
 	</tr>
 	<% 					} 
 	%>
 </table>
 <h3>Add to cart?</h3>
-<form action="productorder.jsp" method="POST">
+<form action="productorder.jsp" method="GET">
 	<input type="hidden" name="action" value="insert"> <input
 		type="hidden" name="product" value=<%=product%>>
 	<table class="table">
@@ -201,7 +216,8 @@
 			<%-- <td><%=rs2.getString("img_url")%></td> --%>
 			<td><%=rs2.getString("sku")%></td>
 			<td><%=rs2.getString("name")%></td>
-			<td><%=rs2.getDouble("price")%></td>
+			<td><%=rs2.getInt("price")%>
+			<input type="hidden" name="price" value="<%=rs2.getInt("price") %>" /></td>
 			<td><input type="text" name="quantity"></td>
 			<td><input class="btn btn-primary" type="submit"
 				value="Add to cart"></td>
@@ -230,7 +246,7 @@
 							rs2.close();
 						if (rs4 != null)
 							rs4.close();
-						response.sendRedirect("productorder.jsp?error=yes");
+						%><t:message type="danger" message="<%=e.getMessage() %>"/><%
 					}
 						
 					finally

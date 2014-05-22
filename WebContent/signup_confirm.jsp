@@ -70,17 +70,8 @@
 					pstmt.setString(5, name);
 	
 					int count1 = pstmt.executeUpdate();
-					System.out.print(count1);
-					//out.println("<h1>" + "test" + "</h1>");
-					//if no rows have been updated, that is because the name already exists.
-					
-					sql = "INSERT INTO carts (uid) SELECT uid FROM users WHERE name = ?";
-					pstmt = conn.prepareStatement(sql);
-					pstmt.setString(1, name);
-					int count2 = pstmt.executeUpdate();
-					System.out.print(count2);
 
-					if(count1 + count2 == 2)
+					if(count1 == 1)
 					{
 						conn.commit();
 						success = true;
@@ -117,10 +108,10 @@
 			<t:message type="success" message="You have successfully signed up!" />
 			<h3>Thank you for signing up with us!</h3>
 			<%
-			if(role.equals("Owner")) { %>
+			if(role.equals("owner")) { %>
 				<a class="btn btn-default" href="categories.jsp">Go to Categories</a>
 			<% }
-			if(role.equals("Customer")) { %>
+			if(role.equals("customer")) { %>
 				<a class="btn btn-default" href="products.jsp" >Go to Product Browsing</a>
 			<%}%>
 			

@@ -10,14 +10,14 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
+-- Name: plpgsql; Type: EXTENSION; Schema: -; owner: -
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; owner: -
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
@@ -30,7 +30,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: carts; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: carts; Type: TABLE; Schema: public; owner: -; Tablespace: 
 --
 
 CREATE TABLE carts (
@@ -42,7 +42,7 @@ CREATE TABLE carts (
 
 
 --
--- Name: carts_cart_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: carts_cart_id_seq; Type: SEQUENCE; Schema: public; owner: -
 --
 
 CREATE SEQUENCE carts_cart_id_seq
@@ -54,14 +54,14 @@ CREATE SEQUENCE carts_cart_id_seq
 
 
 --
--- Name: carts_cart_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: carts_cart_id_seq; Type: SEQUENCE OWNED BY; Schema: public; owner: -
 --
 
 ALTER SEQUENCE carts_cart_id_seq OWNED BY carts.cart_id;
 
 
 --
--- Name: carts_products; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: carts_products; Type: TABLE; Schema: public; owner: -; Tablespace: 
 --
 
 CREATE TABLE carts_products (
@@ -71,7 +71,7 @@ CREATE TABLE carts_products (
 
 
 --
--- Name: categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: categories; Type: TABLE; Schema: public; owner: -; Tablespace: 
 --
 
 CREATE TABLE categories (
@@ -83,7 +83,7 @@ CREATE TABLE categories (
 
 
 --
--- Name: categories_category_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: categories_category_id_seq; Type: SEQUENCE; Schema: public; owner: -
 --
 
 CREATE SEQUENCE categories_category_id_seq
@@ -95,14 +95,14 @@ CREATE SEQUENCE categories_category_id_seq
 
 
 --
--- Name: categories_category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: categories_category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; owner: -
 --
 
 ALTER SEQUENCE categories_category_id_seq OWNED BY categories.category_id;
 
 
 --
--- Name: products; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: products; Type: TABLE; Schema: public; owner: -; Tablespace: 
 --
 
 CREATE TABLE products (
@@ -116,7 +116,7 @@ CREATE TABLE products (
 
 
 --
--- Name: products_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: products_categories; Type: TABLE; Schema: public; owner: -; Tablespace: 
 --
 
 CREATE TABLE products_categories (
@@ -126,7 +126,7 @@ CREATE TABLE products_categories (
 
 
 --
--- Name: products_product_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: products_product_id_seq; Type: SEQUENCE; Schema: public; owner: -
 --
 
 CREATE SEQUENCE products_product_id_seq
@@ -138,14 +138,14 @@ CREATE SEQUENCE products_product_id_seq
 
 
 --
--- Name: products_product_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: products_product_id_seq; Type: SEQUENCE OWNED BY; Schema: public; owner: -
 --
 
 ALTER SEQUENCE products_product_id_seq OWNED BY products.product_id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: users; Type: TABLE; Schema: public; owner: -; Tablespace: 
 --
 
 CREATE TABLE users (
@@ -159,7 +159,7 @@ CREATE TABLE users (
 
 
 --
--- Name: users_uid_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: users_uid_seq; Type: SEQUENCE; Schema: public; owner: -
 --
 
 CREATE SEQUENCE users_uid_seq
@@ -171,42 +171,42 @@ CREATE SEQUENCE users_uid_seq
 
 
 --
--- Name: users_uid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: users_uid_seq; Type: SEQUENCE OWNED BY; Schema: public; owner: -
 --
 
 ALTER SEQUENCE users_uid_seq OWNED BY users.uid;
 
 
 --
--- Name: cart_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: cart_id; Type: DEFAULT; Schema: public; owner: -
 --
 
 ALTER TABLE ONLY carts ALTER COLUMN cart_id SET DEFAULT nextval('carts_cart_id_seq'::regclass);
 
 
 --
--- Name: category_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: category_id; Type: DEFAULT; Schema: public; owner: -
 --
 
 ALTER TABLE ONLY categories ALTER COLUMN category_id SET DEFAULT nextval('categories_category_id_seq'::regclass);
 
 
 --
--- Name: product_id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: product_id; Type: DEFAULT; Schema: public; owner: -
 --
 
 ALTER TABLE ONLY products ALTER COLUMN product_id SET DEFAULT nextval('products_product_id_seq'::regclass);
 
 
 --
--- Name: uid; Type: DEFAULT; Schema: public; Owner: -
+-- Name: uid; Type: DEFAULT; Schema: public; owner: -
 --
 
 ALTER TABLE ONLY users ALTER COLUMN uid SET DEFAULT nextval('users_uid_seq'::regclass);
 
 
 --
--- Data for Name: carts; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: carts; Type: TABLE DATA; Schema: public; owner: -
 --
 
 COPY carts (cart_id, uid, total, "time") FROM stdin;
@@ -231,14 +231,14 @@ COPY carts (cart_id, uid, total, "time") FROM stdin;
 
 
 --
--- Name: carts_cart_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: carts_cart_id_seq; Type: SEQUENCE SET; Schema: public; owner: -
 --
 
 SELECT pg_catalog.setval('carts_cart_id_seq', 17, true);
 
 
 --
--- Data for Name: carts_products; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: carts_products; Type: TABLE DATA; Schema: public; owner: -
 --
 
 COPY carts_products (cart_id, product_id) FROM stdin;
@@ -258,7 +258,7 @@ COPY carts_products (cart_id, product_id) FROM stdin;
 
 
 --
--- Data for Name: categories; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: categories; Type: TABLE DATA; Schema: public; owner: -
 --
 
 COPY categories (category_id, img_url, name, description) FROM stdin;
@@ -273,14 +273,14 @@ COPY categories (category_id, img_url, name, description) FROM stdin;
 
 
 --
--- Name: categories_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: categories_category_id_seq; Type: SEQUENCE SET; Schema: public; owner: -
 --
 
 SELECT pg_catalog.setval('categories_category_id_seq', 7, true);
 
 
 --
--- Data for Name: products; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: products; Type: TABLE DATA; Schema: public; owner: -
 --
 
 COPY products (product_id, img_url, name, sku, price, description) FROM stdin;
@@ -297,7 +297,7 @@ COPY products (product_id, img_url, name, sku, price, description) FROM stdin;
 
 
 --
--- Data for Name: products_categories; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: products_categories; Type: TABLE DATA; Schema: public; owner: -
 --
 
 COPY products_categories (category_id, product_id) FROM stdin;
@@ -313,56 +313,56 @@ COPY products_categories (category_id, product_id) FROM stdin;
 
 
 --
--- Name: products_product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: products_product_id_seq; Type: SEQUENCE SET; Schema: public; owner: -
 --
 
 SELECT pg_catalog.setval('products_product_id_seq', 19, true);
 
 
 --
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: users; Type: TABLE DATA; Schema: public; owner: -
 --
 
 COPY users (uid, name, role, state, date, age) FROM stdin;
-1	Sean	Customer	CA	\N	\N
-2	Justin	Owner	CA	\N	24
-3	Ned Flanders	Customer	DE	\N	25
-4	Bobby	Customer	CA	\N	40
-5	Shawn	Owner	CA	\N	23
-6	Paul	Customer	CT	\N	45
-7	Jason	Owner	AL	\N	45
-8	test	Customer	GA	\N	12
-9	owner	Owner	CA	\N	21
-10	ImSoCool	Customer	AL	\N	123
-11	Owner	Owner	AZ	\N	55
-12	user1	Owner	AL	\N	10
-13	user2	Customer	AL	\N	10
-14	user3	Owner	AL	\N	13
-15	user4	Owner	AL	\N	13
-16	user5	Customer	AL	\N	45
-17	customer	Customer	CO	\N	13
-18	1234	Owner	AL	\N	1234
-19	testtest	Owner	AL	\N	1234
-20	Homer Simpson	Customer	VA	\N	40
-21	Bart Simpson	Customer	VA	\N	9
-22	Lisa Simpson	Customer	CO	\N	8
-23	Customer	Owner	AL	\N	21
-25	bq	Owner	AL	\N	123
-24	mamavibes	Owner	AL	\N	12
-26	 	Customer	AL	\N	123542
-27	bill	Customer	AL	\N	45
+1	Sean	customer	CA	\N	\N
+2	Justin	owner	CA	\N	24
+3	Ned Flanders	customer	DE	\N	25
+4	Bobby	customer	CA	\N	40
+5	Shawn	owner	CA	\N	23
+6	Paul	customer	CT	\N	45
+7	Jason	owner	AL	\N	45
+8	test	customer	GA	\N	12
+9	owner	owner	CA	\N	21
+10	ImSoCool	customer	AL	\N	123
+11	owner	owner	AZ	\N	55
+12	user1	owner	AL	\N	10
+13	user2	customer	AL	\N	10
+14	user3	owner	AL	\N	13
+15	user4	owner	AL	\N	13
+16	user5	customer	AL	\N	45
+17	customer	customer	CO	\N	13
+18	1234	owner	AL	\N	1234
+19	testtest	owner	AL	\N	1234
+20	Homer Simpson	customer	VA	\N	40
+21	Bart Simpson	customer	VA	\N	9
+22	Lisa Simpson	customer	CO	\N	8
+23	customer	owner	AL	\N	21
+25	bq	owner	AL	\N	123
+24	mamavibes	owner	AL	\N	12
+26	 	customer	AL	\N	123542
+27	bill	customer	AL	\N	45
 \.
 
 
 --
--- Name: users_uid_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: users_uid_seq; Type: SEQUENCE SET; Schema: public; owner: -
 --
 
 SELECT pg_catalog.setval('users_uid_seq', 27, true);
 
 
 --
--- Name: carts_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: carts_pkey; Type: CONSTRAINT; Schema: public; owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY carts
@@ -370,7 +370,7 @@ ALTER TABLE ONLY carts
 
 
 --
--- Name: categories_name_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: categories_name_key; Type: CONSTRAINT; Schema: public; owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY categories
@@ -378,7 +378,7 @@ ALTER TABLE ONLY categories
 
 
 --
--- Name: categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: categories_pkey; Type: CONSTRAINT; Schema: public; owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY categories
@@ -386,7 +386,7 @@ ALTER TABLE ONLY categories
 
 
 --
--- Name: products_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: products_pkey; Type: CONSTRAINT; Schema: public; owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY products
@@ -394,7 +394,7 @@ ALTER TABLE ONLY products
 
 
 --
--- Name: products_product_id_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: products_product_id_key; Type: CONSTRAINT; Schema: public; owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY products
@@ -402,7 +402,7 @@ ALTER TABLE ONLY products
 
 
 --
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY users
@@ -410,7 +410,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: carts_products_cart_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: carts_products_cart_id_fkey; Type: FK CONSTRAINT; Schema: public; owner: -
 --
 
 ALTER TABLE ONLY carts_products
@@ -418,7 +418,7 @@ ALTER TABLE ONLY carts_products
 
 
 --
--- Name: carts_products_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: carts_products_product_id_fkey; Type: FK CONSTRAINT; Schema: public; owner: -
 --
 
 ALTER TABLE ONLY carts_products
@@ -426,7 +426,7 @@ ALTER TABLE ONLY carts_products
 
 
 --
--- Name: carts_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: carts_uid_fkey; Type: FK CONSTRAINT; Schema: public; owner: -
 --
 
 ALTER TABLE ONLY carts
@@ -434,7 +434,7 @@ ALTER TABLE ONLY carts
 
 
 --
--- Name: products_categories_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: products_categories_category_id_fkey; Type: FK CONSTRAINT; Schema: public; owner: -
 --
 
 ALTER TABLE ONLY products_categories
@@ -442,7 +442,7 @@ ALTER TABLE ONLY products_categories
 
 
 --
--- Name: products_categories_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: products_categories_product_id_fkey; Type: FK CONSTRAINT; Schema: public; owner: -
 --
 
 ALTER TABLE ONLY products_categories

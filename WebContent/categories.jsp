@@ -24,7 +24,7 @@
 	
 	String action = ""+request.getParameter("action");
 	String submit = ""+request.getParameter("submit");
-	String cid = ""+request.getParameter("cid");
+	String cid = ""+request.getParameter("id");
 	Connection conn = DriverManager.getConnection(
 					"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 					"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
@@ -45,10 +45,10 @@
 	{
 		if(!cid.isEmpty())
 		{
-			if(role.equals("Owner"))
+			if(role.equals("owner"))
 			{
 				try{
-				sql = "DELETE FROM categories WHERE category_id = ?;";
+				sql = "DELETE FROM categories WHERE id = ?;";
 				d_pstmt = conn.prepareStatement(sql);
 				d_pstmt.setInt(1, Integer.parseInt(cid));
 				int count = d_pstmt.executeUpdate();
@@ -104,14 +104,6 @@
 			<label class="control-label" for="name">Name</label>
 			<input id="name" name="name" type="text" placeholder="Name" class="form-control">
 			
-			
-			<label class="control-label" for="img_url">Image</label>
-			<select class="form-control" name="img_url">
-				<% for(String s: images){ %>
-					<option value="<%=s %>"><%=s %></option>
-				<% }%>
-			</select>
-			
 			<!-- Textarea -->
 			<div class="control-group">
 			  <label class="control-label" for="description">Description</label>
@@ -128,7 +120,7 @@
 	<%
 	if(submit.equals("insert"))
 	{
-			if(role.equals("Owner"))
+			if(role.equals("owner"))
 			{
 				try{					
 					
@@ -138,12 +130,11 @@
 					if((""+request.getParameter("description")).isEmpty()){
 						throw new SQLException("description cannot be empty");
 					}
-						sql =	"INSERT INTO categories (name, img_url, description) " +
+						sql =	"INSERT INTO categories (name, description) " +
 								"SELECT ?,?,?";
 						d_pstmt = conn.prepareStatement(sql);
 						d_pstmt.setString(1, ""+request.getParameter("name"));
-						d_pstmt.setString(2, ""+request.getParameter("img_url"));
-						d_pstmt.setString(3, ""+request.getParameter("description"));
+						d_pstmt.setString(2, ""+request.getParameter("description"));
 
 						int count = d_pstmt.executeUpdate();
 
@@ -185,20 +176,19 @@
 	{
 		if(!cid.isEmpty())
 		{
-			if(role.equals("Owner"))
+			if(role.equals("owner"))
 			{
 				try{
-				sql = "SELECT * FROM categories WHERE category_id = ?;";
+				sql = "SELECT * FROM categories WHERE id = ?;";
 				d_pstmt = conn.prepareStatement(sql);
 				d_pstmt.setInt(1, Integer.parseInt(cid));
 				rs = d_pstmt.executeQuery();
 				
 				if(rs.next())
 				{
-					String rsname,rsdescription, rsimg; 
+					String rsname,rsdescription; 
 					rsname = rs.getString("name");
 					rsdescription = rs.getString("description");
-					rsimg = rs.getString("img_url");
 					%>
 				<t:modal_header modal_title="Updating Item" />
 					<fieldset>
@@ -206,14 +196,6 @@
 						<input type="hidden" name="cid" value="<%=cid %>"/>
 						<label class="control-label" for="name">Name</label>
 						<input value="<%=rsname %>" id="name" name="name" type="text" placeholder="Name" class="form-control">
-						<label class="control-label" for="img_url">Image</label>
-						<select class="form-control" name="img_url">
-							<% String selected = "";
-								for(String s: images){ 
-								selected = (s.equals(rsimg)) ? "selected":""; %>
-								<option <%=selected%> value="<%=s %>"><%=s %></option>
-							<% }%>
-						</select>
 						
 						<!-- Textarea -->
 						<div class="control-group">
@@ -264,7 +246,7 @@
 	//If submit is equal to "insert"
 	if(submit.equals("update"))
 	{
-			if(role.equals("Owner"))
+			if(role.equals("owner"))
 			{
 				try{	
 
@@ -274,13 +256,12 @@
 					if((""+request.getParameter("description")).isEmpty()){
 						throw new SQLException("description cannot be empty");
 					}
-						sql =	"UPDATE categories SET (name, img_url, description) = " +
-								"(?,?,?) WHERE category_id = ?";
+						sql =	"UPDATE categories SET (name, description) = " +
+								"(?,?,?) WHERE id = ?";
 						d_pstmt = conn.prepareStatement(sql);
 						d_pstmt.setString(1, ""+request.getParameter("name"));
-						d_pstmt.setString(2, ""+request.getParameter("img_url"));
-						d_pstmt.setString(3, ""+request.getParameter("description"));
-						d_pstmt.setInt(4, Integer.parseInt(request.getParameter("cid")));
+						d_pstmt.setString(2, ""+request.getParameter("description"));
+						d_pstmt.setInt(3, Integer.parseInt(request.getParameter("id")));
 
 						int count = d_pstmt.executeUpdate();
 
@@ -340,10 +321,10 @@
 
 			Class.forName("org.postgresql.Driver");
 			Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			sql = "SELECT * FROM categories AS c LEFT JOIN (SELECT p.category_id, COUNT(p.category_id) FROM products_categories AS p GROUP BY p.category_id) AS p ON (c.category_id = p.category_id);";
+			sql = "SELECT * FROM categories";
 			rs = statement.executeQuery(sql);
 
-			String rsname,rsdescription,rsimg,rsid,rscount;
+			String rsname,rsdescription,rsid;
 			
 			if (rs.isBeforeFirst()) {
 
@@ -351,12 +332,9 @@
 					while (rs.next()) {
 						rsname = rs.getString("name");
 						rsdescription = rs.getString("description");
-						rsimg = rs.getString("img_url");
-						rsid = String.valueOf(rs.getInt("category_id"));
-						rscount = String.valueOf(rs.getInt("count"));
-						//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
+						rsid = String.valueOf(rs.getInt("id"));
 					%>
-						<li><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%><span class="badge pull-right"><%=rscount %></span></a></li>
+						<li><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%></a></li>
 					<%
 					}
 			}
@@ -396,17 +374,9 @@
 
 					rsname = rs.getString("name");
 					rsdescription = rs.getString("description");
-					rsimg = rs.getString("img_url");
-					rsid = String.valueOf(rs.getInt("category_id"));
-					rscount = String.valueOf(rs.getInt("count"));
-					if(rsimg == null)
-						rsimg = "category_default";
-					//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
+					rsid = String.valueOf(rs.getInt("id"));
 				%>
 						<tr>
-							<td>
-								<img style="height:45px" src="img/categories/<%=rsimg %>.png">
-							</td>
 							<td>
 									<%=rsname %>
 							</td>
@@ -417,9 +387,9 @@
 							</td>
 							<td>	
 								<p>
-									<a class="btn btn-primary" href="products.jsp?cid=<%=rsid %>&category=<%= rsname%>">Browse <span class="badge"><%= rscount %></span></a>
+									<a class="btn btn-primary" href="products.jsp?cid=<%=rsid %>&category=<%= rsname%>">Browse</a>
 									
-									<% if(role.equals("Owner"))
+									<% if(role.equals("owner"))
 										{ %>
 											<a class="btn btn-success" href="categories.jsp?action=update&cid=<%=rsid %>">Update</a>
 											<% if(rs.getInt("count") == 0) { %>
@@ -455,7 +425,7 @@
 		}
 	
 		
-	if(role.equals("Owner")) {%>
+	if(role.equals("owner")) {%>
 		<tr>
 					</td>
 					<td>
@@ -472,5 +442,6 @@
 		</tr>
 	<%} %>
 	</table>
+	</div>
 </div>
 <t:footer />

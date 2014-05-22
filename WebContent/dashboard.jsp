@@ -49,7 +49,7 @@
 		{
 			if(!cid.isEmpty())
 			{
-				if(role.equals("Owner"))
+				if(role.equals("owner"))
 				{
 					try{
 						Class.forName("org.postgresql.Driver");
@@ -193,7 +193,7 @@
 		//TODO still need to implement add submission
 		if(submit.equals("add"))
 		{
-				if(role.equals("Owner"))
+				if(role.equals("owner"))
 				{
 
 					try{
@@ -271,7 +271,7 @@
 		{
 			if(!pid.isEmpty())
 			{
-				if(role.equals("Owner"))
+				if(role.equals("owner"))
 				{
 					try{
 						
@@ -406,7 +406,7 @@
 		//If submit is equal to "add"
 		if(submit.equals("update"))
 		{
-				if(role.equals("Owner"))
+				if(role.equals("owner"))
 				{
 					try{
 						Class.forName("org.postgresql.Driver");
@@ -491,7 +491,7 @@
 		<div class="col-sm-4">
 			<form class="navbar-form navbar-left" role="search" action="dashboard.jsp" method="GET">
 				<select class="form-control">
-		        	<option value="customers">Customers</option>
+		        	<option value="customers">customers</option>
 		        	<option value="states">States</option>
 		        </select>
 		        <input type="submit" value="Run Query" name="scope" class="btn btn-default"/>
@@ -574,16 +574,26 @@
 		<!-- category menu -->
 		<div class="col-sm-12">
 			<table class="table">
-			<thead>
-				<tr>
-					<th></th><th>table1</th><th>table2</th><th>table3</th><th>table4</th><th>table5</th><th>table6</th><th>table7</th><th>table8</th><th>table9</th><th>table10</th>
-				</tr>
-			</thead>
-			
-			<tr><th>name</th><td>table1</td><td>table2</td><td>table3</td><td>table4</td><td>table5</td><td>table6</td><td>table7</td><td>table8</td><td>table9</td><td>table10</td></tr>
-			<tr><th>name</th><td>table1</td><td>table2</td><td>table3</td><td>table4</td><td>table5</td><td>table6</td><td>table7</td><td>table8</td><td>table9</td><td>table10</td></tr>
-			<tr><th>name</th><td>table1</td><td>table2</td><td>table3</td><td>table4</td><td>table5</td><td>table6</td><td>table7</td><td>table8</td><td>table9</td><td>table10</td></tr>
-			<tr><th>name</th><td>table1</td><td>table2</td><td>table3</td><td>table4</td><td>table5</td><td>table6</td><td>table7</td><td>table8</td><td>table9</td><td>table10</td></tr>
+				<thead>
+					<tr>
+						<th></th>
+						<th>table1</th>
+						<th>table2</th>
+						<th>table3</th>
+						<th>table4</th>
+						<th>table5</th>
+						<th>table6</th>
+						<th>table7</th>
+						<th>table8</th>
+						<th>table9</th>
+						<th>table10</th>
+					</tr>
+				</thead>
+				
+				<tr><th>name</th><td>table1</td><td>table2</td><td>table3</td><td>table4</td><td>table5</td><td>table6</td><td>table7</td><td>table8</td><td>table9</td><td>table10</td></tr>
+				<tr><th>name</th><td>table1</td><td>table2</td><td>table3</td><td>table4</td><td>table5</td><td>table6</td><td>table7</td><td>table8</td><td>table9</td><td>table10</td></tr>
+				<tr><th>name</th><td>table1</td><td>table2</td><td>table3</td><td>table4</td><td>table5</td><td>table6</td><td>table7</td><td>table8</td><td>table9</td><td>table10</td></tr>
+				<tr><th>name</th><td>table1</td><td>table2</td><td>table3</td><td>table4</td><td>table5</td><td>table6</td><td>table7</td><td>table8</td><td>table9</td><td>table10</td></tr>
 			</table>
 	
 		</div>

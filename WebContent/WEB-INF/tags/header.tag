@@ -43,7 +43,7 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-      <% if(role.equals("Owner"))
+      <% if(role.equals("owner"))
       {
       %>
       <li><a href="categories.jsp">Categories</a></li>
@@ -59,7 +59,7 @@
       </form>
       <ul class="nav navbar-nav navbar-right">
       	<li><a href="#"><%=message %></a></li>
-      	<% if(role.equals("Customer")){ %>
+      	<% if(role.equals("customer")){ %>
         <li>
           <a href="buycart.jsp?action=view">Buy Shopping Cart</a>
         </li>
