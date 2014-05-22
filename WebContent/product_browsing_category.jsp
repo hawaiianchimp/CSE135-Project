@@ -43,7 +43,7 @@
 		<!-- Category Menu -->
 		<div class="col-md-4 column">
 			<ul class="nav nav-stacked navbar-left nav-pills">
-				<li class="active"><a href="product_browsing.jsp">All Categories</a></li>
+				<li class="active"><a href="products.jsp">All Categories</a></li>
 				
 				<%
 					if (rs.isBeforeFirst()) {
@@ -54,7 +54,7 @@
 								session.setAttribute("cid", rsid);
 								//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
 							%>
-								<li><a href="product_browsing_category.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%> </a></li>
+								<li><a href="categories.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%> </a></li>
 							<%
 							}
 					}

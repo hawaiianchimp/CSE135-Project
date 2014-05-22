@@ -169,12 +169,12 @@
 	if (role.equals("Owner"))
 	{
 		%>
-		<a class="btn btn-default" href="product_browsing.jsp" >Back to Product Searching</a>
+		<a class="btn btn-default" href="products.jsp" >Back to Product Searching</a>
 		<a class="btn btn-default" href="categories.jsp" >Back to Categories</a>
 		<%
 	}
 	else{ %>
-		<a class="btn btn-default" href="product_browsing.jsp" >Back to Product Browsing</a><%
+		<a class="btn btn-default" href="products.jsp" >Back to Product Browsing</a><%
 	} %>
 	
 	

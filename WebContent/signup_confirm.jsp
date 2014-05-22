@@ -121,7 +121,7 @@
 				<a class="btn btn-default" href="categories.jsp">Go to Categories</a>
 			<% }
 			if(role.equals("Customer")) { %>
-				<a class="btn btn-default" href="product_browsing.jsp" >Go to Product Browsing</a>
+				<a class="btn btn-default" href="products.jsp" >Go to Product Browsing</a>
 			<%}%>
 			
 			<a class="btn btn-default" href="login.jsp" >Go to Log In</a>

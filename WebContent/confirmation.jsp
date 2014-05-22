@@ -91,7 +91,7 @@
 	}
 	%>
 	</table>
-	<form action="product_browsing.jsp">
+	<form action="products.jsp">
 				<input class="btn btn-default" type="submit" value="Back to Browsing">
 			</form>
 			<% } %>

@@ -54,7 +54,7 @@
 								session.setAttribute("cid", rsid);
 								//System.out.println(rsname + "," + rsdescription + "," + rsimg + "," + rsid);
 							%>
-								<li><a href="product_browsing_category.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%> </a></li>
+								<li><a href="categories.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%> </a></li>
 							<%
 							}
 					}

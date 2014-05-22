@@ -129,7 +129,7 @@
 							if (rs4 != null)
 								rs4.close();
 						}
-						response.sendRedirect("product_browsing.jsp");
+						response.sendRedirect("products.jsp");
 					}
 				
 					//Display cart contents

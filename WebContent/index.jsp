@@ -22,7 +22,7 @@
 	<%} %>
 	
 	<%if(role.equals("Customer")){%>
-	<span><a href="product_browsing.jsp">Go &raquo;</a></span>
+	<span><a href="products.jsp">Go &raquo;</a></span>
 	<%} %>
 	
 	<%if(role.equals("null")){%>
