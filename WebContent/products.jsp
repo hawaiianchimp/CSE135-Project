@@ -270,7 +270,7 @@
 						rsname = rs.getString("name");
 						rsprice = rs.getString("price");
 						rssku = rs.getString("sku");
-						rscategory = rs.getString("category_name");
+						rscategory = rs.getString("cid");
 						%>
 					<t:modal_header modal_title="Updating Item" />
 						<fieldset>
@@ -297,7 +297,7 @@
 									{
 										String c = d_rs.getString("name");
 										String old_id = d_rs.getString("id");
-										String selected = (c.equals(rscategory)) ? "selected":""; %>
+										String selected = (old_id.equals(rscategory)) ? "selected":""; %>
 										<option <%=selected%> value="<%=old_id %>"><%=c %></option>
 								<% }
 									d_statement.close();
@@ -424,7 +424,9 @@
 				.getConnection(
 						"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
-		c_pstmt = c_conn.prepareStatement("SELECT * FROM categories");
+		
+		sql = "SELECT categories.*, COUNT(products) AS count FROM categories LEFT OUTER JOIN products ON (products.cid = categories.id) GROUP BY categories.id";
+		c_pstmt = c_conn.prepareStatement(sql);
 		c_rs = c_pstmt.executeQuery();
 %>
 
@@ -458,9 +460,9 @@
 						active = (rsname.equals(category_name))? "class='active' ":"";
 						rsid = String.valueOf(c_rs.getInt("id"));
 						session.setAttribute("cid", rsid);
-						rscount = "0";
+						rscount = c_rs.getString("count");
 					%>
-						<li <%= active%>><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%></span></a></li>
+						<li <%= active%>><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%> <span class="badge"><%=rscount %></span></a></li>
 					<%
 					}
 			}

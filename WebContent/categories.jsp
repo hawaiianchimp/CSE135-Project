@@ -24,7 +24,7 @@
 	
 	String action = ""+request.getParameter("action");
 	String submit = ""+request.getParameter("submit");
-	String cid = ""+request.getParameter("id");
+	String cid = ""+request.getParameter("cid");
 	Connection conn = DriverManager.getConnection(
 					"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 					"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
@@ -131,7 +131,7 @@
 						throw new SQLException("description cannot be empty");
 					}
 						sql =	"INSERT INTO categories (name, description) " +
-								"SELECT ?,?,?";
+								"SELECT ?,?";
 						d_pstmt = conn.prepareStatement(sql);
 						d_pstmt.setString(1, ""+request.getParameter("name"));
 						d_pstmt.setString(2, ""+request.getParameter("description"));
@@ -257,11 +257,11 @@
 						throw new SQLException("description cannot be empty");
 					}
 						sql =	"UPDATE categories SET (name, description) = " +
-								"(?,?,?) WHERE id = ?";
+								"(?,?) WHERE id = ?";
 						d_pstmt = conn.prepareStatement(sql);
 						d_pstmt.setString(1, ""+request.getParameter("name"));
 						d_pstmt.setString(2, ""+request.getParameter("description"));
-						d_pstmt.setInt(3, Integer.parseInt(request.getParameter("id")));
+						d_pstmt.setInt(3, Integer.parseInt(request.getParameter("cid")));
 
 						int count = d_pstmt.executeUpdate();
 
@@ -321,11 +321,11 @@
 
 			Class.forName("org.postgresql.Driver");
 			Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			sql = "SELECT * FROM categories";
+			sql = "SELECT categories.*, COUNT(products) AS count FROM categories LEFT OUTER JOIN products ON (products.cid = categories.id) GROUP BY categories.id";
 			rs = statement.executeQuery(sql);
 
-			String rsname,rsdescription,rsid;
-			
+			String rsname,rsdescription,rsid,rscount;
+
 			if (rs.isBeforeFirst()) {
 
 					//category menu
@@ -333,8 +333,9 @@
 						rsname = rs.getString("name");
 						rsdescription = rs.getString("description");
 						rsid = String.valueOf(rs.getInt("id"));
+						rscount = rs.getString("count");
 					%>
-						<li><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%></a></li>
+						<li><a href="products.jsp?cid=<%=rsid %>&category=<%=rsname %>"><%=rsname%><span class="badge"><%=rscount %></span></a></li>
 					<%
 					}
 			}
@@ -375,6 +376,7 @@
 					rsname = rs.getString("name");
 					rsdescription = rs.getString("description");
 					rsid = String.valueOf(rs.getInt("id"));
+					rscount = rs.getString("count");
 				%>
 						<tr>
 							<td>
@@ -387,7 +389,7 @@
 							</td>
 							<td>	
 								<p>
-									<a class="btn btn-primary" href="products.jsp?cid=<%=rsid %>&category=<%= rsname%>">Browse</a>
+									<a class="btn btn-primary" href="products.jsp?cid=<%=rsid %>&category=<%= rsname%>">Browse <span class="badge"><%=rscount %></span></a>
 									
 									<% if(role.equals("owner"))
 										{ %>
