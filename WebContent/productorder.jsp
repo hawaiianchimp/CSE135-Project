@@ -71,14 +71,14 @@
 					{
 						try
 						{
-							//Add to sales
+							//Add to carts
 							quantity = Integer.parseInt(request.getParameter("quantity"));
 							price = Integer.parseInt(request.getParameter("price"));
 							conn.setAutoCommit(false);
-							pstmt3 = conn.prepareStatement("UPDATE sales SET quantity=quantity+?, price=? WHERE uid=? AND pid=?;"
-									+ "INSERT INTO sales (uid, pid, quantity, price)"
+							pstmt3 = conn.prepareStatement("UPDATE carts SET quantity=quantity+?, price=? WHERE uid=? AND pid=?;"
+									+ "INSERT INTO carts (uid, pid, quantity, price)"
 								    +  "SELECT ?, ?, ?, ?"
-								    +   "WHERE NOT EXISTS (SELECT 1 FROM sales WHERE uid=? AND pid=?);");
+								    +   "WHERE NOT EXISTS (SELECT 1 FROM carts WHERE uid=? AND pid=?);");
 
 							
 							pstmt3.setInt(1, quantity);
@@ -156,10 +156,10 @@
 						{
 						//Prepared Statement 1: Get product information and quantities in user's cart
 						//Parameters: 1) User ID
-						pstmt1 = conn.prepareStatement("SELECT products.id, products.sku, products.name, products.price, sales.quantity FROM users, sales, products "
+						pstmt1 = conn.prepareStatement("SELECT products.id, products.sku, products.name, products.price, carts.quantity FROM users, carts, products "
 							+ "WHERE users.id = ? "
-							+ "AND users.id = sales.uid "
-							+ "AND products.id= sales.pid");
+							+ "AND users.id = carts.uid "
+							+ "AND products.id= carts.pid");
 						pstmt1.setInt(1, Integer.parseInt(uid));
 						rs1 = pstmt1.executeQuery();
 			
