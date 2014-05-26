@@ -12,7 +12,7 @@
 <%
 	Class.forName("org.postgresql.Driver");
 
-	String uid = "" + session.getAttribute("uid");
+	String uid = "" + session.getAttribute("id");
 	if(uid.equals("null")) //redirect if not logged in
 	{
 		response.sendRedirect("redirect.jsp");
@@ -482,7 +482,7 @@
 				.getConnection(
 						"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
-		c_pstmt = c_conn.prepareStatement("SELECT * FROM categories AS c LEFT JOIN (SELECT p.category_id, COUNT(p.category_id) FROM products_categories AS p GROUP BY p.category_id) AS p ON (c.category_id = p.category_id);");
+		c_pstmt = c_conn.prepareStatement("SELECT * FROM categories");
 		c_rs = c_pstmt.executeQuery();
 %>
 	
@@ -490,30 +490,34 @@
 	<div class="row">
 		<div class="col-sm-4">
 			<form class="navbar-form navbar-left" role="search" action="dashboard.jsp" method="GET">
-				<select class="form-control">
-		        	<option value="customers">customers</option>
+				<select class="form-control" name="scope">
+		        	<option value="customers">Customers</option>
 		        	<option value="states">States</option>
 		        </select>
-		        <input type="submit" value="Run Query" name="scope" class="btn btn-default"/>
+		        <input type="submit" value="Run Query" class="btn btn-default"/>
 		    </form>
 		    </div>
 		<div class="col-sm-1">
 		</div>
 		<div class="col-sm-7">
 		<form class="navbar-form navbar-left" role="search" action="dashboard.jsp" method="GET">
-		        <select class="form-control">
-		        	<option >All Ages</option>
-		        	<option>12-18</option>
-		        	<option>18-45</option>
-		        	<option>45-65</option>
-		        	<option>65-</option>
+		        <select class="form-control" name="ages">
+		        	<option value="all">All Ages</option>
+		        	<option value="1">12-18</option>
+		        	<option value="2">18-45</option>
+		        	<option value="3">45-65</option>
+		        	<option value="4">65-</option>
 		        </select>
-		        <select class="form-control">
+		        <select class="form-control" name="category">
 		        	<option>All Categories</option>
-		        	<option>list of categories</option>
+		        	<% while(c_rs.next())
+		        		{%>
+		        		<option value="<%= c_rs.getString("id") %>"><%= c_rs.getString("name")%></option>
+		        		<% }
+		        		%>
 		        </select>
 		        <select class="form-control" name="state">
-		        	<option value="">All States</option>
+		        	<option value="all">All States</option>
 					<option value="AL">Alabama</option>
 					<option value="AK">Alaska</option>
 					<option value="AZ">Arizona</option>
@@ -566,7 +570,8 @@
 					<option value="WI">Wisconsin</option>
 					<option value="WY">Wyoming</option>
 				</select>
-		        <input type="submit" value="scope" class="btn btn-default"/>
+				<input type="hidden" name="query" value="true"/>
+		        <input type="submit"  class="btn btn-default"/>
 		      </form>
 		</div>
 	</div>
@@ -587,6 +592,7 @@
 						<th>table8</th>
 						<th>table9</th>
 						<th>table10</th>
+						<th><a href="#" class="btn btn-default">Next 10</a></th>
 					</tr>
 				</thead>
 				
@@ -595,6 +601,7 @@
 				<tr><th>name</th><td>table1</td><td>table2</td><td>table3</td><td>table4</td><td>table5</td><td>table6</td><td>table7</td><td>table8</td><td>table9</td><td>table10</td></tr>
 				<tr><th>name</th><td>table1</td><td>table2</td><td>table3</td><td>table4</td><td>table5</td><td>table6</td><td>table7</td><td>table8</td><td>table9</td><td>table10</td></tr>
 			</table>
+			<a href="#" class="btn btn-default">Next 20 customers</a>
 	
 		</div>
 	</div>
