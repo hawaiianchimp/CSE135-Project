@@ -25,449 +25,21 @@
 	String cid = ""+request.getParameter("cid");
 	String pid = ""+request.getParameter("pid");
 	String keyword = ""+request.getParameter("keyword");
+	Connection conn;
+
+	int c_offset = (request.getParameter("c_offset") != null) ? Integer.parseInt(""+request.getParameter("c_offset")):0;
+	int r_offset = (request.getParameter("r_offset") != null) ? Integer.parseInt(""+request.getParameter("r_offset")):0;
+	
 	keyword = (keyword.equals("null"))? "":keyword;
 	
-	Connection conn = DriverManager.getConnection(
+	conn = DriverManager.getConnection(
 					"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 					"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
 	PreparedStatement pstmt = null, d_pstmt = null;
 	Statement statement = null, d_statement = null;
 	ResultSet rs = null, d_rs = null;
 	String sql = null;
-	ArrayList<String> images = new ArrayList<String>();
-		images.add("default");
-		images.add("baseball_bat");
-		//Add more images here
 %>	
-	
-	<!--  Deleting a product -->
-	
-	
-	<% 
-	//TODO still need to implement delete
-		if(action.equals("delete"))
-		{
-			if(!cid.isEmpty())
-			{
-				if(role.equals("owner"))
-				{
-					try{
-						Class.forName("org.postgresql.Driver");
-					
-						//Need a transaction to delete from products and products_categories tables
-						conn.setAutoCommit(false);
-						sql = "DELETE FROM products_categories WHERE product_id = ?;";
-						d_pstmt = conn.prepareStatement(sql);
-						d_pstmt.setInt(1, Integer.parseInt(pid));
-						int d1 = d_pstmt.executeUpdate();
-						System.out.print(d1);
-						sql = "DELETE FROM products WHERE product_id = ?;";
-						d_pstmt = conn.prepareStatement(sql);
-						d_pstmt.setInt(1, Integer.parseInt(pid));
-						int d2 = d_pstmt.executeUpdate();
-						System.out.print(d2);
-						if((d1 + d2) == 2)
-						{
-						conn.commit();
-							%>
-							<t:message type="success" message="Product successfully deleted"></t:message>
-							<%
-						// Close the ResultSet
-						}
-						else
-						{
-							conn.rollback();
-								%>
-								<t:message type="danger" message="Product deletion unsuccessful. It might be in one of the customers carts."></t:message>
-								<%
-						}
-						d_pstmt.close();
-					}
-					catch(SQLException e){
-						e.printStackTrace();
-						conn.rollback();
-						String message = "Failure to Delete Product: " + e.getMessage();
-			   	     	%>
-						<t:message type="danger" message="<%=message %>"></t:message>
-						<%
-					}
-					conn.setAutoCommit(true);
-					conn.close();
-					
-				}	
-				else
-				{
-					%>
-					<t:message type="warning" message="You must be an owner to delete items"></t:message>
-					<%
-				}
-			}
-			else
-			{
-				%>
-				<t:message type="warning" message="No product item for deletion"></t:message>
-				<%
-			}
-			
-			
-		}
-	%>
-
-	<!-- Show add modal -->
-	<% 
-	//TODO still need to implement add modal
-		//System.out.print(action);
-		if(action.equals("add"))
-		{
-			%>
-			<t:modal_header modal_title="Adding Item" />
-						<fieldset>
-							<!-- Text input-->
-							<input type="hidden" name="cid" value="<%=cid %>"/>
-							<input type="hidden" name="pid" value="<%=pid %>"/>	
-		        			<input type="hidden" name="category" value="<%=category_name %>"/>
-							<label class="control-label" for="name">Name</label>
-							<input id="name" name="name" type="text" placeholder="Name" class="form-control">
-							
-							<label class="control-label" for="name">SKU</label>
-							<input id="sku" name="sku" type="text" placeholder="SKU" class="form-control">
-							
-							<label class="control-label" for="img_url">Category</label>
-							<select class="form-control" name="new_category_id">
-								<% 
-								
-								try{	
-									sql = "SELECT category_id, name FROM categories";
-									statement = conn.createStatement();
-									rs = statement.executeQuery(sql);
-									ArrayList<String> categories;
-									while(rs.next())
-									{
-										String c = rs.getString("name");
-										String old_id = rs.getString("category_id");
-										String selected = (old_id.equals(cid)) ? "selected":""; %>
-										<option <%=selected%> value="<%=old_id %>"><%=c %></option>
-								<% }
-									statement.close();
-									rs.close();
-									conn.close();
-								}
-								catch(PSQLException e)
-								{
-									e.printStackTrace();
-
-									String message = "Failure to Delete Product: " + e.getMessage();
-						   	     	%>
-									<t:message type="danger" message="<%=message %>"></t:message>
-									<%
-								}%>
-								
-								
-							</select>
-							<label class="control-label" for="price">Price</label>
-							<input id="price" type="text" class="form-control" name="price"/>
-							
-							<!-- Textarea -->
-							<div class="control-group">
-							  <label class="control-label" for="description">Description</label>
-							  <div class="controls">                     
-							    <textarea class="form-control" id="description" name="description"></textarea>
-							  </div>
-							</div>
-							
-							
-							<label class="control-label" for="img_url">Image</label>
-							<select class="form-control" name="img_url">
-								<%for(String s: images){ %>
-									<option value="<%=s %>"><%=s %></option>
-								<% }%>
-							</select>
-							
-							
-						</fieldset>
-					<t:modal_footer name="add"/>
-	<% }	%>
-
-	<!-- Do add submission -->
-		<%
-		//TODO still need to implement add submission
-		if(submit.equals("add"))
-		{
-				if(role.equals("owner"))
-				{
-
-					try{
-						if((""+request.getParameter("name")).isEmpty()){
-							throw new SQLException("Name cannot be empty");
-						}
-						if((""+request.getParameter("sku")).isEmpty()){
-							throw new SQLException("sku cannot be empty");
-						}
-						if((""+request.getParameter("description")).isEmpty()){
-							throw new SQLException("description cannot be empty");
-						}
-					
-						Class.forName("org.postgresql.Driver");
-						conn.setAutoCommit(false);
-						//need a transaction to add in products and product_categories
-						sql =	"INSERT INTO products (name, sku, img_url, description, price) " +
-								"SELECT ?,?,?,?,? RETURNING product_id";
-						pstmt = conn.prepareStatement(sql);
-						
-						pstmt.setString(1, ""+request.getParameter("name"));
-						pstmt.setString(2, ""+request.getParameter("sku"));
-						pstmt.setString(3, ""+request.getParameter("img_url"));
-						pstmt.setString(4, ""+request.getParameter("description"));
-						Double p = ((""+request.getParameter("price")).isEmpty()) ? 0:Double.parseDouble(""+request.getParameter("price"));
-						pstmt.setDouble(5, p);
-						Integer product_id;
-						if(pstmt.execute())
-						{
-							rs = pstmt.getResultSet();
-							if(rs.next()){ 
-							product_id = rs.getInt("product_id");
-							sql =	"INSERT INTO products_categories (category_id, product_id) " +
-									"SELECT ?,?";
-							pstmt = conn.prepareStatement(sql);
-							String new_id = (""+request.getParameter("new_category_id"));
-							pstmt.setInt(1, Integer.parseInt(new_id));
-							pstmt.setInt(2, product_id);
-								if(pstmt.executeUpdate() != 0)
-								{
-									conn.commit();
-									%><t:message type="success" message="Product successfully added"></t:message><%
-								}
-								else{
-									conn.rollback();
-									%><t:message type="danger" message="Rolling back"></t:message><%
-								}
-							}
-						}
-						conn.setAutoCommit(true);
-						pstmt.close();
-						conn.close();
-					}
-					catch(SQLException e){
-						e.printStackTrace();
-						String message = "Failure to Insert Product: " + e.getMessage();
-			   	     	%>
-						<t:message type="danger" message="<%=message %>"></t:message>
-						<%
-					}
-					
-			%>
-			<%}	
-				else{%>
-					<t:message type="warning" message="You must be an owner to add categories"></t:message>
-			<%
-				}
-		}
-	%>
-
-	<!--  Updating a product -->
-	<% 
-		//TODO still need to implement udpate modal
-		if(action.equals("update"))
-		{
-			if(!pid.isEmpty())
-			{
-				if(role.equals("owner"))
-				{
-					try{
-						
-					if((""+request.getParameter("name")).isEmpty()){
-						throw new SQLException("Name cannot be empty");
-					}
-					if((""+request.getParameter("sku")).isEmpty()){
-						throw new SQLException("sku cannot be empty");
-					}
-					if((""+request.getParameter("description")).isEmpty()){
-						throw new SQLException("description cannot be empty");
-					}
-					Class.forName("org.postgresql.Driver");
-					statement = conn.createStatement();
-					sql = "SELECT * FROM (SELECT * FROM (products NATURAL JOIN products_categories) AS product_join NATURAL JOIN (SELECT name AS category_name, category_id FROM categories) AS c) AS p_join WHERE p_join.product_id = ?";
-					d_pstmt = conn.prepareStatement(sql);
-					d_pstmt.setInt(1, Integer.parseInt(pid));
-					rs = d_pstmt.executeQuery();
-					
-					if(rs.next())
-					{
-						String rsname,rsdescription, rsimg, rsprice, rscategory, rssku; 
-						rsname = rs.getString("name");
-						rsdescription = rs.getString("description");
-						rsimg = rs.getString("img_url");
-						rsprice = rs.getString("price");
-						rssku = rs.getString("sku");
-						rscategory = rs.getString("category_name");
-						%>
-					<t:modal_header modal_title="Updating Item" />
-						<fieldset>
-							<!-- Text input-->
-							<input type="hidden" name="cid" value="<%=cid %>"/>
-							<input type="hidden" name="pid" value="<%=pid %>"/>
-		        			<input type="hidden" name="category" value="<%=category_name %>"/>
-							<label class="control-label" for="name">Name</label>
-							<input value="<%=rsname %>" id="name" name="name" type="text" placeholder="Name" class="form-control">
-							
-							<label class="control-label" for="name">SKU</label>
-							<input value="<%=rssku %>" id="sku" name="sku" type="text" placeholder="SKU" class="form-control">
-							
-							<label class="control-label" for="img_url">Category</label>
-							<select class="form-control" name="new_category_id">
-								<% 
-								
-								try{	
-									sql = "SELECT category_id, name FROM categories";
-									d_statement = conn.createStatement();
-									d_rs = statement.executeQuery(sql);
-									ArrayList<String> categories;
-									while(d_rs.next())
-									{
-										String c = d_rs.getString("name");
-										String old_id = d_rs.getString("category_id");
-										String selected = (c.equals(rscategory)) ? "selected":""; %>
-										<option <%=selected%> value="<%=old_id %>"><%=c %></option>
-								<% }
-									d_statement.close();
-									conn.close();
-									d_rs.close();
-								}
-								catch(PSQLException e)
-								{
-									e.printStackTrace();
-								}%>
-								
-								
-							</select>
-							<label class="control-label" for="price">Price</label>
-							<input value="<%=rsprice %>" id="price" type="text" class="form-control" name="price"/>
-							
-							<!-- Textarea -->
-							<div class="control-group">
-							  <label class="control-label" for="description">Description</label>
-							  <div class="controls">                     
-							    <textarea class="form-control" id="description" name="description"><%=rsdescription %></textarea>
-							  </div>
-							</div>
-							
-							
-							<label class="control-label" for="img_url">Image</label>
-							<select class="form-control" name="img_url">
-								<% String selected = "";
-									for(String s: images){ 
-									selected = (s.equals(rsimg)) ? "selected":""; %>
-									<option <%=selected%> value="<%=s %>"><%=s %></option>
-								<% }%>
-							</select>
-							
-							
-						</fieldset>
-					<t:modal_footer name="update"/>
-					<%
-					rs.close();
-					statement.close();
-					}
-						else{
-						%>
-						<t:message type="danger" message="Product does not exist"></t:message>
-						<%
-						}
-					}
-					catch(SQLException e){
-						e.printStackTrace();
-			   	     	String message = "Failure to Update Product: " + e.getMessage();
-			   	     	%>
-						<t:message type="danger" message="<%=message %>"></t:message>
-						<%
-					}
-					
-				}	
-				else
-				{
-					%>
-					<t:message type="warning" message="You must be an owner to delete categories"></t:message>
-					<%
-				}
-			}
-			else
-			{
-				%>
-				<t:message type="warning" message="No product selected for deletion"></t:message>
-				<%
-			}
-			
-			
-		}
-	%>
-
-	<%
-		//TODO still need to implement update action
-		//If submit is equal to "add"
-		if(submit.equals("update"))
-		{
-				if(role.equals("owner"))
-				{
-					try{
-						Class.forName("org.postgresql.Driver");
-						conn.setAutoCommit(false);
-						sql =	"UPDATE products SET (name, sku, img_url, description, price) = " +
-								"(?,?,?,?,?) WHERE product_id = ?";
-						d_pstmt = conn.prepareStatement(sql);
-						d_pstmt.setString(1, ""+request.getParameter("name"));
-						d_pstmt.setString(2, ""+request.getParameter("sku"));
-						d_pstmt.setString(3, ""+request.getParameter("img_url"));
-						d_pstmt.setString(4, ""+request.getParameter("description"));
-						Double p = ((""+request.getParameter("price")).isEmpty()) ? 0:Double.parseDouble(""+request.getParameter("price"));
-						d_pstmt.setDouble(5, p);
-						d_pstmt.setInt(6, Integer.parseInt(request.getParameter("pid")));
-						d_pstmt.executeUpdate();
-						sql =	"UPDATE products_categories SET (category_id) = " +
-								"(?) WHERE product_id = ?";
-						d_pstmt = conn.prepareStatement(sql);
-						d_pstmt.setInt(1, Integer.parseInt(request.getParameter("new_category_id")));
-						d_pstmt.setInt(2, Integer.parseInt(request.getParameter("pid")));
-
-						int count = d_pstmt.executeUpdate();
-						conn.commit();
-						//ERROR HERE with the double casting from string
-
-						conn.setAutoCommit(true);
-						d_pstmt.close();
-						conn.close();
-						
-						%>
-						<t:message type="success" message="Product successfully updated"></t:message>
-						<%
-					}
-					catch(SQLException e){
-						e.printStackTrace();
-						conn.rollback();
-						%>
-						<t:message type="danger" message="<%=e.getMessage() %>"></t:message>
-						<%
-					}
-					
-			%>
-			<%}	
-				else{%>
-					<t:message type="warning" message="You must be an owner to update categories"></t:message>
-			<%
-				}
-		}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-%>
-
 
 <!-- category menu -->
 <%
@@ -477,12 +49,7 @@
 
 
 		Class.forName("org.postgresql.Driver");
-
-		c_conn = DriverManager
-				.getConnection(
-						"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
-		c_pstmt = c_conn.prepareStatement("SELECT * FROM categories");
+		c_pstmt = conn.prepareStatement("SELECT * FROM categories");
 		c_rs = c_pstmt.executeQuery();
 %>
 	
@@ -613,15 +180,10 @@ String SQL=null;
 try
 {
 	try{Class.forName("org.postgresql.Driver");}catch(Exception e){System.out.println("Driver error");}
-	conn = DriverManager.getConnection(
-			"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-			"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
-	stmt =conn.createStatement();
+	stmt = conn.createStatement();
 	stmt_2 =conn.createStatement();
 	stmt_3 =conn.createStatement();
 	/**SQL_1 for (state, amount)**/
-	int c_offset = (request.getParameter("c_offset") != null) ? Integer.parseInt(""+request.getParameter("c_offset")):0;
-	int r_offset = (request.getParameter("r_offset") != null) ? Integer.parseInt(""+request.getParameter("r_offset")):0;
 		
 	String SQL_1="select p.id, p.name, sum(c.quantity*p.price) as amount from products p, sales c "+
 				 "where c.pid=p.id "+
@@ -683,7 +245,11 @@ try
 	}
 		
 %>
-			<td><a href="#" class="btn btn-default">Next 10</a></td>
+			<td><form>
+				<input type="hidden" name="r_offset" value="<%= (r_offset + 10) %>"/>
+				<input type="hidden" name="c_offset" value="<%= c_offset%>"/>
+				<input class="btn btn-default" value="Next 10" />
+			</form></td>
 		</tr>
 <%	
 	for(i=0;i<s_list.size();i++)
@@ -732,8 +298,9 @@ finally
 }	
 %>	
 			<form>
-				<a href="#" class="btn btn-default">Next 20 customers</a>
-			
+				<input type="hidden" name="c_offset" value="<%= (c_offset + 20) %>"/>
+				<input type="hidden" name="r_offset" value="<%= r_offset%>"/>
+				<input class="btn btn-default" value="Next 20 customers" />
 			</form>
 	
 		</div>
