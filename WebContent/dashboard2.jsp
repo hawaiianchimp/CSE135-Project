@@ -620,16 +620,21 @@ try
 	stmt_2 =conn.createStatement();
 	stmt_3 =conn.createStatement();
 	/**SQL_1 for (state, amount)**/
+	int c_offset = (request.getParameter("c_offset") != null) ? Integer.parseInt(""+request.getParameter("c_offset")):0;
+	int r_offset = (request.getParameter("r_offset") != null) ? Integer.parseInt(""+request.getParameter("r_offset")):0;
+		
 	String SQL_1="select p.id, p.name, sum(c.quantity*p.price) as amount from products p, sales c "+
 				 "where c.pid=p.id "+
 				 "group by p.name,p.id "+
 				 "order by  p.name asc "+
-				 "limit 9;";
+				 "limit 9" +
+				 "offset " + c_offset;
 	String SQL_2="select  u.state, sum(c.quantity*p.price) as amount from users u, sales c,  products p "+
 				  "where c.uid=u.id and c.pid=p.id "+ 
 				  "group by u.state "+ 
 				  "order by u.state asc "+
-				  "limit 19;";
+				  "limit 19" +
+				  "offset " + r_offset;
 
 	rs=stmt.executeQuery(SQL_1);
 	int p_id=0;
@@ -686,7 +691,7 @@ try
 		s_name			=	s_list.get(i).getName();
 		s_amount_price	=	s_list.get(i).getAmount_price();
 		out.println("<tr  align=\"center\">");
-		out.println("<td><strong>"+s_name+"["+s_amount_price+"]</strong></td>");
+		out.println("<td><strong>"+s_name+"[$"+s_amount_price+"]</strong></td>");
 		for(j=0;j<p_list.size();j++)
 		{
 			p_id			=   p_list.get(j).getId();
@@ -726,7 +731,10 @@ finally
 	conn.close();
 }	
 %>	
-			<a href="#" class="btn btn-default">Next 20 customers</a>
+			<form>
+				<a href="#" class="btn btn-default">Next 20 customers</a>
+			
+			</form>
 	
 		</div>
 	</div>
