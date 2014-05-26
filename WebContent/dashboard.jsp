@@ -592,7 +592,7 @@
 						<th>table8</th>
 						<th>table9</th>
 						<th>table10</th>
-						<th><a href="#" class="btn btn-default">Next 10</a></th>
+						<th><a href="#" class="btn btn-default">Next 20 customers</a></th>
 					</tr>
 				</thead>
 				
