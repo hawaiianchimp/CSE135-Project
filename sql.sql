@@ -1,4 +1,4 @@
-﻿DROP TABLE users CASCADE;
+DROP TABLE users CASCADE;
 DROP TABLE categories CASCADE;
 DROP TABLE products CASCADE;
 DROP TABLE sales CASCADE;
@@ -73,3 +73,10 @@ INSERT INTO sales (uid, pid, quantity, price) VALUES(5, 5 , 3, 488);
 INSERT INTO sales (uid, pid, quantity, price) VALUES(5, 1, 1, 1200);
 
 SELECT * FROM sales order by id desc;
+
+CREATE TABLE carts (
+    id          SERIAL PRIMARY KEY,
+    uid         INTEGER REFERENCES users (id) ON DELETE CASCADE,
+    pid         INTEGER REFERENCES products (id) ON DELETE CASCADE,
+    quantity    INTEGER NOT NULL
+);
