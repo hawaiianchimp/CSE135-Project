@@ -42,12 +42,12 @@ String SQL=null;
 try
 {
 	try{Class.forName("org.postgresql.Driver");}catch(Exception e){System.out.println("Driver error");}
-	/* conn = DriverManager.getConnection(
+	conn = DriverManager.getConnection(
             "jdbc:postgresql://localhost/CSE135?" +
-            "user=Bonnie"); */
+            "user=Bonnie"); 
             
-	conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-    	"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
+/* 	conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+    	"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); */
             
 	stmt =conn.createStatement();
 	stmt_2 =conn.createStatement();

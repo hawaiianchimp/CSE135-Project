@@ -42,12 +42,12 @@ String SQL=null;
 try
 {
 	try{Class.forName("org.postgresql.Driver");}catch(Exception e){System.out.println("Driver error");}
-	/* conn = DriverManager.getConnection(
+	conn = DriverManager.getConnection(
             "jdbc:postgresql://localhost/CSE135?" +
-            "user=Bonnie"); */
+            "user=Bonnie"); 
             
-	conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-    	"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
+	/* conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+    	"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); */
             
 	stmt =conn.createStatement();
 	stmt_2 =conn.createStatement();
@@ -58,12 +58,6 @@ try
 				 "group by p.name,p.id "+
 				 "order by  p.name asc "+
 				 "limit 9;";
-			
-	String SQL_2="select  u.state, sum(s.quantity*s.price) as amount from users u, sales s,  products p "+
-				  "where s.uid=u.id and s.pid=p.id "+ 
-				  "group by u.state "+ 
-				  "order by u.state asc "+
-				  "limit 19;";
 				  
 	String SQL_4="select  u.name, sum(s.quantity*s.price) as amount from users u, sales s,  products p "+
 				  "where s.uid=u.id and s.pid=p.id "+ 
@@ -107,7 +101,7 @@ try
 %>
 	<table align="center" width="98%" border="1">
 		<tr align="center">
-			<td><strong><font color="#FF0000">STATE</font></strong></td>
+			<td><strong><font color="#FF0000">USER</font></strong></td>
 <%	
 	for(i=0;i<p_list.size();i++)
 	{
