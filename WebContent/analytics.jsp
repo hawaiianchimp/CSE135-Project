@@ -86,6 +86,7 @@ try
 		c_offset = "0";
 		next_c_offset = "10";
 	}
+	
 	System.out.println("c_offset: " + c_offset);
 	System.out.println("next_c_offset: " + next_c_offset);
 	
@@ -98,6 +99,13 @@ try
 	String age = request.getParameter("ages");
 	System.out.println("age: " + age);
 	
+	//Determine if buttons need to be disabled because of offset
+	String disabled = "disabled";
+	if(r_offset.equals("0") && c_offset.equals("0"))
+	{
+		disabled = "";
+	}
+	System.out.println(disabled);
 	
 	String SQL_1 = null;
 	String SQL_2 = null;
@@ -456,19 +464,19 @@ try
 		<!-- For Choosing States vs. Customers Table -->
 		<form class="navbar-form navbar-left" role="search" action="analytics.jsp" method="GET">
 		<div class="col-sm-12">
-				<select class="form-control" name="scope">
+				<select class="form-control" name="scope" <%= disabled %>>
 					<option value="states">States</option>
 		        	<option value="customers">Customers</option>
 		        </select>
 
-		        <select class="form-control" name="ages">
+		        <select class="form-control" name="ages" <%= disabled %>>
 		        	<option value="all">All Ages</option>
 		        	<option value="12 and 18">12-18</option>
 		        	<option value="18 and 45">18-45</option>
 		        	<option value="45 and 65">45-65</option>
 		        	<option value="65 and 150">65-</option>
 		        </select>
-		        <select class="form-control" name="category">
+		        <select class="form-control" name="category" <%= disabled %>>
 		        	<option value="all">All Categories</option>
 		        	<% while(c_rs.next())
 		        		{%>
@@ -476,7 +484,7 @@ try
 		        		<% }
 		        		%>
 		        </select>
-		        <select class="form-control" name="state">
+		        <select class="form-control" name="state" <%= disabled %>>
 		        	<option value="all">All States</option>
 					<option value="Alabama">Alabama</option>
 					<option value="Alaska">Alaska</option>
@@ -531,7 +539,11 @@ try
 					<option value="Wyoming">Wyoming</option>
 				</select>
 				<input type="hidden" name="query" value="true"/>
-		        <input type="submit"  class="btn btn-default"/>
+				<% if(!disabled.equals("disabled")){
+		        	%><input type="submit"  class="btn btn-default" /><%
+		        }
+		        %>
+		        
 		   	</div>
 		   	</form>   
 		</div>
