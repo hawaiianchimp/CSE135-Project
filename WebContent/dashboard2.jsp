@@ -29,7 +29,11 @@
 
 	int c_offset = (request.getParameter("c_offset") != null) ? Integer.parseInt(""+request.getParameter("c_offset")):0;
 	int r_offset = (request.getParameter("r_offset") != null) ? Integer.parseInt(""+request.getParameter("r_offset")):0;
-	
+	String disabled = "";
+	if(c_offset + r_offset != 0)
+	{
+		disabled = "disabled";
+	}
 	keyword = (keyword.equals("null"))? "":keyword;
 	
 	conn = DriverManager.getConnection(
@@ -56,7 +60,7 @@
 	<!-- product search -->
 	<div class="row">
 		<div class="col-sm-4">
-			<form class="navbar-form navbar-left" role="search" action="dashboard.jsp" method="GET">
+			<form class="navbar-form navbar-left" role="search" method="GET">
 				<select class="form-control" name="scope">
 		        	<option value="customers">Customers</option>
 		        	<option value="states">States</option>
@@ -68,14 +72,14 @@
 		</div>
 		<div class="col-sm-7">
 		<form class="navbar-form navbar-left" role="search" action="dashboard.jsp" method="GET">
-		        <select class="form-control" name="ages">
+		        <select class="form-control" name="ages" <%= disabled %>>
 		        	<option value="all">All Ages</option>
 		        	<option value="1">12-18</option>
 		        	<option value="2">18-45</option>
 		        	<option value="3">45-65</option>
 		        	<option value="4">65-</option>
 		        </select>
-		        <select class="form-control" name="category">
+		        <select class="form-control" name="category" <%= disabled %>>
 		        	<option>All Categories</option>
 		        	<% while(c_rs.next())
 		        		{%>
@@ -83,7 +87,7 @@
 		        		<% }
 		        		%>
 		        </select>
-		        <select class="form-control" name="state">
+		        <select class="form-control" name="state" <%= disabled %>>
 		        	<option value="all">All States</option>
 					<option value="AL">Alabama</option>
 					<option value="AK">Alaska</option>
@@ -248,7 +252,7 @@ try
 			<td><form>
 				<input type="hidden" name="r_offset" value="<%= (r_offset + 10) %>"/>
 				<input type="hidden" name="c_offset" value="<%= c_offset%>"/>
-				<input class="btn btn-default" value="Next 10" />
+				<input type="submit" class="btn btn-default" value="Next 10" />
 			</form></td>
 		</tr>
 <%	
@@ -300,7 +304,7 @@ finally
 			<form>
 				<input type="hidden" name="c_offset" value="<%= (c_offset + 20) %>"/>
 				<input type="hidden" name="r_offset" value="<%= r_offset%>"/>
-				<input class="btn btn-default" value="Next 20 customers" />
+				<input type="submit" class="btn btn-default" value="Next 20 customers" />
 			</form>
 	
 		</div>
