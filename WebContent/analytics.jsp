@@ -19,12 +19,12 @@ try
 {
 	try{Class.forName("org.postgresql.Driver");}catch(Exception e){System.out.println("Driver error");}
 	
-	/* 	conn = DriverManager.getConnection(
-    "jdbc:postgresql://localhost/CSE135?" +
-    "user=Bonnie");  */
+	conn = DriverManager.getConnection(
+    	"jdbc:postgresql://localhost/CSE135?" +
+    	"user=Bonnie");  
             
-		conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-    	"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
+	/* conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+   	"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); */
 	stmt =conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 	stmt_2 =conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 	stmt_3 =conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -98,42 +98,53 @@ try
 	{
 		//System.out.println("columns: product - no filters");
 		/** pulls product names, no filters**/
-		SQL_1 ="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
+		/* SQL_1 ="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
 			" FROM products p" +
 			" LEFT JOIN sales s" + 
 			" ON s.pid = p.id" +
 			" GROUP BY p.name,p.id" + 
 			" ORDER BY p.name ASC" +
-			" LIMIT 10 OFFSET "+c_offset;
-		SQL_11="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
+			" LIMIT 11 OFFSET "+c_offset; */
+		SQL_1 = "SELECT pds.id, pds.name, SUM(sales.quantity*sales.price) AS amount "+  //DONE
+				"FROM (SELECT id, name FROM products "+
+				"ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+") AS pds "+
+				"LEFT JOIN sales ON (sales.pid = pds.id) "+
+				"GROUP BY pds.id, pds.name";
+		/* SQL_11="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
 				" FROM products p" +
 				" LEFT JOIN sales s" + 
 				" ON s.pid = p.id" +
 				" GROUP BY p.name,p.id" + 
 				" ORDER BY p.name ASC" +
-				" LIMIT 1 OFFSET "+next_c_offset;
+				" LIMIT 1 OFFSET "+next_c_offset; */
 		
 	}
 	else
 	{
 		//System.out.println("columns: product - category filters");
 		/** pulls product names, category filter**/		 
-		 SQL_1 ="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
+		 /* SQL_1 ="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
 					" FROM products p" +
 					" LEFT JOIN sales s" + 
 					" ON s.pid = p.id" +
 					" WHERE p.cid='"+ category +"'" +
 					" GROUP BY p.name,p.id" + 
 					" ORDER BY p.name ASC" +
-					" LIMIT 10 OFFSET "+c_offset;
-		 SQL_11 ="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
+					" LIMIT 11 OFFSET "+c_offset; */
+		 SQL_1 = "SELECT pds.id, pds.name, SUM(sales.quantity*sales.price) AS amount "+
+					"FROM (SELECT id, name FROM products "+
+					"WHERE products.cid='"+ category +"' " +
+					"ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+") AS pds "+
+					"LEFT JOIN sales ON (sales.pid = pds.id) "+
+					"GROUP BY pds.id, pds.name";
+		 /* SQL_11 ="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
 					" FROM products p" +
 					" LEFT JOIN sales s" + 
 					" ON s.pid = p.id" +
 					" WHERE p.cid='"+ category +"'" +
 					" GROUP BY p.name,p.id" + 
 					" ORDER BY p.name ASC" +
-					" LIMIT 1 OFFSET "+next_c_offset;
+					" LIMIT 1 OFFSET "+next_c_offset; */
 	}			
 	
 	int selector = 11;
@@ -155,18 +166,23 @@ try
 			//System.out.println("rows: states - no filters");
 			/** pulls state names, no filters**/
 			
-		  SQL_2 ="SELECT u.state, SUM(s.quantity*s.price) AS amount"+
+		  /* SQL_2 ="SELECT u.state, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s"+
 					" ON s.uid = u.id"+
 					" GROUP BY u.state"+
 					" ORDER BY u.state ASC"+
-					" LIMIT 20 OFFSET "+r_offset;
-			SQL_21 ="SELECT u.state, SUM(s.quantity*s.price) AS amount"+
+					" LIMIT 21 OFFSET "+r_offset; */
+			SQL_2 = "SELECT st.name, SUM(s.price*s.quantity) AS amount "+
+					"FROM (SELECT name FROM states ORDER BY name ASC LIMIT 20 OFFSET "+r_offset+") "+
+					"AS st JOIN users u ON (st.name = u.state) "+
+					"LEFT JOIN sales s ON (s.uid = u.id) "+
+					"GROUP BY st.name";
+			/* SQL_21 ="SELECT u.state, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s"+
 					" ON s.uid = u.id"+
 					" GROUP BY u.state"+
 					" ORDER BY u.state ASC"+
-					" LIMIT 1 OFFSET "+next_r_offset;
+					" LIMIT 1 OFFSET "+next_r_offset; */
 			
 			//no category filter
 			if(category == null || category.equals("all") || category.equals("null"))
@@ -176,7 +192,7 @@ try
 				{
 					SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
 							" FROM sales AS s, users AS u"+
-							" WHERE u.state IN (SELECT DISTINCT state FROM users ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
+							" WHERE u.state IN (SELECT name FROM states ORDER BY name ASC LIMIT 20 OFFSET "+r_offset+")"+
 							" AND s.pid IN (SELECT id FROM products ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
 							" AND s.uid = u.id"+
 							" GROUP BY u.state, s.pid";
@@ -186,7 +202,7 @@ try
 				{
 					SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
 							" FROM sales AS s, users AS u"+
-							" WHERE u.state IN (SELECT DISTINCT state FROM users WHERE age BETWEEN "+age+" ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
+							" WHERE u.state IN (SELECT name FROM states WHERE age BETWEEN "+age+" ORDER BY name ASC LIMIT 20 OFFSET "+r_offset+")"+
 							" AND s.pid IN (SELECT id FROM products ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
 							" AND s.uid = u.id"+
 							" GROUP BY u.state, s.pid";
@@ -200,7 +216,7 @@ try
 				{
 					SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
 							" FROM sales AS s, users AS u"+
-							" WHERE u.state IN (SELECT DISTINCT state FROM users ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
+							" WHERE u.state IN (SELECT name FROM states ORDER BY name ASC LIMIT 20 OFFSET "+r_offset+")"+
 							" AND s.pid IN (SELECT id FROM products WHERE cid='"+category+"'ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
 							" AND s.uid = u.id"+
 							" GROUP BY u.state, s.pid";
@@ -210,8 +226,8 @@ try
 				{
 					SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
 							" FROM sales AS s, users AS u"+
-							" WHERE u.state IN (SELECT DISTINCT state FROM users WHERE age BETWEEN "+age+" ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
-							" AND s.pid IN (SELECT id FROM products WHERE cid='"+category+"'ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
+							" WHERE u.state IN (SELECT name FROM states WHERE age BETWEEN "+age+" ORDER BY name ASC LIMIT 20 OFFSET "+r_offset+")"+
+							" AND s.pid IN (SELECT id FROM products WHERE cid='"+category+"' ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
 							" AND s.uid = u.id"+
 							" GROUP BY u.state, s.pid";
 				}
@@ -222,25 +238,23 @@ try
 		{
 			//System.out.println("rows: states - state filters");
 			/* pulls state names, state filter */
-			SQL_2 ="SELECT u.state, SUM(s.quantity*s.price) AS amount"+
+			SQL_2 ="SELECT u.state, SUM(s.price*s.quantity) AS amount"+
+					" FROM users u"+
+					" JOIN sales s ON (s.uid = u.id)"+
+					" WHERE u.state = '"+state+"'"+
+					" GROUP BY u.state";
+			/* SQL_21 ="SELECT u.state, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s"+
 					" ON s.uid = u.id"+
 					" WHERE u.state='"+ state +"'" + 
 					" GROUP BY u.state"+
 					" ORDER BY u.state ASC"+
-					" LIMIT 20 OFFSET "+r_offset;
-			SQL_21 ="SELECT u.state, SUM(s.quantity*s.price) AS amount"+
-					" FROM users u LEFT JOIN sales s"+
-					" ON s.uid = u.id"+
-					" WHERE u.state='"+ state +"'" + 
-					" GROUP BY u.state"+
-					" ORDER BY u.state ASC"+
-					" LIMIT 1 OFFSET "+next_r_offset;
+					" LIMIT 1 OFFSET "+next_r_offset; */
 			if(category == null || category.equals("all") || category.equals("null"))
 			{
 				SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
 						" FROM sales AS s, users AS u"+
-						" WHERE u.state IN (SELECT DISTINCT state FROM users WHERE state = '"+state+"' ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
+						" WHERE u.state = '"+state+"'"+
 						" AND s.pid IN (SELECT id FROM products ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
 						" AND s.uid = u.id"+
 						" GROUP BY u.state, s.pid";
@@ -249,7 +263,7 @@ try
 			{
 				SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
 						" FROM sales AS s, users AS u"+
-						" WHERE u.state IN (SELECT DISTINCT state FROM users WHERE state = '"+state+"' ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
+						" WHERE u.state = '"+state+"'"+
 						" AND s.pid IN (SELECT id FROM products WHERE cid='"+category+"' ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
 						" AND s.uid = u.id"+
 						" GROUP BY u.state, s.pid";
@@ -264,16 +278,23 @@ try
 		{
 			//System.out.println("rows: user - no filters");
 			/** pulls user names, no filters**/
-			SQL_2 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
+			/* SQL_2 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
 					" GROUP BY u.name,u.id"+
-					" ORDER BY u.name ASC LIMIT 20"+
-					" OFFSET "+r_offset;
-			SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
+					" ORDER BY u.name ASC LIMIT 21"+
+					" OFFSET "+r_offset; */
+			SQL_2 = "SELECT user_table.id, user_table.name, SUM(s.quantity*s.price) AS amount "+ 
+					"FROM (SELECT name, id FROM users "+
+					"ORDER BY name ASC LIMIT 20 OFFSET "+r_offset +") "+ 
+					"AS user_table LEFT JOIN sales s "+ 
+					"ON (s.uid = user_table.id) " + 
+					"GROUP BY user_table.id, user_table.name ";
+			
+			/* SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
 					" GROUP BY u.name,u.id"+
 					" ORDER BY u.name ASC LIMIT 1"+
-					" OFFSET "+next_r_offset;
+					" OFFSET "+next_r_offset; */
 			if(category == null || category.equals("all") || category.equals("null"))
 			{
 				SQL_3 ="SELECT s.pid, s.uid, SUM(s.quantity*s.price) AS amount"+
@@ -304,12 +325,12 @@ try
 					" GROUP BY u.name,u.id"+
 					" ORDER BY u.name ASC LIMIT 20"+
 					" OFFSET "+r_offset;
-			SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
+			/* SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
 					" WHERE u.state='"+ state +"'" + 
 					" GROUP BY u.name,u.id"+
 					" ORDER BY u.name ASC LIMIT 1"+
-					" OFFSET "+next_r_offset;
+					" OFFSET "+next_r_offset; */
 			if(category == null || category.equals("all") || category.equals("null"))
 			{
 				SQL_3 ="SELECT s.pid, s.uid, SUM(s.quantity*s.price) AS amount"+
@@ -337,14 +358,14 @@ try
 						" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
 						" WHERE u.age between " + age +  
 						" GROUP BY u.name,u.id"+
-						" ORDER BY u.name ASC LIMIT 20"+
+						" ORDER BY u.name ASC LIMIT 21"+
 						" OFFSET "+r_offset;
-			SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
+			/* SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
 					" WHERE u.age between " + age +  
 					" GROUP BY u.name,u.id"+
 					" ORDER BY u.name ASC LIMIT 1"+
-					" OFFSET "+next_r_offset;
+					" OFFSET "+next_r_offset; */
 			if(category == null || category.equals("all") || category.equals("null"))
 			{
 				SQL_3 ="SELECT s.pid, s.uid, SUM(s.quantity*s.price) AS amount"+
@@ -368,19 +389,26 @@ try
 		{
 			//System.out.println("rows: user - age and state filters");
 			/* pulls user names, age and state filter */ 	
-		   SQL_2 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
+		   /* SQL_2 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
 					" WHERE u.age between " + age + " AND u.state='"+ state +"'" +
 					" GROUP BY u.name,u.id"+
-					" ORDER BY u.name ASC LIMIT 20"+
-					" OFFSET "+r_offset;
+					" ORDER BY u.name ASC LIMIT 21"+
+					" OFFSET "+r_offset; */
+			
+		   SQL_2 = "SELECT user_table.id, user_table.name, SUM(s.quantity*s.price) AS amount"+ 
+					" FROM (SELECT name, id FROM users u WHERE u.age between " + age + " AND u.state='"+ state +
+					" ORDER BY name ASC LIMIT 20 OFFSET "+r_offset +")"+ 
+					" AS user_table LEFT JOIN sales s"+ 
+					" ON (s.uid = user_table.id)" + 
+					" GROUP BY user_table.id, user_table.name";
 					  
-		   SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
+		   /* SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
 					" WHERE u.age between " + age + " AND u.state='"+ state +"'" +
 					" GROUP BY u.name,u.id"+
 					" ORDER BY u.name ASC LIMIT 1"+
-					" OFFSET "+next_r_offset;
+					" OFFSET "+next_r_offset; */
 		   
 		   if(category == null || category.equals("all") || category.equals("null"))
 			{
@@ -404,17 +432,19 @@ try
 	}
 	
 	/* Determine if there are more rows and columns */
-	Statement stmt_11 =conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-	ResultSet rs_11=stmt_11.executeQuery(SQL_11);
+	//Statement stmt_11 =conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+	//ResultSet rs_11=stmt_11.executeQuery(SQL_11);
 	boolean moreColumns = false;
-	while(rs_11.next())
+	//rs.relative(11);
+	if(true)
 	{
 		moreColumns = true;
 	}
-	Statement stmt_21 =conn.createStatement();
-	ResultSet rs_21=stmt_21.executeQuery(SQL_21);
+	//Statement stmt_21 =conn.createStatement();
+	//ResultSet rs_21=stmt_21.executeQuery(SQL_21);
 	boolean moreRows = false;
-	while(rs_21.next())
+	//rs_2.relative(21);
+	if(true)
 	{
 		moreRows = true;
 	}
@@ -458,7 +488,7 @@ try
 			PreparedStatement c_pstmt = null;
 			ResultSet c_rs = null;
 			
-			c_pstmt = conn.prepareStatement("SELECT * FROM categories");
+			c_pstmt = conn.prepareStatement("SELECT * FROM categories LIMIT 10");
 			c_rs = c_pstmt.executeQuery();
 		%>
 	
@@ -557,7 +587,7 @@ String row_name = "";
 				%>
 				<td><strong><font color="#FF0000">STATE</font></strong></td>
 				<%
-				row_name = "state";
+				row_name = "name";
 			}
 			else{
 				%>
