@@ -135,6 +135,16 @@ try
 					" LIMIT 1 OFFSET "+next_c_offset;
 	}			
 	
+	int selector = 11;
+	if (state != null && !state.equals("all") && !state.equals("null"))
+		selector -= 1;
+	if (age != null && !age.equals("all") && !age.equals("null"))
+		selector -= 10;
+	System.out.println("selector: " + selector);
+	//11 = no filters
+	//10 - state filter
+	//01 - age filter
+	//00 - age and state filter
 	
 	//scope = states
 	if(scope.equals("states"))
@@ -156,23 +166,54 @@ try
 					" GROUP BY u.state"+
 					" ORDER BY u.state ASC"+
 					" LIMIT 1 OFFSET "+next_r_offset;
+			
+			//no category filter
 			if(category == null || category.equals("all") || category.equals("null"))
 			{
-				SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
-						" FROM sales AS s, users AS u"+
-						" WHERE u.state IN (SELECT DISTINCT state FROM users ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
-						" AND s.pid IN (SELECT id FROM products ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
-						" AND s.uid = u.id"+
-						" GROUP BY u.state, s.pid";
+				//no age filter, no category filter
+				if(age == null || age.equals("all") || age.equals("null"))
+				{
+					SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
+							" FROM sales AS s, users AS u"+
+							" WHERE u.state IN (SELECT DISTINCT state FROM users ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
+							" AND s.pid IN (SELECT id FROM products ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
+							" AND s.uid = u.id"+
+							" GROUP BY u.state, s.pid";
+				}
+				//age filter, no category filter 
+				else
+				{
+					SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
+							" FROM sales AS s, users AS u"+
+							" WHERE u.state IN (SELECT DISTINCT state FROM users WHERE age BETWEEN "+age+" ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
+							" AND s.pid IN (SELECT id FROM products ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
+							" AND s.uid = u.id"+
+							" GROUP BY u.state, s.pid";
+				}
 			}
+			//category filter
 			else
 			{
-				SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
-						" FROM sales AS s, users AS u"+
-						" WHERE u.state IN (SELECT DISTINCT state FROM users ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
-						" AND s.pid IN (SELECT id FROM products WHERE cid='"+category+"'ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
-						" AND s.uid = u.id"+
-						" GROUP BY u.state, s.pid";
+				//no age filter, category filter
+				if(age == null || age.equals("all") || age.equals("null"))
+				{
+					SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
+							" FROM sales AS s, users AS u"+
+							" WHERE u.state IN (SELECT DISTINCT state FROM users ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
+							" AND s.pid IN (SELECT id FROM products WHERE cid='"+category+"'ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
+							" AND s.uid = u.id"+
+							" GROUP BY u.state, s.pid";
+				}
+				//age filter, category filter
+				else
+				{
+					SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
+							" FROM sales AS s, users AS u"+
+							" WHERE u.state IN (SELECT DISTINCT state FROM users WHERE age BETWEEN "+age+" ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
+							" AND s.pid IN (SELECT id FROM products WHERE cid='"+category+"'ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
+							" AND s.uid = u.id"+
+							" GROUP BY u.state, s.pid";
+				}
 			}
 			
 		}
@@ -216,13 +257,7 @@ try
 	}
 	//scope = customers
 	else
-	{
-		int selector = 11;
-		if (state != null && !state.equals("all") && !state.equals("null"))
-			selector -= 1;
-		if (age != null && !age.equals("all") && !age.equals("null"))
-			selector -= 10;
-		System.out.println("selector: " + selector);	
+	{	
 	
 		if(selector == 11)
 		{
