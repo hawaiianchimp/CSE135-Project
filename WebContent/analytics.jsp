@@ -10,34 +10,6 @@
 <t:header title="Sales Analytics" />
 <%
 
-class Item 
-{
-	private int id=0;
-	private String name=null;
-	private float amount_price=0f;
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public float getAmount_price() {
-		return amount_price;
-	}
-	public void setAmount_price(float amount_price) {
-		this.amount_price = amount_price;
-	}
-}
-
-ArrayList<Item> p_list=new ArrayList<Item>();
-ArrayList<Item> s_list=new ArrayList<Item>();
-Item item=null;
 Connection conn=null;
 Statement stmt,stmt_2,stmt_3;
 ResultSet rs=null,rs_2=null,rs_3=null;
@@ -139,6 +111,7 @@ try
 				" GROUP BY p.name,p.id" + 
 				" ORDER BY p.name ASC" +
 				" LIMIT 1 OFFSET "+next_c_offset;
+		
 	}
 	else
 	{
@@ -209,6 +182,12 @@ try
 					" GROUP BY u.state"+
 					" ORDER BY u.state ASC"+
 					" LIMIT 1 OFFSET "+next_r_offset;
+			SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
+					" FROM sales AS s, users AS u"+
+					" WHERE u.state IN (SELECT DISTINCT state FROM users WHERE state = '"+state+"' ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
+					" AND s.pid IN (SELECT id FROM products ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
+					" AND s.uid = u.id"+
+					" GROUP BY u.state, s.pid";
 		}
 	}
 	//scope = customers
@@ -235,6 +214,12 @@ try
 					" GROUP BY u.name,u.id"+
 					" ORDER BY u.name ASC LIMIT 1"+
 					" OFFSET "+next_r_offset;
+			SQL_3 ="SELECT s.pid, s.uid, SUM(s.quantity*s.price) AS amount"+
+					" FROM sales AS s"+
+					" WHERE s.uid IN"+
+					" (SELECT id FROM users ORDER BY name ASC LIMIT 20 OFFSET "+r_offset+")"+
+					" AND s.pid IN (SELECT id FROM products ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
+					" GROUP BY s.uid, s.pid";
 		}
 		else if(selector == 10) 
 		{
@@ -252,6 +237,12 @@ try
 					" GROUP BY u.name,u.id"+
 					" ORDER BY u.name ASC LIMIT 1"+
 					" OFFSET "+next_r_offset;
+			SQL_3 ="SELECT s.pid, s.uid, SUM(s.quantity*s.price) AS amount"+
+					" FROM sales AS s"+
+					" WHERE s.uid IN"+
+					" (SELECT id FROM users WHERE state = '"+state+"' ORDER BY name ASC LIMIT 20 OFFSET "+r_offset+")"+
+					" AND s.pid IN (SELECT id FROM products ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
+					" GROUP BY s.uid, s.pid";
 		}
 		else if (selector == 01)
 		{
@@ -269,6 +260,12 @@ try
 					" GROUP BY u.name,u.id"+
 					" ORDER BY u.name ASC LIMIT 1"+
 					" OFFSET "+next_r_offset;
+			SQL_3 ="SELECT s.pid, s.uid, SUM(s.quantity*s.price) AS amount"+
+					" FROM sales AS s"+
+					" WHERE s.uid IN"+
+					" (SELECT id FROM users WHERE age BETWEEN "+age+" ORDER BY name ASC LIMIT 20 OFFSET "+r_offset+")"+
+					" AND s.pid IN (SELECT id FROM products ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
+					" GROUP BY s.uid, s.pid";
 		}
 		else if (selector == 00)
 		{
@@ -281,12 +278,18 @@ try
 					" ORDER BY u.name ASC LIMIT 20"+
 					" OFFSET "+r_offset;
 					  
-		   SQL_2 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
+		   SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
 					" WHERE u.age between " + age + " AND u.state='"+ state +"'" +
 					" GROUP BY u.name,u.id"+
 					" ORDER BY u.name ASC LIMIT 1"+
 					" OFFSET "+next_r_offset;
+		   SQL_3 ="SELECT s.pid, s.uid, SUM(s.quantity*s.price) AS amount"+
+					" FROM sales AS s"+
+					" WHERE s.uid IN"+
+					" (SELECT id FROM users WHERE age BETWEEN "+age+" AND state = '"+state+"' ORDER BY name ASC LIMIT 20 OFFSET "+r_offset+")"+
+					" AND s.pid IN (SELECT id FROM products ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
+					" GROUP BY s.uid, s.pid";
 		}
 	}
 	
@@ -298,7 +301,7 @@ try
 	{
 		moreColumns = true;
 	}
-	Statement stmt_21 =conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+	Statement stmt_21 =conn.createStatement();
 	ResultSet rs_21=stmt_21.executeQuery(SQL_21);
 	boolean moreRows = false;
 	while(rs_21.next())
@@ -309,188 +312,27 @@ try
 	System.out.println("moreColumns: " + moreColumns);
 	System.out.println("moreRows: " + moreRows);
 	
-					
+	System.out.println(SQL_1);				
 	rs=stmt.executeQuery(SQL_1);
+	System.out.println(SQL_2);
+	rs_2=stmt_2.executeQuery(SQL_2);
+	System.out.println(SQL_3);
+	rs_3=stmt_3.executeQuery(SQL_3);
 	
-	int p_id=0;
-	String p_name=null;
-	float p_amount_price=0;
-	while(rs.next())
-	{
-		p_id=rs.getInt("id");
-		p_name=rs.getString(1);
-		p_amount_price=rs.getInt("amount");
-		item=new Item();
-		item.setId(p_id);
-		item.setName(p_name);
-		item.setAmount_price(p_amount_price);
-		p_list.add(item);
-	
-	}
-	
-	rs_2=stmt_2.executeQuery(SQL_2);//state not id, many users in one state
-	String s_name=null;
-	float s_amount_price=0;
-	while(rs_2.next())
-	{
-		s_name=rs_2.getString(1);
-		s_amount_price=rs_2.getInt("amount");
-		item=new Item();
-		item.setName(s_name);
-		item.setAmount_price(s_amount_price);
-		s_list.add(item);
-	}	
+	//state not id, many users in one state
 //    out.println("product #:"+p_list.size()+"<br>state #:"+s_list.size()+"<p>");
 	int i=0,j=0;	
 	float amount=0;
 %>
-	<table align="center" width="98%" border="1">
-		<tr align="center">
-			<%
-			if(scope.equals("states")) {
-				%>
-				<td><strong><font color="#FF0000">STATE</font></strong></td>
-				<%
-			}
-			else{
-				%>
-				<td><strong><font color="#FF0000">USER</font></strong></td>
-				<%
-			}
-			%>
-<%	
-	for(i=0;i<p_list.size();i++)
-	{
-		p_id			=   p_list.get(i).getId();
-		p_name			=	p_list.get(i).getName();
-		p_amount_price	=	p_list.get(i).getAmount_price();
-		out.print("<td> <strong>"+p_name+"<br>["+p_amount_price+"]</strong></td>");
-	}
 
-	if(moreColumns)
-	{
-		//out.print("<td><input type='submit' class='btn btn-primary' value='Next 10'></td>");
-		int offset = Integer.valueOf(c_offset) + 10;
-		%>
-		<td colspan="10">
-		
-	   	<form action="analytics.jsp" method="GET">
-			<div class="form-group">
-				<input type ="hidden" name=scope value="<%=scope%>">
-				<input type ="hidden" name=r_offset value="<%=r_offset%>">
-				<input type ="hidden" name=c_offset value="<%=offset%>">
-				<input type ="hidden" name=state value="<%=state%>">
-				<input type ="hidden" name=category value="<%=category%>">
-				<input type ="hidden" name=ages value="<%=age%>">
-			</div>
-			<button type="submit" class="btn btn-primary">Next 10</button>
-		</form>
-		</td>
-		<%
-	}
-		
-	if(p_list.size() == 0)
-	{
-		out.print("<td> <strong> No Items in Category </strong></td>");
-	}
-%>
-		</tr>
-<%	
-	System.out.println("s_list: " + s_list.size());
-	System.out.println("p_list: " + p_list.size());
-	for(i=0;i<s_list.size();i++)
-	{
-		s_name			=	s_list.get(i).getName();
-		s_amount_price	=	s_list.get(i).getAmount_price();
-		out.println("<tr  align=\"center\">");
-		out.println("<td><strong>"+s_name+"["+s_amount_price+"]</strong></td>");
-		for(j=0;j<p_list.size();j++)
-		{
-			p_id			=   p_list.get(j).getId();
-			p_name			=	p_list.get(j).getName();
-			p_amount_price	=	p_list.get(j).getAmount_price();
-			
-			if (scope.equals("states"))
-			{
-				if(age == null || age.equals("all"))
-				{
-					SQL_3="select sum(s.quantity*p.price) as amount from users u, products p, sales s "+
-							 "where s.uid=u.id and s.pid=p.id and u.state='"+s_name+"' and p.id='"+p_id+"' group by u.state, p.name";
-				}
-				else
-				{
-					SQL_3="select sum(s.quantity*p.price) as amount from users u, products p, sales s "+
-							 "where u.age between " + age + "and s.uid=u.id and s.pid=p.id and u.state='"+s_name+"' and p.id='"+p_id+"' group by u.state, p.name";
-				}
-			}
-			else
-			{
-				SQL_3="select sum(s.quantity*p.price) as amount from users u, products p, sales s "+
-						 "where s.uid=u.id and s.pid=p.id and u.name='"+s_name+"' and p.id='"+p_id+"' group by u.name, p.name";
-			}
 
-			 rs_3=stmt_3.executeQuery(SQL_3);
-			 if(rs_3.next())
-			 {
-				 amount=rs_3.getInt("amount");
-				 out.print("<td><font color='#0000ff'>"+amount+"</font></td>");
-			 }
-			 else
-			 {
-			 	out.println("<td><font color='#ff0000'>0</font></td>");
-			 }
+<table class="table">
 
-		}
-		if(p_list.size() == 0)
-		{
-			out.println("<td><font color='#ff0000'>n/a</font></td>");
-		}
-		out.println("</tr>");
-	}
-	
-	if(s_list.size() == 0)
-	{
-		if(scope.equals("states"))
-		{
-			%>
-			<t:message type="warning" message="State does not exist. Please choose another state."></t:message>
-			<%
-		}
-		else
-		{
-			%>
-			<t:message type="warning" message="No such users."></t:message>
-			<%
-		}
-	}
-	
-	session.setAttribute("TOP_10_Products",p_list);
-	
-	if(moreRows)
-	{
-		int offset = Integer.valueOf(r_offset) + 20;
-		%>
-		<tr><td colspan="10">
-		
-	   	<form action="analytics.jsp" method="GET">
-			<div class="form-group">
-				<input type ="hidden" name=scope value="<%=scope%>">
-				<input type ="hidden" name=r_offset value="<%=offset%>">
-				<input type ="hidden" name=c_offset value="<%=c_offset%>">
-				<input type ="hidden" name=state value="<%=state%>">
-				<input type ="hidden" name=category value="<%=category%>">
-				<input type ="hidden" name=ages value="<%=age%>">
-			</div>
-			<button type="submit" class="btn btn-primary">Next 20</button>
-		</form>
-		</td></tr>
-		<%
-	}
-%>
-	</table>
-	
-	<div class="row">
-	
+<thead>
+<tr>	
+<td>
+<a class="btn btn-default btn-primary" href='analytics.jsp' >Home</a>
+</td>
 		<%
 			PreparedStatement c_pstmt = null;
 			ResultSet c_rs = null;
@@ -501,12 +343,12 @@ try
 	
 		<!-- For Choosing States vs. Customers Table -->
 		<form class="navbar-form navbar-left" role="search" action="analytics.jsp" method="GET">
-		<div class="col-sm-12">
+				<td>
 				<select class="form-control" name="scope" <%= disabled %>>
 		        	<option value="customers">Customers</option>
 					<option value="states">States</option>
 		        </select>
-
+				</td><td>
 		        <select class="form-control" name="ages" <%= disabled %>>
 		        	<option value="all">All Ages</option>
 		        	<option value="12 and 18">12-18</option>
@@ -514,6 +356,7 @@ try
 		        	<option value="45 and 65">45-65</option>
 		        	<option value="65 and 150">65-</option>
 		        </select>
+		        </td><td>
 		        <select class="form-control" name="category" <%= disabled %>>
 		        	<option value="all">All Categories</option>
 		        	<% while(c_rs.next())
@@ -522,6 +365,7 @@ try
 		        		<% }
 		        		%>
 		        </select>
+		        </td><td>
 		        <select class="form-control" name="state" <%= disabled %>>
 		        	<option value="all">All States</option>
 					<option value="Alabama">Alabama</option>
@@ -576,20 +420,130 @@ try
 					<option value="Wisconsin">Wisconsin</option>
 					<option value="Wyoming">Wyoming</option>
 				</select>
+				</td><td>
 				<input type="hidden" name="query" value="true"/>
 				<% if(!disabled.equals("disabled")){
 		        	%><input type="submit"  class="btn btn-default" /><%
 		        }
 		        %>
-		        
-		   	</div>
-		   	</form>   
-		</div>
+		        </td>
+		   	</form> 
+</tr>
+<tr>
+<%
+String row_name = "";
+			if(scope.equals("states")) {
+				%>
+				<td><strong><font color="#FF0000">STATE</font></strong></td>
+				<%
+				row_name = "state";
+			}
+			else{
+				%>
+				<td><strong><font color="#FF0000">USER</font></strong></td>
+				<%
+				row_name = "name";
+			}
+			%>
+
+<%
+while(rs.next()){ %>
+<td><strong><%= rs.getString("name") %></strong>
+<br>[ $<%=rs.getInt("amount") %> ]</td>
+<%} %>
+
+
+<%	
+	if(moreColumns)
+	{
+		//out.print("<td><input type='submit' class='btn btn-primary' value='Next 10'></td>");
+		int offset = Integer.valueOf(c_offset) + 10;
+		%>
+		<td>
+		
+	   	<form action="analytics.jsp" method="GET">
+			<div class="form-group">
+				<input type ="hidden" name=scope value="<%=scope%>">
+				<input type ="hidden" name=r_offset value="<%=r_offset%>">
+				<input type ="hidden" name=c_offset value="<%=offset%>">
+				<input type ="hidden" name=state value="<%=state%>">
+				<input type ="hidden" name=category value="<%=category%>">
+				<input type ="hidden" name=ages value="<%=age%>">
+			</div>
+			<button type="submit" class="btn btn-primary">Next 10</button>
+		</form>
+		</td>
+		<%
+	}
+%>
+</tr>
+</thead>
+
+<%
+
+rs_2.beforeFirst();
+while(rs_2.next()){%>
+	<tr>
+	<td><strong><%=rs_2.getString(row_name)%></strong> 
+	<br>[ $<%=rs_2.getInt("amount")%> ]
+	</td>
+	<% 
+	rs.beforeFirst();
+	while(rs.next())
+	{
+		boolean matched = false;
+		rs_3.beforeFirst();
+		while(rs_3.next() && !matched)
+		{
+			//System.out.print(rs_2.getString(1) + "==" + rs_3.getString(2) + "\t");
+			//System.out.print(rs.getInt(1) +"=="+ rs_3.getInt(1) + "\n");
+			if(rs.getInt("id") == rs_3.getInt("pid") && rs_2.getString(1).equals(rs_3.getString(2)))
+			{	
+				//System.out.println(rs_3.getInt("amount"));
+				matched = true;
+			%>
+				<td>$<%=rs_3.getInt("amount")%></td>
+			<%
+			}
+		}
+		if(matched == false){
+			%>
+			<td>0</td>
+		<%
+		}
+		//System.out.print(rs.getInt("id") +"=="+rs_3.getInt("pid") +"\t" +  rs_2.getInt("id") +"=="+ rs_3.getInt("uid") + "\n");
+	}%>
+	</tr>
+<% }%>
+<% 
+	if(moreRows)
+	{
+		int offset = Integer.valueOf(r_offset) + 20;
+		%>
+		<tr><td colspan="11">
+		
+	   	<form action="analytics.jsp" method="GET">
+			<div class="form-group">
+				<input type ="hidden" name=scope value="<%=scope%>">
+				<input type ="hidden" name=r_offset value="<%=offset%>">
+				<input type ="hidden" name=c_offset value="<%=c_offset%>">
+				<input type ="hidden" name=state value="<%=state%>">
+				<input type ="hidden" name=category value="<%=category%>">
+				<input type ="hidden" name=ages value="<%=age%>">
+			</div>
+			<button type="submit" class="btn btn-primary">Next 20</button>
+		</form>
+		</td></tr>
+		<%
+	}
+%>	
+	
+</table>
 	
 	
 <%
 }
-catch(Exception e)
+catch(PSQLException e)
 {
 	//out.println("<font color='#ff0000'>Error.<br><a href=\"login.jsp\" target=\"_self\"><i>Go Back to Home Page.</i></a></font><br>");
   out.println(e.getMessage());
