@@ -5,14 +5,72 @@
 <%@ page import="java.util.*"%>
 <%@ page import="java.io.*"%>
 <%@ page import="java.sql.*"%>
+<t:header title="Sales Analytics" />
 <%
 
 Connection conn=null;
 Statement stmt;
 String sql;
 ResultSet rs, rs2, rs3; 
-Integer c_offset = (request.getParameter("c_offset") == null) ? 0:Integer.parseInt(request.getParameter("c_offset"));
-Integer r_offset = (request.getParameter("r_offset") == null) ? 0:Integer.parseInt(request.getParameter("r_offset"));
+//Integer c_offset = (request.getParameter("c_offset") == null) ? 0:Integer.parseInt(request.getParameter("c_offset"));
+//Integer r_offset = (request.getParameter("r_offset") == null) ? 0:Integer.parseInt(request.getParameter("r_offset"));
+
+System.out.println("=================");
+
+String scope = ""+request.getParameter("scope");
+System.out.println("scope: " + scope);
+
+String r_offset, next_r_offset;
+if(request.getParameter("r_offset") != null && !request.getParameter("r_offset").equals("0"))
+{
+	r_offset = String.valueOf(Integer.valueOf(request.getParameter("r_offset")));
+	next_r_offset = String.valueOf(Integer.valueOf(request.getParameter("r_offset"))+20);
+}
+else
+{
+	r_offset = "0";
+	next_r_offset = "20";
+}
+System.out.println("r_offset: " + r_offset);
+System.out.println("next_r_offset: " + next_r_offset);
+
+String c_offset, next_c_offset;
+if(request.getParameter("c_offset") != null && !request.getParameter("c_offset").equals("0"))
+{
+	c_offset = String.valueOf(Integer.valueOf(request.getParameter("c_offset")));
+	next_c_offset = String.valueOf(Integer.valueOf(request.getParameter("c_offset"))+10);
+}
+else
+{
+	c_offset = "0";
+	next_c_offset = "10";
+}
+
+System.out.println("c_offset: " + c_offset);
+System.out.println("next_c_offset: " + next_c_offset);
+
+String state = request.getParameter("state");
+System.out.println("state: " + state);
+
+String category = request.getParameter("category");
+System.out.println("category: " + category);
+
+String age = request.getParameter("ages");
+System.out.println("age: " + age);
+
+//Determine if buttons need to be disabled because of offset
+String disabled = "disabled";
+if(r_offset.equals("0") && c_offset.equals("0"))
+{
+	disabled = "";
+}
+System.out.println(disabled);
+
+String SQL_1 = null;
+String SQL_2 = null;
+
+String SQL_11 = null;
+String SQL_21 = null;
 
 //System.out.print("Row Offset:" + r_offset);
 try
@@ -94,6 +152,102 @@ while(rs2.next()){%>
 	}%>
 	</tr>
 <% }%>
-</table>
+
+	<div class="row">
+	
+		<%
+			PreparedStatement c_pstmt = null;
+			ResultSet c_rs = null;
+			
+			c_pstmt = conn.prepareStatement("SELECT * FROM categories");
+			c_rs = c_pstmt.executeQuery();
+		%>
+	
+		<!-- For Choosing States vs. Customers Table -->
+		<form class="navbar-form navbar-left" role="search" action="analytics.jsp" method="GET">
+		<div class="col-sm-12">
+				<select class="form-control" name="scope" <%= disabled %>>
+					<option value="states">States</option>
+		        	<option value="customers">Customers</option>
+		        </select>
+
+		        <select class="form-control" name="ages" <%= disabled %>>
+		        	<option value="all">All Ages</option>
+		        	<option value="12 and 18">12-18</option>
+		        	<option value="18 and 45">18-45</option>
+		        	<option value="45 and 65">45-65</option>
+		        	<option value="65 and 150">65-</option>
+		        </select>
+		        <select class="form-control" name="category" <%= disabled %>>
+		        	<option value="all">All Categories</option>
+		        	<% while(c_rs.next())
+		        		{%>
+		        		<option value="<%= c_rs.getString("id") %>"><%= c_rs.getString("name")%></option>
+		        		<% }
+		        		%>
+		        </select>
+		        <select class="form-control" name="state" <%= disabled %>>
+		        	<option value="all">All States</option>
+					<option value="Alabama">Alabama</option>
+					<option value="Alaska">Alaska</option>
+					<option value="Arizona">Arizona</option>
+					<option value="Arkansas">Arkansas</option>
+					<option value="California">California</option>
+					<option value="Colorado">Colorado</option>
+					<option value="Connecticut">Connecticut</option>
+					<option value="Delaware">Delaware</option>
+					<option value="District Of Columbia">District Of Columbia</option>
+					<option value="Florida">Florida</option>
+					<option value="Georgia">Georgia</option>
+					<option value="Hawaii">Hawaii</option>
+					<option value="Idaho">Idaho</option>
+					<option value="Illinois">Illinois</option>
+					<option value="Indiana">Indiana</option>
+					<option value="Iowa">Iowa</option>
+					<option value="Kansas">Kansas</option>
+					<option value="Kentucky">Kentucky</option>
+					<option value="Louisiana">Louisiana</option>
+					<option value="Maine">Maine</option>
+					<option value="Maryland">Maryland</option>
+					<option value="Massachusetts">Massachusetts</option>
+					<option value="Michigan">Michigan</option>
+					<option value="Minnesota">Minnesota</option>
+					<option value="Mississippi">Mississippi</option>
+					<option value="Missouri">Missouri</option>
+					<option value="Montana">Montana</option>
+					<option value="Nebraska">Nebraska</option>
+					<option value="Nevada">Nevada</option>
+					<option value="New Hampshire">New Hampshire</option>
+					<option value="New Jersey">New Jersey</option>
+					<option value="New Mexico">New Mexico</option>
+					<option value="New York">New York</option>
+					<option value="North Carolina">North Carolina</option>
+					<option value="North Dakota">North Dakota</option>
+					<option value="Ohio">Ohio</option>
+					<option value="Oklahoma">Oklahoma</option>
+					<option value="Oregon">Oregon</option>
+					<option value="Pennsylvania">Pennsylvania</option>
+					<option value="Rhode Island">Rhode Island</option>
+					<option value="Sout Carolina">South Carolina</option>
+					<option value="South Dakora">South Dakota</option>
+					<option value="Tennessee">Tennessee</option>
+					<option value="Texas">Texas</option>
+					<option value="Utah">Utah</option>
+					<option value="Vermont">Vermont</option>
+					<option value="Virginia">Virginia</option>
+					<option value="West Virginia">Washington</option>
+					<option value="West Virginia">West Virginia</option>
+					<option value="Wisconsin">Wisconsin</option>
+					<option value="Wyoming">Wyoming</option>
+				</select>
+				<input type="hidden" name="query" value="true"/>
+				<% if(!disabled.equals("disabled")){
+		        	%><input type="submit"  class="btn btn-default" /><%
+		        }
+		        %>
+		        
+		   	</div>
+		   	</form>   
+		</div>	
 </body>
 </html>

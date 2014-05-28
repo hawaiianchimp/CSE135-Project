@@ -116,31 +116,41 @@ try
 	{
 		System.out.println("columns: product - no filters");
 		/** pulls product names, no filters**/
-		SQL_1="select p.id, p.name, sum(s.quantity*s.price) as amount from products p, sales s "+
-					 "where s.pid=p.id "+
-					 "group by p.name,p.id "+
-					 "order by  p.name asc "+
-					 "limit 10" +"offset "+c_offset+";"; 
-		SQL_11="select p.id, p.name, sum(s.quantity*s.price) as amount from products p, sales s "+
-				 "where s.pid=p.id "+
-				 "group by p.name,p.id "+
-				 "order by  p.name asc "+
-				 "limit 1" +"offset "+next_c_offset+";"; 
+		SQL_1="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
+			" FROM products p" +
+			" LEFT JOIN sales s" + 
+			" ON s.pid = p.id" +
+			" GROUP BY p.name,p.id" + 
+			" ORDER BY p.name ASC" +
+			" LIMIT 10 OFFSET "+c_offset;
+		SQL_11="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
+				" FROM products p" +
+				" LEFT JOIN sales s" + 
+				" ON s.pid = p.id" +
+				" GROUP BY p.name,p.id" + 
+				" ORDER BY p.name ASC" +
+				" LIMIT 1 OFFSET "+next_c_offset;
 	}
 	else
 	{
 		System.out.println("columns: product - category filters");
 		/** pulls product names, category filter**/		 
-		SQL_1="select p.id, p.name, sum(s.quantity*s.price) as amount from products p, sales s "+
-					 "where s.pid=p.id AND p.cid='"+ category +"'" +
-					 "group by p.name,p.id "+
-					 "order by  p.name asc "+
-					 "limit 10" +"offset "+c_offset+";"; 	
-		SQL_11="select p.id, p.name, sum(s.quantity*s.price) as amount from products p, sales s "+
-				 "where s.pid=p.id AND p.cid='"+ category +"'" +
-				 "group by p.name,p.id "+
-				 "order by  p.name asc "+
-				 "limit 1" +"offset "+next_c_offset+";"; 
+		 SQL_1="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
+					" FROM products p" +
+					" LEFT JOIN sales s" + 
+					" ON s.pid = p.id" +
+					"WHERE p.cid='"+ category +"'"+
+					" GROUP BY p.name,p.id" + 
+					" ORDER BY p.name ASC" +
+					" LIMIT 10 OFFSET "+c_offset;
+		 SQL_11="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
+					" FROM products p" +
+					" LEFT JOIN sales s" + 
+					" ON s.pid = p.id" +
+					"WHERE p.cid='"+ category +"'"+
+					" GROUP BY p.name,p.id" + 
+					" ORDER BY p.name ASC" +
+					" LIMIT 1 OFFSET "+next_c_offset;
 	}			
 	
 	
@@ -184,7 +194,7 @@ try
 		int selector = 11;
 		if (state != null && !state.equals("all"))
 			selector -= 1;
-		if (age != null && !age.equals("all") && !age.equals("null"))
+		if (age != null && !age.equals("all"))
 			selector -= 10;
 		System.out.println("selector: " + selector);
 		
