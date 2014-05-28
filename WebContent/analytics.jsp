@@ -11,7 +11,6 @@
 <%
 
 long beg = System.nanoTime();
-System.out.println("Start: " + beg);
 Connection conn=null;
 Statement stmt,stmt_2,stmt_3;
 ResultSet rs=null,rs_2=null,rs_3=null;
@@ -30,11 +29,11 @@ try
 	stmt_2 =conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 	stmt_3 =conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 	
-	System.out.println("=================");
+	//System.out.println("=================");
 	
 	//scope session variable
 	String scope = ""+request.getParameter("scope");
-	System.out.println("scope: " + scope);
+	//System.out.println("scope: " + scope);
 	
 	//r_offset and next_r_offset session variable
 	String r_offset, next_r_offset;
@@ -48,8 +47,8 @@ try
 		r_offset = "0";
 		next_r_offset = "20";
 	}
-	System.out.println("r_offset: " + r_offset);
-	System.out.println("next_r_offset: " + next_r_offset);
+	//System.out.println("r_offset: " + r_offset);
+	//System.out.println("next_r_offset: " + next_r_offset);
 	
 	//c_offset and next_c_offset session variable
 	String c_offset, next_c_offset;
@@ -64,20 +63,20 @@ try
 		next_c_offset = "10";
 	}
 	
-	System.out.println("c_offset: " + c_offset);
-	System.out.println("next_c_offset: " + next_c_offset);
+	//System.out.println("c_offset: " + c_offset);
+	//System.out.println("next_c_offset: " + next_c_offset);
 	
 	//state session variable
 	String state = request.getParameter("state");
-	System.out.println("state: " + state);
+	//System.out.println("state: " + state);
 	
 	//category session variable
 	String category = request.getParameter("category");
-	System.out.println("category: " + category);
+	//System.out.println("category: " + category);
 	
 	//age session variable
 	String age = request.getParameter("ages");
-	System.out.println("age: " + age);
+	//System.out.println("age: " + age);
 	
 	//Determine if buttons need to be disabled because of offset
 	String disabled = "disabled";
@@ -85,7 +84,7 @@ try
 	{
 		disabled = "";
 	}
-	System.out.println(disabled);
+	//System.out.println(disabled);
 	
 	String SQL_1 = null;
 	String SQL_2 = null;
@@ -97,7 +96,7 @@ try
 	
 	if(category == null || category.equals("all") || category.equals("null"))
 	{
-		System.out.println("columns: product - no filters");
+		//System.out.println("columns: product - no filters");
 		/** pulls product names, no filters**/
 		SQL_1 ="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
 			" FROM products p" +
@@ -117,7 +116,7 @@ try
 	}
 	else
 	{
-		System.out.println("columns: product - category filters");
+		//System.out.println("columns: product - category filters");
 		/** pulls product names, category filter**/		 
 		 SQL_1 ="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
 					" FROM products p" +
@@ -142,7 +141,7 @@ try
 		selector -= 1;
 	if (age != null && !age.equals("all") && !age.equals("null"))
 		selector -= 10;
-	System.out.println("selector: " + selector);
+	//System.out.println("selector: " + selector);
 	//11 = no filters
 	//10 - state filter
 	//01 - age filter
@@ -153,7 +152,7 @@ try
 	{
 		if(state == null || state.equals("all") || state.equals("all"))
 		{
-			System.out.println("rows: states - no filters");
+			//System.out.println("rows: states - no filters");
 			/** pulls state names, no filters**/
 			
 		  SQL_2 ="SELECT u.state, SUM(s.quantity*s.price) AS amount"+
@@ -221,7 +220,7 @@ try
 		}
 		else
 		{
-			System.out.println("rows: states - state filters");
+			//System.out.println("rows: states - state filters");
 			/* pulls state names, state filter */
 			SQL_2 ="SELECT u.state, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s"+
@@ -263,7 +262,7 @@ try
 	
 		if(selector == 11)
 		{
-			System.out.println("rows: user - no filters");
+			//System.out.println("rows: user - no filters");
 			/** pulls user names, no filters**/
 			SQL_2 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
@@ -297,7 +296,7 @@ try
 		}
 		else if(selector == 10) 
 		{
-			System.out.println("rows: user - state filters");
+			//System.out.println("rows: user - state filters");
 			/* pulls user names, state filter */ 	
 		    SQL_2 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
@@ -332,7 +331,7 @@ try
 		}
 		else if (selector == 01)
 		{
-			System.out.println("rows: user - age filters");
+			//System.out.println("rows: user - age filters");
 			/* pulls user names, age filter */ 	
 			SQL_2 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 						" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
@@ -367,7 +366,7 @@ try
 		}
 		else if (selector == 00)
 		{
-			System.out.println("rows: user - age and state filters");
+			//System.out.println("rows: user - age and state filters");
 			/* pulls user names, age and state filter */ 	
 		   SQL_2 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
@@ -420,15 +419,26 @@ try
 		moreRows = true;
 	}
 	
-	System.out.println("moreColumns: " + moreColumns);
-	System.out.println("moreRows: " + moreRows);
 	
-	System.out.println(SQL_1);				
+
+	
+	//System.out.println("moreColumns: " + moreColumns);
+	//System.out.println("moreRows: " + moreRows);
+	
+	long q1s, q1e, q2s, q2e, q3s, q3e;
+	double elapsed1, elapsed2, elapsed3;
+	
+	q1s = System.nanoTime();
 	rs=stmt.executeQuery(SQL_1);
-	System.out.println(SQL_2);
+	q1e = System.nanoTime();
+	
+	q2s = System.nanoTime();
 	rs_2=stmt_2.executeQuery(SQL_2);
-	System.out.println(SQL_3);
+	q2e = System.nanoTime();
+	
+	q3s = System.nanoTime();
 	rs_3=stmt_3.executeQuery(SQL_3);
+	q3e = System.nanoTime();
 	
 	//state not id, many users in one state
 //    out.println("product #:"+p_list.size()+"<br>state #:"+s_list.size()+"<p>");
@@ -653,6 +663,32 @@ while(rs_2.next()){%>
 	
 	
 <%
+
+System.out.println("Report: ");
+
+System.out.println(SQL_1);
+elapsed1 = (q1e - q1s) / 1000000.0;
+System.out.println("Elapsed 1: " + elapsed1);
+
+System.out.println();
+
+System.out.println(SQL_2);
+elapsed2 = (q2e - q2s) / 1000000.0;
+System.out.println("Elapsed 2: " + elapsed2);
+
+System.out.println();
+
+System.out.println(SQL_3);
+elapsed3 = (q3e - q3s) / 1000000.0;
+System.out.println("Elapsed 3: " + elapsed3);
+
+System.out.println();
+
+long end = System.nanoTime();
+double elapsed = (end - beg) / 1000000.0;
+System.out.println("Elapsed: "  + elapsed);
+
+System.out.println();
 }
 catch(PSQLException e)
 {
@@ -664,10 +700,7 @@ finally
 	conn.close();
 }
 
-long end = System.nanoTime();
-System.out.println("End: " + end);
-double elapsed = (end - beg) / 1000000.0;
-System.out.println("Elapsed: "  + elapsed);
+
 %>	
 </body>
 </html>
