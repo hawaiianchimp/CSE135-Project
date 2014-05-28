@@ -10,6 +10,8 @@
 <t:header title="Sales Analytics" />
 <%
 
+long beg = System.nanoTime();
+System.out.println("Start: " + beg);
 Connection conn=null;
 Statement stmt,stmt_2,stmt_3;
 ResultSet rs=null,rs_2=null,rs_3=null;
@@ -359,7 +361,7 @@ try
 						" FROM sales AS s"+
 						" WHERE s.uid IN"+
 						" (SELECT id FROM users WHERE age BETWEEN "+age+" ORDER BY name ASC LIMIT 20 OFFSET "+r_offset+")"+
-						" AND s.pid IN (SELECT id FROM products WHERE cid'"+category+"'ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
+						" AND s.pid IN (SELECT id FROM products WHERE cid='"+category+"'ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
 						" GROUP BY s.uid, s.pid";
 			}
 		}
@@ -660,7 +662,12 @@ catch(PSQLException e)
 finally
 {
 	conn.close();
-}	
+}
+
+long end = System.nanoTime();
+System.out.println("End: " + end);
+double elapsed = (end - beg) / 1000000.0;
+System.out.println("Elapsed: "  + elapsed);
 %>	
 </body>
 </html>
