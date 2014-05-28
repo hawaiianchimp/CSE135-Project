@@ -45,9 +45,19 @@ String SQL=null;
 try
 {
 	try{Class.forName("org.postgresql.Driver");}catch(Exception e){System.out.println("Driver error");}
+<<<<<<< .merge_file_sOi04I
 /* 	conn = DriverManager.getConnection(
             "jdbc:postgresql://localhost/CSE135?" +
             "user=Bonnie");  */
+=======
+	
+	/* 	conn = DriverManager.getConnection(
+    "jdbc:postgresql://localhost/CSE135?" +
+    "user=Bonnie");  */
+    
+	conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+		"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); 
+>>>>>>> .merge_file_ca9w2T
             
 		conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
     	"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
@@ -57,9 +67,11 @@ try
 	
 	System.out.println("=================");
 	
+	//scope session variable
 	String scope = ""+request.getParameter("scope");
 	System.out.println("scope: " + scope);
 	
+	//r_offset and next_r_offset session variable
 	String r_offset, next_r_offset;
 	if(request.getParameter("r_offset") != null && !request.getParameter("r_offset").equals("0"))
 	{
@@ -74,6 +86,7 @@ try
 	System.out.println("r_offset: " + r_offset);
 	System.out.println("next_r_offset: " + next_r_offset);
 	
+	//c_offset and next_c_offset session variable
 	String c_offset, next_c_offset;
 	if(request.getParameter("c_offset") != null && !request.getParameter("c_offset").equals("0"))
 	{
@@ -89,12 +102,15 @@ try
 	System.out.println("c_offset: " + c_offset);
 	System.out.println("next_c_offset: " + next_c_offset);
 	
+	//state session variable
 	String state = request.getParameter("state");
 	System.out.println("state: " + state);
 	
+	//category session variable
 	String category = request.getParameter("category");
 	System.out.println("category: " + category);
 	
+	//age session variable
 	String age = request.getParameter("ages");
 	System.out.println("age: " + age);
 	
@@ -112,7 +128,7 @@ try
 	String SQL_11 = null;
 	String SQL_21 = null;
 	
-	if(category == null || category.equals("all"))
+	if(category == null || category.equals("all") || category.equals("null"))
 	{
 		System.out.println("columns: product - no filters");
 		/** pulls product names, no filters**/
@@ -147,7 +163,7 @@ try
 	//scope = states
 	if(scope.equals("states"))
 	{
-		if(state == null || state.equals("all"))
+		if(state == null || state.equals("all") || state.equals("all"))
 		{
 			System.out.println("rows: states - no filters");
 			/** pulls state names, no filters**/
@@ -182,7 +198,7 @@ try
 	else
 	{
 		int selector = 11;
-		if (state != null && !state.equals("all"))
+		if (state != null && !state.equals("all") && !state.equals("null"))
 			selector -= 1;
 		if (age != null && !age.equals("all") && !age.equals("null"))
 			selector -= 10;
