@@ -725,6 +725,8 @@ System.out.println();
 
 //System.out.println(SQL_2);
 elapsed2 = (q2e - q2s) / 1000000.0;
+System.out.println("Query 2 Time: " + elapsed2 + " ms");
+out.println("<br>Query 2 Time: " + elapsed2 + " ms");
 
 //System.out.println("Elapsed 2: " + elapsed2);
 
@@ -736,6 +738,8 @@ out.println("<br>Query 2 Time: " + elapsed2 + " ms");
 
 //System.out.println(SQL_3);
 elapsed3 = (q3e - q3s) / 1000000.0;
+System.out.println("Query 3 Time: " + elapsed3 + " ms");
+out.println("<br>Query 3 Time: " + elapsed3 + " ms");
 
 //System.out.println("Elapsed 3: " + elapsed3);
 
@@ -768,4 +772,8 @@ finally
 
 
 %>	
+<<<<<<< HEAD
 <t:footer/>
+=======
+<t:footer/>
+>>>>>>> FETCH_HEAD
