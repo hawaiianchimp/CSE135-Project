@@ -19,12 +19,12 @@ try
 {
 	try{Class.forName("org.postgresql.Driver");}catch(Exception e){System.out.println("Driver error");}
 	
-	/* 	conn = DriverManager.getConnection(
-    "jdbc:postgresql://localhost/CSE135?" +
-    "user=Bonnie");  */
+	conn = DriverManager.getConnection(
+    	"jdbc:postgresql://localhost/cse135?" +
+    	"user=Sean");  
             
-		conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-    	"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
+	/* conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+   	"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); */
 	stmt =conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 	stmt_2 =conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 	stmt_3 =conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -98,42 +98,53 @@ try
 	{
 		//System.out.println("columns: product - no filters");
 		/** pulls product names, no filters**/
-		SQL_1 ="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
+		/* SQL_1 ="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
 			" FROM products p" +
 			" LEFT JOIN sales s" + 
 			" ON s.pid = p.id" +
 			" GROUP BY p.name,p.id" + 
 			" ORDER BY p.name ASC" +
-			" LIMIT 10 OFFSET "+c_offset;
-		SQL_11="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
+			" LIMIT 11 OFFSET "+c_offset; */
+		SQL_1 = "SELECT pds.id, pds.name, SUM(sales.quantity*sales.price) AS amount "+  //DONE
+				"FROM (SELECT id, name FROM products "+
+				"ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+") AS pds "+
+				"LEFT JOIN sales ON (sales.pid = pds.id) "+
+				"GROUP BY pds.id, pds.name";
+		/* SQL_11="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
 				" FROM products p" +
 				" LEFT JOIN sales s" + 
 				" ON s.pid = p.id" +
 				" GROUP BY p.name,p.id" + 
 				" ORDER BY p.name ASC" +
-				" LIMIT 1 OFFSET "+next_c_offset;
+				" LIMIT 1 OFFSET "+next_c_offset; */
 		
 	}
 	else
 	{
 		//System.out.println("columns: product - category filters");
 		/** pulls product names, category filter**/		 
-		 SQL_1 ="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
+		 /* SQL_1 ="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
 					" FROM products p" +
 					" LEFT JOIN sales s" + 
 					" ON s.pid = p.id" +
 					" WHERE p.cid='"+ category +"'" +
 					" GROUP BY p.name,p.id" + 
 					" ORDER BY p.name ASC" +
-					" LIMIT 10 OFFSET "+c_offset;
-		 SQL_11 ="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
+					" LIMIT 11 OFFSET "+c_offset; */
+		 SQL_1 = "SELECT pds.id, pds.name, SUM(sales.quantity*sales.price) AS amount "+
+					"FROM (SELECT id, name FROM products "+
+					"WHERE products.cid='"+ category +"' " +
+					"ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+") AS pds "+
+					"LEFT JOIN sales ON (sales.pid = pds.id) "+
+					"GROUP BY pds.id, pds.name";
+		 /* SQL_11 ="SELECT p.id, p.name, SUM(s.quantity*s.price) AS amount" +
 					" FROM products p" +
 					" LEFT JOIN sales s" + 
 					" ON s.pid = p.id" +
 					" WHERE p.cid='"+ category +"'" +
 					" GROUP BY p.name,p.id" + 
 					" ORDER BY p.name ASC" +
-					" LIMIT 1 OFFSET "+next_c_offset;
+					" LIMIT 1 OFFSET "+next_c_offset; */
 	}			
 	
 	int selector = 11;
@@ -155,18 +166,23 @@ try
 			//System.out.println("rows: states - no filters");
 			/** pulls state names, no filters**/
 			
-		  SQL_2 ="SELECT u.state, SUM(s.quantity*s.price) AS amount"+
+		  /* SQL_2 ="SELECT u.state, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s"+
 					" ON s.uid = u.id"+
 					" GROUP BY u.state"+
 					" ORDER BY u.state ASC"+
-					" LIMIT 20 OFFSET "+r_offset;
-			SQL_21 ="SELECT u.state, SUM(s.quantity*s.price) AS amount"+
+					" LIMIT 21 OFFSET "+r_offset; */
+			SQL_2 = "SELECT st.name, SUM(s.price*s.quantity) AS amount "+
+					"FROM (SELECT name FROM states ORDER BY name ASC LIMIT 20 OFFSET "+r_offset+") "+
+					"AS st JOIN users u ON (st.name = u.state) "+
+					"LEFT JOIN sales s ON (s.uid = u.id) "+
+					"GROUP BY st.name";
+			/* SQL_21 ="SELECT u.state, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s"+
 					" ON s.uid = u.id"+
 					" GROUP BY u.state"+
 					" ORDER BY u.state ASC"+
-					" LIMIT 1 OFFSET "+next_r_offset;
+					" LIMIT 1 OFFSET "+next_r_offset; */
 			
 			//no category filter
 			if(category == null || category.equals("all") || category.equals("null"))
@@ -176,7 +192,7 @@ try
 				{
 					SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
 							" FROM sales AS s, users AS u"+
-							" WHERE u.state IN (SELECT DISTINCT state FROM users ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
+							" WHERE u.state IN (SELECT name FROM states ORDER BY name ASC LIMIT 20 OFFSET "+r_offset+")"+
 							" AND s.pid IN (SELECT id FROM products ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
 							" AND s.uid = u.id"+
 							" GROUP BY u.state, s.pid";
@@ -186,7 +202,7 @@ try
 				{
 					SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
 							" FROM sales AS s, users AS u"+
-							" WHERE u.state IN (SELECT DISTINCT state FROM users WHERE age BETWEEN "+age+" ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
+							" WHERE u.state IN (SELECT name FROM states WHERE age BETWEEN "+age+" ORDER BY name ASC LIMIT 20 OFFSET "+r_offset+")"+
 							" AND s.pid IN (SELECT id FROM products ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
 							" AND s.uid = u.id"+
 							" GROUP BY u.state, s.pid";
@@ -200,7 +216,7 @@ try
 				{
 					SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
 							" FROM sales AS s, users AS u"+
-							" WHERE u.state IN (SELECT DISTINCT state FROM users ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
+							" WHERE u.state IN (SELECT name FROM states ORDER BY name ASC LIMIT 20 OFFSET "+r_offset+")"+
 							" AND s.pid IN (SELECT id FROM products WHERE cid='"+category+"'ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
 							" AND s.uid = u.id"+
 							" GROUP BY u.state, s.pid";
@@ -210,8 +226,8 @@ try
 				{
 					SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
 							" FROM sales AS s, users AS u"+
-							" WHERE u.state IN (SELECT DISTINCT state FROM users WHERE age BETWEEN "+age+" ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
-							" AND s.pid IN (SELECT id FROM products WHERE cid='"+category+"'ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
+							" WHERE u.state IN (SELECT name FROM states WHERE age BETWEEN "+age+" ORDER BY name ASC LIMIT 20 OFFSET "+r_offset+")"+
+							" AND s.pid IN (SELECT id FROM products WHERE cid='"+category+"' ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
 							" AND s.uid = u.id"+
 							" GROUP BY u.state, s.pid";
 				}
@@ -222,25 +238,23 @@ try
 		{
 			//System.out.println("rows: states - state filters");
 			/* pulls state names, state filter */
-			SQL_2 ="SELECT u.state, SUM(s.quantity*s.price) AS amount"+
+			SQL_2 ="SELECT u.state, SUM(s.price*s.quantity) AS amount"+
+					" FROM users u"+
+					" JOIN sales s ON (s.uid = u.id)"+
+					" WHERE u.state = '"+state+"'"+
+					" GROUP BY u.state";
+			/* SQL_21 ="SELECT u.state, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s"+
 					" ON s.uid = u.id"+
 					" WHERE u.state='"+ state +"'" + 
 					" GROUP BY u.state"+
 					" ORDER BY u.state ASC"+
-					" LIMIT 20 OFFSET "+r_offset;
-			SQL_21 ="SELECT u.state, SUM(s.quantity*s.price) AS amount"+
-					" FROM users u LEFT JOIN sales s"+
-					" ON s.uid = u.id"+
-					" WHERE u.state='"+ state +"'" + 
-					" GROUP BY u.state"+
-					" ORDER BY u.state ASC"+
-					" LIMIT 1 OFFSET "+next_r_offset;
+					" LIMIT 1 OFFSET "+next_r_offset; */
 			if(category == null || category.equals("all") || category.equals("null"))
 			{
 				SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
 						" FROM sales AS s, users AS u"+
-						" WHERE u.state IN (SELECT DISTINCT state FROM users WHERE state = '"+state+"' ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
+						" WHERE u.state = '"+state+"'"+
 						" AND s.pid IN (SELECT id FROM products ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
 						" AND s.uid = u.id"+
 						" GROUP BY u.state, s.pid";
@@ -249,7 +263,7 @@ try
 			{
 				SQL_3="SELECT s.pid, u.state, SUM(s.quantity*s.price) AS amount"+
 						" FROM sales AS s, users AS u"+
-						" WHERE u.state IN (SELECT DISTINCT state FROM users WHERE state = '"+state+"' ORDER BY state ASC LIMIT 20 OFFSET "+r_offset+")"+
+						" WHERE u.state = '"+state+"'"+
 						" AND s.pid IN (SELECT id FROM products WHERE cid='"+category+"' ORDER BY name ASC LIMIT 10 OFFSET "+c_offset+")"+
 						" AND s.uid = u.id"+
 						" GROUP BY u.state, s.pid";
@@ -264,16 +278,23 @@ try
 		{
 			//System.out.println("rows: user - no filters");
 			/** pulls user names, no filters**/
-			SQL_2 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
+			/* SQL_2 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
 					" GROUP BY u.name,u.id"+
-					" ORDER BY u.name ASC LIMIT 20"+
-					" OFFSET "+r_offset;
-			SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
+					" ORDER BY u.name ASC LIMIT 21"+
+					" OFFSET "+r_offset; */
+			SQL_2 = "SELECT user_table.id, user_table.name, SUM(s.quantity*s.price) AS amount "+ 
+					"FROM (SELECT name, id FROM users "+
+					"ORDER BY name ASC LIMIT 20 OFFSET "+r_offset +") "+ 
+					"AS user_table LEFT JOIN sales s "+ 
+					"ON (s.uid = user_table.id) " + 
+					"GROUP BY user_table.id, user_table.name ";
+			
+			/* SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
 					" GROUP BY u.name,u.id"+
 					" ORDER BY u.name ASC LIMIT 1"+
-					" OFFSET "+next_r_offset;
+					" OFFSET "+next_r_offset; */
 			if(category == null || category.equals("all") || category.equals("null"))
 			{
 				SQL_3 ="SELECT s.pid, s.uid, SUM(s.quantity*s.price) AS amount"+
@@ -298,18 +319,19 @@ try
 		{
 			//System.out.println("rows: user - state filters");
 			/* pulls user names, state filter */ 	
-		    SQL_2 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
-					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
-					" WHERE u.state='"+ state +"'" + 
-					" GROUP BY u.name,u.id"+
-					" ORDER BY u.name ASC LIMIT 20"+
+		    SQL_2 ="SELECT user_table.id, user_table.name, SUM(s.quantity*s.price) AS amount FROM (SELECT u.id, u.name "+
+					" FROM users u " +
+					" WHERE u.state='"+ state +"') AS user_table" + 
+					" LEFT JOIN sales s ON s.uid = user_table.id"+
+					" GROUP BY user_table.name,user_table.id"+
+					" ORDER BY user_table.name ASC LIMIT 20"+
 					" OFFSET "+r_offset;
-			SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
+			/* SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
 					" WHERE u.state='"+ state +"'" + 
 					" GROUP BY u.name,u.id"+
 					" ORDER BY u.name ASC LIMIT 1"+
-					" OFFSET "+next_r_offset;
+					" OFFSET "+next_r_offset; */
 			if(category == null || category.equals("all") || category.equals("null"))
 			{
 				SQL_3 ="SELECT s.pid, s.uid, SUM(s.quantity*s.price) AS amount"+
@@ -333,18 +355,17 @@ try
 		{
 			//System.out.println("rows: user - age filters");
 			/* pulls user names, age filter */ 	
-			SQL_2 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
-						" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
-						" WHERE u.age between " + age +  
-						" GROUP BY u.name,u.id"+
-						" ORDER BY u.name ASC LIMIT 20"+
-						" OFFSET "+r_offset;
-			SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
+			SQL_2 ="SELECT user_table.id, user_table.name, SUM(s.quantity*s.price) AS amount"+
+					" FROM (SELECT u.id, u.name"+ 
+					" FROM users u WHERE u.age between "+age+" ORDER BY u.name ASC LIMIT 20 OFFSET " +r_offset+ ") AS user_table"+
+					" LEFT JOIN sales s ON (s.uid = user_table.id)"+ 
+					" GROUP BY user_table.name,user_table.id";
+			/* SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
 					" WHERE u.age between " + age +  
 					" GROUP BY u.name,u.id"+
 					" ORDER BY u.name ASC LIMIT 1"+
-					" OFFSET "+next_r_offset;
+					" OFFSET "+next_r_offset; */
 			if(category == null || category.equals("all") || category.equals("null"))
 			{
 				SQL_3 ="SELECT s.pid, s.uid, SUM(s.quantity*s.price) AS amount"+
@@ -368,19 +389,26 @@ try
 		{
 			//System.out.println("rows: user - age and state filters");
 			/* pulls user names, age and state filter */ 	
-		   SQL_2 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
+		   /* SQL_2 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
 					" WHERE u.age between " + age + " AND u.state='"+ state +"'" +
 					" GROUP BY u.name,u.id"+
-					" ORDER BY u.name ASC LIMIT 20"+
-					" OFFSET "+r_offset;
+					" ORDER BY u.name ASC LIMIT 21"+
+					" OFFSET "+r_offset; */
+			
+		   SQL_2 = "SELECT user_table.id, user_table.name, SUM(s.quantity*s.price) AS amount"+ 
+					" FROM (SELECT name, id FROM users u WHERE u.age between " + age + " AND u.state='"+ state +"'" +
+					" ORDER BY name ASC LIMIT 20 OFFSET "+r_offset +")"+ 
+					" AS user_table LEFT JOIN sales s"+ 
+					" ON (s.uid = user_table.id)" + 
+					" GROUP BY user_table.id, user_table.name";
 					  
-		   SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
+		   /* SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
 					" WHERE u.age between " + age + " AND u.state='"+ state +"'" +
 					" GROUP BY u.name,u.id"+
 					" ORDER BY u.name ASC LIMIT 1"+
-					" OFFSET "+next_r_offset;
+					" OFFSET "+next_r_offset; */
 		   
 		   if(category == null || category.equals("all") || category.equals("null"))
 			{
@@ -404,17 +432,19 @@ try
 	}
 	
 	/* Determine if there are more rows and columns */
-	Statement stmt_11 =conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-	ResultSet rs_11=stmt_11.executeQuery(SQL_11);
+	//Statement stmt_11 =conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+	//ResultSet rs_11=stmt_11.executeQuery(SQL_11);
 	boolean moreColumns = false;
-	while(rs_11.next())
+	//rs.relative(11);
+	if(true)
 	{
 		moreColumns = true;
 	}
-	Statement stmt_21 =conn.createStatement();
-	ResultSet rs_21=stmt_21.executeQuery(SQL_21);
+	//Statement stmt_21 =conn.createStatement();
+	//ResultSet rs_21=stmt_21.executeQuery(SQL_21);
 	boolean moreRows = false;
-	while(rs_21.next())
+	//rs_2.relative(21);
+	if(true)
 	{
 		moreRows = true;
 	}
@@ -451,103 +481,116 @@ try
 
 <thead>
 <tr>	
-<td>
+<th>
 <a class="btn btn-default btn-primary" href='analytics.jsp' >Home</a>
-</td>
+</th>
 		<%
 			PreparedStatement c_pstmt = null;
 			ResultSet c_rs = null;
 			
-			c_pstmt = conn.prepareStatement("SELECT * FROM categories");
+			c_pstmt = conn.prepareStatement("SELECT * FROM categories LIMIT 10");
 			c_rs = c_pstmt.executeQuery();
 		%>
 	
 		<!-- For Choosing States vs. Customers Table -->
 		<form class="navbar-form navbar-left" role="search" action="analytics.jsp" method="GET">
-				<td>
-				<select class="form-control" name="scope" <%= disabled %>>
-		        	<option value="customers">Customers</option>
-					<option value="states">States</option>
-		        </select>
-				</td><td>
-		        <select class="form-control" name="ages" <%= disabled %>>
-		        	<option value="all">All Ages</option>
-		        	<option value="12 and 18">12-18</option>
-		        	<option value="18 and 45">18-45</option>
-		        	<option value="45 and 65">45-65</option>
-		        	<option value="65 and 150">65-</option>
-		        </select>
-		        </td><td>
+				<th colspan="2">
+				<% String scope_select = "<select class='form-control' name='scope' "+ disabled +">" +
+			        	"<option value='customers'>Customers</option>"+
+						"<option value='states'>States</option>"+
+			        "</select>";
+			        scope_select = scope_select.replaceAll("value='"+scope+"'","value='"+scope+"' selected");%>
+			        <%=scope_select %>
+				</th><th colspan="2">
+				<% String age_select= "<select class='form-control' name='ages' "+disabled+">"+
+		        	"<option value='all'>All Ages</option>"+
+		        	"<option value='12 and 18'>12-18</option>"+
+		        	"<option value='18 and 45'>18-45</option>"+
+		        	"<option value='45 and 65'>45-65</option>"+
+		        	"<option value='65 and 150'>65-</option>"+
+		        "</select>";
+		        age_select = age_select.replaceAll("value='"+age+"'","value='"+age+"' selected");
+		        %>
+		        <%=age_select %>
+		        </th><th colspan="2">
 		        <select class="form-control" name="category" <%= disabled %>>
 		        	<option value="all">All Categories</option>
-		        	<% while(c_rs.next())
-		        		{%>
-		        		<option value="<%= c_rs.getString("id") %>"><%= c_rs.getString("name")%></option>
+		        	<% String selected = "";   
+		        	while(c_rs.next())
+		        		{
+		        			if(c_rs.getString("id").equals(category))
+		        			{
+		        				selected = "selected";
+		        			}
+		        		%>
+		        		<option value="<%= c_rs.getString("id") %>" <%=selected %>><%= c_rs.getString("name")%></option>
 		        		<% }
 		        		%>
 		        </select>
-		        </td><td>
-		        <select class="form-control" name="state" <%= disabled %>>
-		        	<option value="all">All States</option>
-					<option value="Alabama">Alabama</option>
-					<option value="Alaska">Alaska</option>
-					<option value="Arizona">Arizona</option>
-					<option value="Arkansas">Arkansas</option>
-					<option value="California">California</option>
-					<option value="Colorado">Colorado</option>
-					<option value="Connecticut">Connecticut</option>
-					<option value="Delaware">Delaware</option>
-					<option value="District Of Columbia">District Of Columbia</option>
-					<option value="Florida">Florida</option>
-					<option value="Georgia">Georgia</option>
-					<option value="Hawaii">Hawaii</option>
-					<option value="Idaho">Idaho</option>
-					<option value="Illinois">Illinois</option>
-					<option value="Indiana">Indiana</option>
-					<option value="Iowa">Iowa</option>
-					<option value="Kansas">Kansas</option>
-					<option value="Kentucky">Kentucky</option>
-					<option value="Louisiana">Louisiana</option>
-					<option value="Maine">Maine</option>
-					<option value="Maryland">Maryland</option>
-					<option value="Massachusetts">Massachusetts</option>
-					<option value="Michigan">Michigan</option>
-					<option value="Minnesota">Minnesota</option>
-					<option value="Mississippi">Mississippi</option>
-					<option value="Missouri">Missouri</option>
-					<option value="Montana">Montana</option>
-					<option value="Nebraska">Nebraska</option>
-					<option value="Nevada">Nevada</option>
-					<option value="New Hampshire">New Hampshire</option>
-					<option value="New Jersey">New Jersey</option>
-					<option value="New Mexico">New Mexico</option>
-					<option value="New York">New York</option>
-					<option value="North Carolina">North Carolina</option>
-					<option value="North Dakota">North Dakota</option>
-					<option value="Ohio">Ohio</option>
-					<option value="Oklahoma">Oklahoma</option>
-					<option value="Oregon">Oregon</option>
-					<option value="Pennsylvania">Pennsylvania</option>
-					<option value="Rhode Island">Rhode Island</option>
-					<option value="Sout Carolina">South Carolina</option>
-					<option value="South Dakora">South Dakota</option>
-					<option value="Tennessee">Tennessee</option>
-					<option value="Texas">Texas</option>
-					<option value="Utah">Utah</option>
-					<option value="Vermont">Vermont</option>
-					<option value="Virginia">Virginia</option>
-					<option value="West Virginia">Washington</option>
-					<option value="West Virginia">West Virginia</option>
-					<option value="Wisconsin">Wisconsin</option>
-					<option value="Wyoming">Wyoming</option>
-				</select>
-				</td><td>
+		        </th><th colspan="2">
+		        <% String s = "<select class='form-control' name='state'" + disabled + ">" +
+			        	"<option value='all'>All States</option>" +
+						"<option value='Alabama'>Alabama</option>" +
+						"<option value='Alaska'>Alaska</option>" +
+						"<option value='Arizona'>Arizona</option>" +
+						"<option value='Arkansas'>Arkansas</option>" +
+						"<option value='California'>California</option>" +
+						"<option value='Colorado'>Colorado</option>" +
+						"<option value='Connecticut'>Connecticut</option>" +
+						"<option value='Delaware'>Delaware</option>" +
+						"<option value='District Of Columbia'>District Of Columbia</option>" +
+						"<option value='Florida'>Florida</option>" +
+						"<option value='Georgia'>Georgia</option>" +
+						"<option value='Hawaii'>Hawaii</option>" +
+						"<option value='Idaho'>Idaho</option>" +
+						"<option value='Illinois'>Illinois</option>" +
+						"<option value='Indiana'>Indiana</option>" +
+						"<option value='Iowa'>Iowa</option>" +
+						"<option value='Kansas'>Kansas</option>" +
+						"<option value='Kentucky'>Kentucky</option>" +
+						"<option value='Louisiana'>Louisiana</option>" +
+						"<option value='Maine'>Maine</option>" +
+						"<option value='Maryland'>Maryland</option>" +
+						"<option value='Massachusetts'>Massachusetts</option>" +
+						"<option value='Michigan'>Michigan</option>" +
+						"<option value='Minnesota'>Minnesota</option>" +
+						"<option value='Mississippi'>Mississippi</option>" +
+						"<option value='Missouri'>Missouri</option>" +
+						"<option value='Montana'>Montana</option>" +
+						"<option value='Nebraska'>Nebraska</option>" +
+						"<option value='Nevada'>Nevada</option>" +
+						"<option value='New Hampshire'>New Hampshire</option>" +
+						"<option value='New Jersey'>New Jersey</option>" +
+						"<option value='New Mexico'>New Mexico</option>" +
+						"<option value='New York'>New York</option>" +
+						"<option value='North Carolina'>North Carolina</option>" +
+						"<option value='North Dakota'>North Dakota</option>" +
+						"<option value='Ohio'>Ohio</option>" +
+						"<option value='Oklahoma'>Oklahoma</option>" +
+						"<option value='Oregon'>Oregon</option>" +
+						"<option value='Pennsylvania'>Pennsylvania</option>" +
+						"<option value='Rhode Island'>Rhode Island</option>" +
+						"<option value='Sout Carolina'>South Carolina</option>" +
+						"<option value='South Dakora'>South Dakota</option>" +
+						"<option value='Tennessee'>Tennessee</option>" +
+						"<option value='Texas'>Texas</option>" +
+						"<option value='Utah'>Utah</option>" +
+						"<option value='Vermont'>Vermont</option>" +
+						"<option value='Virginia'>Virginia</option>" +
+						"<option value='West Virginia'>Washington</option>" +
+						"<option value='West Virginia'>West Virginia</option>" +
+						"<option value='Wisconsin'>Wisconsin</option>" +
+						"<option value='Wyoming'>Wyoming</option>" +
+					" </select>"; 
+					s = s.replaceAll("value='"+ state +"'", "value='"+ state +"' selected"); %>
+					<%=s %>
+				</th><th colspan="3">
 				<input type="hidden" name="query" value="true"/>
 				<% if(!disabled.equals("disabled")){
 		        	%><input type="submit"  class="btn btn-default" /><%
 		        }
 		        %>
-		        </td>
+		        </th>
 		   	</form> 
 </tr>
 <tr>
@@ -555,13 +598,13 @@ try
 String row_name = "";
 			if(scope.equals("states")) {
 				%>
-				<td><strong><font color="#FF0000">STATE</font></strong></td>
+				<th>STATE</th>
 				<%
 				row_name = "state";
 			}
 			else{
 				%>
-				<td><strong><font color="#FF0000">USER</font></strong></td>
+				<th>USER</th>
 				<%
 				row_name = "name";
 			}
@@ -569,18 +612,18 @@ String row_name = "";
 
 <%
 while(rs.next()){ %>
-<td><strong><%= rs.getString("name") %></strong>
-<br>[ $<%=rs.getInt("amount") %> ]</td>
+<th><strong><%= rs.getString("name") %></strong>
+<br><span class="label label-success">$<%=rs.getInt("amount") %></span></th>
 <%} %>
 
 
 <%	
 	if(moreColumns)
 	{
-		//out.print("<td><input type='submit' class='btn btn-primary' value='Next 10'></td>");
+		//out.print("<th><input type='submit' class='btn btn-primary' value='Next 10'></th>");
 		int offset = Integer.valueOf(c_offset) + 10;
 		%>
-		<td>
+		<th>
 		
 	   	<form action="analytics.jsp" method="GET">
 			<div class="form-group">
@@ -593,7 +636,7 @@ while(rs.next()){ %>
 			</div>
 			<button type="submit" class="btn btn-primary">Next 10</button>
 		</form>
-		</td>
+		</th>
 		<%
 	}
 %>
@@ -605,9 +648,9 @@ while(rs.next()){ %>
 rs_2.beforeFirst();
 while(rs_2.next()){%>
 	<tr>
-	<td><strong><%=rs_2.getString(row_name)%></strong> 
-	<br>[ $<%=rs_2.getInt("amount")%> ]
-	</td>
+	<th><%=rs_2.getString(row_name)%> 
+	<br><span class="label label-success">$<%=rs_2.getInt("amount")%></span>
+	</th>
 	<% 
 	rs.beforeFirst();
 	while(rs.next())
@@ -623,7 +666,7 @@ while(rs_2.next()){%>
 				//System.out.println(rs_3.getInt("amount"));
 				matched = true;
 			%>
-				<td>$<%=rs_3.getInt("amount")%></td>
+				<td class="alert alert-success">$<%=rs_3.getInt("amount")%></td>
 			<%
 			}
 		}
@@ -641,7 +684,7 @@ while(rs_2.next()){%>
 	{
 		int offset = Integer.valueOf(r_offset) + 20;
 		%>
-		<tr><td colspan="11">
+		<tr><td colspan="1">
 		
 	   	<form action="analytics.jsp" method="GET">
 			<div class="form-group">
@@ -654,6 +697,8 @@ while(rs_2.next()){%>
 			</div>
 			<button type="submit" class="btn btn-primary">Next 20</button>
 		</form>
+		</td>
+		<td colspan="10">
 		</td></tr>
 		<%
 	}
@@ -664,31 +709,52 @@ while(rs_2.next()){%>
 	
 <%
 
-System.out.println("Report: ");
+//System.out.println("Report: ");
 
-System.out.println(SQL_1);
+//System.out.println(SQL_1);
 elapsed1 = (q1e - q1s) / 1000000.0;
-System.out.println("Elapsed 1: " + elapsed1);
 
+//System.out.println("Elapsed 1: " + elapsed1);
+
+//System.out.println();
+
+System.out.println("Query 1 Time: " + elapsed1 + " ms");
+out.println("<br>Query 1 Time: " + elapsed1 + " ms");
 System.out.println();
 
-System.out.println(SQL_2);
+
+//System.out.println(SQL_2);
 elapsed2 = (q2e - q2s) / 1000000.0;
-System.out.println("Elapsed 2: " + elapsed2);
 
-System.out.println();
+//System.out.println("Elapsed 2: " + elapsed2);
 
-System.out.println(SQL_3);
+System.out.println("Query 2 Time: " + elapsed2 + " ms");
+out.println("<br>Query 2 Time: " + elapsed2 + " ms");
+
+
+//System.out.println();
+
+//System.out.println(SQL_3);
 elapsed3 = (q3e - q3s) / 1000000.0;
-System.out.println("Elapsed 3: " + elapsed3);
 
-System.out.println();
+//System.out.println("Elapsed 3: " + elapsed3);
+
+System.out.println("Query 3 Time: " + elapsed3 + " ms");
+out.println("<br>Query 3 Time: " + elapsed3 + " ms");
+
+
+//System.out.println();
 
 long end = System.nanoTime();
 double elapsed = (end - beg) / 1000000.0;
-System.out.println("Elapsed: "  + elapsed);
 
+//System.out.println("Elapsed: "  + elapsed);
+System.out.println(elapsed1 + "," + elapsed2 + "," + elapsed3 + "," + elapsed);
+
+System.out.println("JSP time: "  + elapsed + " ms");
+out.println("<br>JSP time: " + elapsed + " ms");
 System.out.println();
+
 }
 catch(PSQLException e)
 {
@@ -702,5 +768,4 @@ finally
 
 
 %>	
-</body>
-</html>
+<t:footer/>

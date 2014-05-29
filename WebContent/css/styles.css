@@ -83,13 +83,13 @@ a:hover {
 }
 
 .title th {
-	background-color: #ef8429;
+	background-color: #FF8429;
 	font-size: 28px;
 	font-family: Arial, Helvetica, sans-serif;
 }
 
 th {
-	background-color: #ef8429;
+	background-color: #90C4C9;
 	font-size: 18px;
 	font-family: Arial, Helvetica, sans-serif;
 }
@@ -128,4 +128,8 @@ h2 {
 	font-size: 20px;
 	font-family: Arial, Helvetica, sans-serif;
 	border-style: inset;
+}
+.table td, .table tr, .table, table, table tr {
+	border-color:#90C4C9;
+	text-align: center;   
 }
