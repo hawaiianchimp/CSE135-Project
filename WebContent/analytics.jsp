@@ -20,8 +20,8 @@ try
 	try{Class.forName("org.postgresql.Driver");}catch(Exception e){System.out.println("Driver error");}
 	
 	conn = DriverManager.getConnection(
-    	"jdbc:postgresql://localhost/CSE135?" +
-    	"user=Bonnie");  
+    	"jdbc:postgresql://localhost/cse135?" +
+    	"user=Sean");  
             
 	/* conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
    	"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); */
@@ -319,11 +319,12 @@ try
 		{
 			//System.out.println("rows: user - state filters");
 			/* pulls user names, state filter */ 	
-		    SQL_2 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
-					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
-					" WHERE u.state='"+ state +"'" + 
-					" GROUP BY u.name,u.id"+
-					" ORDER BY u.name ASC LIMIT 20"+
+		    SQL_2 ="SELECT user_table.id, user_table.name, SUM(s.quantity*s.price) AS amount FROM (SELECT u.id, u.name "+
+					" FROM users u " +
+					" WHERE u.state='"+ state +"') AS user_table" + 
+					" LEFT JOIN sales s ON s.uid = user_table.id"+
+					" GROUP BY user_table.name,user_table.id"+
+					" ORDER BY user_table.name ASC LIMIT 20"+
 					" OFFSET "+r_offset;
 			/* SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
@@ -354,12 +355,11 @@ try
 		{
 			//System.out.println("rows: user - age filters");
 			/* pulls user names, age filter */ 	
-			SQL_2 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
-						" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
-						" WHERE u.age between " + age +  
-						" GROUP BY u.name,u.id"+
-						" ORDER BY u.name ASC LIMIT 21"+
-						" OFFSET "+r_offset;
+			SQL_2 ="SELECT user_table.id, user_table.name, SUM(s.quantity*s.price) AS amount"+
+					" FROM (SELECT u.id, u.name"+ 
+					" FROM users u WHERE u.age between "+age+" ORDER BY u.name ASC LIMIT 20 OFFSET " +r_offset+ ") AS user_table"+
+					" LEFT JOIN sales s ON (s.uid = user_table.id)"+ 
+					" GROUP BY user_table.name,user_table.id";
 			/* SQL_21 ="SELECT u.id, u.name, SUM(s.quantity*s.price) AS amount"+
 					" FROM users u LEFT JOIN sales s ON s.uid = u.id"+
 					" WHERE u.age between " + age +  
@@ -397,7 +397,7 @@ try
 					" OFFSET "+r_offset; */
 			
 		   SQL_2 = "SELECT user_table.id, user_table.name, SUM(s.quantity*s.price) AS amount"+ 
-					" FROM (SELECT name, id FROM users u WHERE u.age between " + age + " AND u.state='"+ state +
+					" FROM (SELECT name, id FROM users u WHERE u.age between " + age + " AND u.state='"+ state +"'" +
 					" ORDER BY name ASC LIMIT 20 OFFSET "+r_offset +")"+ 
 					" AS user_table LEFT JOIN sales s"+ 
 					" ON (s.uid = user_table.id)" + 
