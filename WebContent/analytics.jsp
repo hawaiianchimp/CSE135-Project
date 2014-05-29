@@ -481,9 +481,9 @@ try
 
 <thead>
 <tr>	
-<td>
+<th>
 <a class="btn btn-default btn-primary" href='analytics.jsp' >Home</a>
-</td>
+</th>
 		<%
 			PreparedStatement c_pstmt = null;
 			ResultSet c_rs = null;
@@ -494,90 +494,103 @@ try
 	
 		<!-- For Choosing States vs. Customers Table -->
 		<form class="navbar-form navbar-left" role="search" action="analytics.jsp" method="GET">
-				<td>
-				<select class="form-control" name="scope" <%= disabled %>>
-		        	<option value="customers">Customers</option>
-					<option value="states">States</option>
-		        </select>
-				</td><td>
-		        <select class="form-control" name="ages" <%= disabled %>>
-		        	<option value="all">All Ages</option>
-		        	<option value="12 and 18">12-18</option>
-		        	<option value="18 and 45">18-45</option>
-		        	<option value="45 and 65">45-65</option>
-		        	<option value="65 and 150">65-</option>
-		        </select>
-		        </td><td>
+				<th colspan="2">
+				<% String scope_select = "<select class='form-control' name='scope' "+ disabled +">" +
+			        	"<option value='customers'>Customers</option>"+
+						"<option value='states'>States</option>"+
+			        "</select>";
+			        scope_select = scope_select.replaceAll("value='"+scope+"'","value='"+scope+"' selected");%>
+			        <%=scope_select %>
+				</th><th colspan="2">
+				<% String age_select= "<select class='form-control' name='ages' "+disabled+">"+
+		        	"<option value='all'>All Ages</option>"+
+		        	"<option value='12 and 18'>12-18</option>"+
+		        	"<option value='18 and 45'>18-45</option>"+
+		        	"<option value='45 and 65'>45-65</option>"+
+		        	"<option value='65 and 150'>65-</option>"+
+		        "</select>";
+		        age_select = age_select.replaceAll("value='"+age+"'","value='"+age+"' selected");
+		        %>
+		        <%=age_select %>
+		        </th><th colspan="2">
 		        <select class="form-control" name="category" <%= disabled %>>
 		        	<option value="all">All Categories</option>
-		        	<% while(c_rs.next())
-		        		{%>
-		        		<option value="<%= c_rs.getString("id") %>"><%= c_rs.getString("name")%></option>
+		        	<% String selected = "";   
+		        	while(c_rs.next())
+		        		{
+		        			if(c_rs.getString("id").equals(category))
+		        			{
+		        				selected = "selected";
+		        			}
+		        		%>
+		        		<option value="<%= c_rs.getString("id") %>" <%=selected %>><%= c_rs.getString("name")%></option>
 		        		<% }
 		        		%>
 		        </select>
-		        </td><td>
-		        <select class="form-control" name="state" <%= disabled %>>
-		        	<option value="all">All States</option>
-					<option value="Alabama">Alabama</option>
-					<option value="Alaska">Alaska</option>
-					<option value="Arizona">Arizona</option>
-					<option value="Arkansas">Arkansas</option>
-					<option value="California">California</option>
-					<option value="Colorado">Colorado</option>
-					<option value="Connecticut">Connecticut</option>
-					<option value="Delaware">Delaware</option>
-					<option value="District Of Columbia">District Of Columbia</option>
-					<option value="Florida">Florida</option>
-					<option value="Georgia">Georgia</option>
-					<option value="Hawaii">Hawaii</option>
-					<option value="Idaho">Idaho</option>
-					<option value="Illinois">Illinois</option>
-					<option value="Indiana">Indiana</option>
-					<option value="Iowa">Iowa</option>
-					<option value="Kansas">Kansas</option>
-					<option value="Kentucky">Kentucky</option>
-					<option value="Louisiana">Louisiana</option>
-					<option value="Maine">Maine</option>
-					<option value="Maryland">Maryland</option>
-					<option value="Massachusetts">Massachusetts</option>
-					<option value="Michigan">Michigan</option>
-					<option value="Minnesota">Minnesota</option>
-					<option value="Mississippi">Mississippi</option>
-					<option value="Missouri">Missouri</option>
-					<option value="Montana">Montana</option>
-					<option value="Nebraska">Nebraska</option>
-					<option value="Nevada">Nevada</option>
-					<option value="New Hampshire">New Hampshire</option>
-					<option value="New Jersey">New Jersey</option>
-					<option value="New Mexico">New Mexico</option>
-					<option value="New York">New York</option>
-					<option value="North Carolina">North Carolina</option>
-					<option value="North Dakota">North Dakota</option>
-					<option value="Ohio">Ohio</option>
-					<option value="Oklahoma">Oklahoma</option>
-					<option value="Oregon">Oregon</option>
-					<option value="Pennsylvania">Pennsylvania</option>
-					<option value="Rhode Island">Rhode Island</option>
-					<option value="Sout Carolina">South Carolina</option>
-					<option value="South Dakora">South Dakota</option>
-					<option value="Tennessee">Tennessee</option>
-					<option value="Texas">Texas</option>
-					<option value="Utah">Utah</option>
-					<option value="Vermont">Vermont</option>
-					<option value="Virginia">Virginia</option>
-					<option value="West Virginia">Washington</option>
-					<option value="West Virginia">West Virginia</option>
-					<option value="Wisconsin">Wisconsin</option>
-					<option value="Wyoming">Wyoming</option>
-				</select>
-				</td><td>
+		        </th><th colspan="2">
+		        <% String s = "<select class='form-control' name='state'" + disabled + ">" +
+			        	"<option value='all'>All States</option>" +
+						"<option value='Alabama'>Alabama</option>" +
+						"<option value='Alaska'>Alaska</option>" +
+						"<option value='Arizona'>Arizona</option>" +
+						"<option value='Arkansas'>Arkansas</option>" +
+						"<option value='California'>California</option>" +
+						"<option value='Colorado'>Colorado</option>" +
+						"<option value='Connecticut'>Connecticut</option>" +
+						"<option value='Delaware'>Delaware</option>" +
+						"<option value='District Of Columbia'>District Of Columbia</option>" +
+						"<option value='Florida'>Florida</option>" +
+						"<option value='Georgia'>Georgia</option>" +
+						"<option value='Hawaii'>Hawaii</option>" +
+						"<option value='Idaho'>Idaho</option>" +
+						"<option value='Illinois'>Illinois</option>" +
+						"<option value='Indiana'>Indiana</option>" +
+						"<option value='Iowa'>Iowa</option>" +
+						"<option value='Kansas'>Kansas</option>" +
+						"<option value='Kentucky'>Kentucky</option>" +
+						"<option value='Louisiana'>Louisiana</option>" +
+						"<option value='Maine'>Maine</option>" +
+						"<option value='Maryland'>Maryland</option>" +
+						"<option value='Massachusetts'>Massachusetts</option>" +
+						"<option value='Michigan'>Michigan</option>" +
+						"<option value='Minnesota'>Minnesota</option>" +
+						"<option value='Mississippi'>Mississippi</option>" +
+						"<option value='Missouri'>Missouri</option>" +
+						"<option value='Montana'>Montana</option>" +
+						"<option value='Nebraska'>Nebraska</option>" +
+						"<option value='Nevada'>Nevada</option>" +
+						"<option value='New Hampshire'>New Hampshire</option>" +
+						"<option value='New Jersey'>New Jersey</option>" +
+						"<option value='New Mexico'>New Mexico</option>" +
+						"<option value='New York'>New York</option>" +
+						"<option value='North Carolina'>North Carolina</option>" +
+						"<option value='North Dakota'>North Dakota</option>" +
+						"<option value='Ohio'>Ohio</option>" +
+						"<option value='Oklahoma'>Oklahoma</option>" +
+						"<option value='Oregon'>Oregon</option>" +
+						"<option value='Pennsylvania'>Pennsylvania</option>" +
+						"<option value='Rhode Island'>Rhode Island</option>" +
+						"<option value='Sout Carolina'>South Carolina</option>" +
+						"<option value='South Dakora'>South Dakota</option>" +
+						"<option value='Tennessee'>Tennessee</option>" +
+						"<option value='Texas'>Texas</option>" +
+						"<option value='Utah'>Utah</option>" +
+						"<option value='Vermont'>Vermont</option>" +
+						"<option value='Virginia'>Virginia</option>" +
+						"<option value='West Virginia'>Washington</option>" +
+						"<option value='West Virginia'>West Virginia</option>" +
+						"<option value='Wisconsin'>Wisconsin</option>" +
+						"<option value='Wyoming'>Wyoming</option>" +
+					" </select>"; 
+					s = s.replaceAll("value='"+ state +"'", "value='"+ state +"' selected"); %>
+					<%=s %>
+				</th><th colspan="3">
 				<input type="hidden" name="query" value="true"/>
 				<% if(!disabled.equals("disabled")){
 		        	%><input type="submit"  class="btn btn-default" /><%
 		        }
 		        %>
-		        </td>
+		        </th>
 		   	</form> 
 </tr>
 <tr>
@@ -585,13 +598,13 @@ try
 String row_name = "";
 			if(scope.equals("states")) {
 				%>
-				<td><strong><font color="#FF0000">STATE</font></strong></td>
+				<th>STATE</th>
 				<%
 				row_name = "state";
 			}
 			else{
 				%>
-				<td><strong><font color="#FF0000">USER</font></strong></td>
+				<th>USER</th>
 				<%
 				row_name = "name";
 			}
@@ -599,18 +612,18 @@ String row_name = "";
 
 <%
 while(rs.next()){ %>
-<td><strong><%= rs.getString("name") %></strong>
-<br>[ $<%=rs.getInt("amount") %> ]</td>
+<th><strong><%= rs.getString("name") %></strong>
+<br><span class="label label-success">$<%=rs.getInt("amount") %></span></th>
 <%} %>
 
 
 <%	
 	if(moreColumns)
 	{
-		//out.print("<td><input type='submit' class='btn btn-primary' value='Next 10'></td>");
+		//out.print("<th><input type='submit' class='btn btn-primary' value='Next 10'></th>");
 		int offset = Integer.valueOf(c_offset) + 10;
 		%>
-		<td>
+		<th>
 		
 	   	<form action="analytics.jsp" method="GET">
 			<div class="form-group">
@@ -623,7 +636,7 @@ while(rs.next()){ %>
 			</div>
 			<button type="submit" class="btn btn-primary">Next 10</button>
 		</form>
-		</td>
+		</th>
 		<%
 	}
 %>
@@ -635,9 +648,9 @@ while(rs.next()){ %>
 rs_2.beforeFirst();
 while(rs_2.next()){%>
 	<tr>
-	<td><strong><%=rs_2.getString(row_name)%></strong> 
-	<br>[ $<%=rs_2.getInt("amount")%> ]
-	</td>
+	<th><%=rs_2.getString(row_name)%> 
+	<br><span class="label label-success">$<%=rs_2.getInt("amount")%></span>
+	</th>
 	<% 
 	rs.beforeFirst();
 	while(rs.next())
@@ -653,7 +666,7 @@ while(rs_2.next()){%>
 				//System.out.println(rs_3.getInt("amount"));
 				matched = true;
 			%>
-				<td>$<%=rs_3.getInt("amount")%></td>
+				<td class="alert alert-success">$<%=rs_3.getInt("amount")%></td>
 			<%
 			}
 		}
@@ -671,7 +684,7 @@ while(rs_2.next()){%>
 	{
 		int offset = Integer.valueOf(r_offset) + 20;
 		%>
-		<tr><td colspan="11">
+		<tr><td colspan="1">
 		
 	   	<form action="analytics.jsp" method="GET">
 			<div class="form-group">
@@ -684,6 +697,8 @@ while(rs_2.next()){%>
 			</div>
 			<button type="submit" class="btn btn-primary">Next 20</button>
 		</form>
+		</td>
+		<td colspan="10">
 		</td></tr>
 		<%
 	}
@@ -698,26 +713,28 @@ System.out.println("Report: ");
 
 System.out.println(SQL_1);
 elapsed1 = (q1e - q1s) / 1000000.0;
-System.out.println("Elapsed 1: " + elapsed1);
-
+System.out.println("Query 1 Time: " + elapsed1 + " ms");
+out.println("<br>Query 1 Time: " + elapsed1 + " ms");
 System.out.println();
 
 System.out.println(SQL_2);
 elapsed2 = (q2e - q2s) / 1000000.0;
-System.out.println("Elapsed 2: " + elapsed2);
+System.out.println("Query 2 Time: " + elapsed2 + " ms");
+out.println("<br>Query 2 Time: " + elapsed2 + " ms");
 
 System.out.println();
 
 System.out.println(SQL_3);
 elapsed3 = (q3e - q3s) / 1000000.0;
-System.out.println("Elapsed 3: " + elapsed3);
+System.out.println("Query 3 Time: " + elapsed3 + " ms");
+out.println("<br>Query 3 Time: " + elapsed3 + " ms");
 
 System.out.println();
 
 long end = System.nanoTime();
 double elapsed = (end - beg) / 1000000.0;
-System.out.println("Elapsed: "  + elapsed);
-
+System.out.println("JSP time: "  + elapsed + " ms");
+out.println("<br>JSP time: " + elapsed + " ms");
 System.out.println();
 }
 catch(PSQLException e)
@@ -732,5 +749,4 @@ finally
 
 
 %>	
-</body>
-</html>
+<t:footer/>
