@@ -587,7 +587,7 @@ String row_name = "";
 				%>
 				<td><strong><font color="#FF0000">STATE</font></strong></td>
 				<%
-				row_name = "name";
+				row_name = "state";
 			}
 			else{
 				%>
