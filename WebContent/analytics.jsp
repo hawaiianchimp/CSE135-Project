@@ -717,33 +717,56 @@ while(rs_2.next()){%>
 	
 <%
 
-System.out.println("Report: ");
+//System.out.println("Report: ");
 
-System.out.println(SQL_1);
+//System.out.println(SQL_1);
 elapsed1 = (q1e - q1s) / 1000000.0;
+
+//System.out.println("Elapsed 1: " + elapsed1);
+
+//System.out.println();
+
 System.out.println("Query 1 Time: " + elapsed1 + " ms");
 out.println("<br>Query 1 Time: " + elapsed1 + " ms");
 System.out.println();
 
-System.out.println(SQL_2);
+
+//System.out.println(SQL_2);
 elapsed2 = (q2e - q2s) / 1000000.0;
 System.out.println("Query 2 Time: " + elapsed2 + " ms");
 out.println("<br>Query 2 Time: " + elapsed2 + " ms");
 
-System.out.println();
+//System.out.println("Elapsed 2: " + elapsed2);
 
-System.out.println(SQL_3);
+System.out.println("Query 2 Time: " + elapsed2 + " ms");
+out.println("<br>Query 2 Time: " + elapsed2 + " ms");
+
+
+//System.out.println();
+
+//System.out.println(SQL_3);
 elapsed3 = (q3e - q3s) / 1000000.0;
 System.out.println("Query 3 Time: " + elapsed3 + " ms");
 out.println("<br>Query 3 Time: " + elapsed3 + " ms");
 
-System.out.println();
+//System.out.println("Elapsed 3: " + elapsed3);
+
+System.out.println("Query 3 Time: " + elapsed3 + " ms");
+out.println("<br>Query 3 Time: " + elapsed3 + " ms");
+
+
+//System.out.println();
 
 long end = System.nanoTime();
 double elapsed = (end - beg) / 1000000.0;
+
+//System.out.println("Elapsed: "  + elapsed);
+System.out.println(elapsed1 + "," + elapsed2 + "," + elapsed3 + "," + elapsed);
+
 System.out.println("JSP time: "  + elapsed + " ms");
 out.println("<br>JSP time: " + elapsed + " ms");
 System.out.println();
+
 }
 catch(PSQLException e)
 {
@@ -757,4 +780,8 @@ finally
 
 
 %>	
+<<<<<<< HEAD
 <t:footer/>
+=======
+<t:footer/>
+>>>>>>> FETCH_HEAD
