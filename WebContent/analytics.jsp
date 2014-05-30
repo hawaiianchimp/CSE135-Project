@@ -600,7 +600,15 @@ String row_name = "";
 				%>
 				<th>STATE</th>
 				<%
-				row_name = "state";
+				if(!state.equals("null") && !state.equals("all"))  
+				{
+					System.out.print(state);
+					row_name = "state";
+				}
+				else
+				{
+					row_name = "name";
+				}
 			}
 			else{
 				%>
