@@ -10,7 +10,7 @@
 <%
 			String error = "" + request.getParameter("error");
 			String action = "" + request.getParameter("action");
-			String uid = "" + session.getAttribute("id");
+			String uid = "" + session.getAttribute("uid");
 			if (error.equals("yes") || ((action.equals("order")) == false && (action.equals("insert")) == false))
 			{
 				%>

@@ -738,9 +738,6 @@ out.println("<br>Query 2 Time: " + elapsed2 + " ms");
 
 //System.out.println("Elapsed 2: " + elapsed2);
 
-System.out.println("Query 2 Time: " + elapsed2 + " ms");
-out.println("<br>Query 2 Time: " + elapsed2 + " ms");
-
 
 //System.out.println();
 
@@ -751,9 +748,6 @@ out.println("<br>Query 3 Time: " + elapsed3 + " ms");
 
 //System.out.println("Elapsed 3: " + elapsed3);
 
-System.out.println("Query 3 Time: " + elapsed3 + " ms");
-out.println("<br>Query 3 Time: " + elapsed3 + " ms");
-
 
 //System.out.println();
 
@@ -761,7 +755,6 @@ long end = System.nanoTime();
 double elapsed = (end - beg) / 1000000.0;
 
 //System.out.println("Elapsed: "  + elapsed);
-System.out.println(elapsed1 + "," + elapsed2 + "," + elapsed3 + "," + elapsed);
 
 System.out.println("JSP time: "  + elapsed + " ms");
 out.println("<br>JSP time: " + elapsed + " ms");
@@ -780,8 +773,4 @@ finally
 
 
 %>	
-<<<<<<< HEAD
 <t:footer/>
-=======
-<t:footer/>
->>>>>>> FETCH_HEAD

@@ -51,7 +51,7 @@
 				{
 					
 					session.setAttribute("name", username);
-					session.setAttribute("id", rs.getInt("id"));
+					session.setAttribute("uid", rs.getInt("id"));
 					session.setAttribute("role", rs.getObject(rs.findColumn("role")));
 					session.setAttribute("state", rs.getObject(rs.findColumn("state")));
 					session.setAttribute("age", rs.getObject(rs.findColumn("age")));
