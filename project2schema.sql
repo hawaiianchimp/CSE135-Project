@@ -73,14 +73,40 @@ CREATE TABLE users_category_total (
 	total	INTEGER NOT NULL
 );
 
+INSERT INTO users_category_total 
+SELECT s.uid, c.id, SUM(s.quantity*s.price) 
+FROM sales s, categories c, products p 
+WHERE  c.id = p.cid
+AND s.pid = p.id
+GROUP BY s.uid, c.id;
+
 CREATE TABLE states_products_total (
 	state 	TEXT NOT NULL,
 	pid		INTEGER REFERENCES products (id),
 	total	INTEGER NOT NULL
 );
 
+INSERT INTO states_products_total 
+SELECT st.name, p.id, SUM(s.quantity*s.price) 
+FROM sales s, states st, products p, users u 
+WHERE  st.name = u.state
+AND s.pid = p.id
+AND s.uid = u.id
+GROUP BY st.name, p.id;
+
+
 CREATE TABLE states_categories_total (
 	state 	TEXT NOT NULL,
 	cid		INTEGER REFERENCES categories (id),
 	total	INTEGER NOT NULL
 );
+
+INSERT INTO states_categories_total 
+SELECT st.name, c.id, SUM(s.quantity*s.price) 
+FROM sales s, states st, products p, users u, categories c 
+WHERE  st.name = u.state
+AND s.pid = p.id
+AND s.uid = u.id
+AND p.cid = c.id
+GROUP BY st.name, c.id;
+
