@@ -67,7 +67,7 @@ CREATE TABLE users_product_total (
 );
 INSERT INTO users_product_total SELECT uid, pid, SUM(quantity*price) FROM sales GROUP BY pid, uid;
 
-CREATE TABLE users_category_total (
+CREATE TABLE users_categories_total (
 	uid		INTEGER REFERENCES users (id),	
 	cid		INTEGER REFERENCES categories (id),
 	total	INTEGER NOT NULL
