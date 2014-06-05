@@ -31,10 +31,10 @@ public class DataGeneratorBulk
 	public static void main(String[] args) throws Exception
 	{
 
-		int Num_users		=	100000; //100
-		int Num_categories	=	10;  //10
-		int Num_products	=	10000;//1000
-		int Num_sales		=	20000000;//10000
+		int Num_users		=	10000; //100
+		int Num_categories	=	20;  //10
+		int Num_products	=	1000;//1000
+		int Num_sales		=	100000000;//10000
 		
 		 String  usersPath		=	"/Users/Sean/Documents/workspace-jee/CSE135Project/users.txt",
 	    		 categoriesPath	=	"/Users/Sean/Documents/workspace-jee/CSE135Project/categories.txt",
@@ -161,7 +161,7 @@ public class DataGeneratorBulk
 		String[] nameList={"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
 		Random r=new Random();
 		int flag=0;
-		SQLs.add("CSE,owner,35,california");
+		SQLs.add("CSE,owner,35,California");
 		while(flag<Num_users)
 		{
 			age=r.nextInt(88)+12;
