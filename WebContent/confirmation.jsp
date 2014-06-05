@@ -8,7 +8,6 @@
 <t:header title="Confirmation of Purchase"/>
 <%
 	String uid = "" + session.getAttribute("uid");
-	String cart_id = "" + session.getAttribute("cart_id");
 	String conf = "" + request.getParameter("conf");
 	String username = "" + session.getAttribute("name");
 
@@ -32,27 +31,24 @@
 		Connection conn = null;
 		PreparedStatement ps1 = null;
 		PreparedStatement ps2 = null;
+		PreparedStatement ps3 = null;
 		ResultSet rs1 = null;
 		try
 		{
 		Class.forName("org.postgresql.Driver");
 		conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 				"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
-		ps1 = conn.prepareStatement("SELECT products.product_id, products.sku, products.img_url, products.name, products.price, COUNT (*) \"Quantity\" FROM users, carts, carts_products, products "
-				+ "WHERE users.uid = ? "
-				+ "AND users.uid = carts.uid "
-				+ "AND carts.cart_id = carts_products.cart_id "
-				+ "AND carts_products.product_id = products.product_id "
-				+ "GROUP BY products.product_id, products.sku, products.img_url, products.name, products.price");
-		ps1.setInt(1, Integer.parseInt(uid));
+		ps1 = conn.prepareStatement("SELECT products.id AS pidselect, sku, products.name AS pname, products.price AS pprice, carts.quantity AS cquantity FROM carts, products "
+				+ " WHERE carts.uid = " + uid
+				+ " AND carts.pid = products.id ");
 		rs1 = ps1.executeQuery();
 		
-		ps2 = conn.prepareStatement("DELETE FROM carts_products WHERE cart_id = " + cart_id + " AND product_id = ?");
+		ps2 = conn.prepareStatement("INSERT INTO sales (uid, pid, quantity, price) VALUES (?, ?, ?, ?)");
+		ps3 = conn.prepareStatement("DELETE FROM carts WHERE uid = " + uid);
 		
 		%>
 		<table class="table">
 		<tr>
-			<th>Image</th>
 			<th>SKU</th>
 			<th>Name</th>
 			<th>Price</th>
@@ -61,21 +57,37 @@
 		</tr>
 	<% 
 		//Iterate through all tuples to display contents of cart
+		
+		int pid, price, quantity, total;
+		String name, sku;
+		
 		while (rs1.next())
 		{
-			ps2.setInt(1, rs1.getInt("product_id"));
-			ps2.executeUpdate();
+			pid = rs1.getInt("pidselect");
+			sku = rs1.getString("sku");
+			price = rs1.getInt("pprice");
+			quantity = rs1.getInt("cquantity");
+			total = price * quantity;
+			name = rs1.getString("pname");
+			
+			ps2.setInt(1, Integer.parseInt(uid));
+			ps2.setInt(2, pid);
+			ps2.setInt(3, quantity);
+			ps2.setInt(4, price);
+			
 	%>
 		<tr>
-			<td><%=rs1.getString("img_url")%></td>
-			<td><%=rs1.getString("sku")%></td>
-			<td><%=rs1.getString("name")%></td>
-			<td><%=rs1.getDouble("price")%></td>
-			<td><%=rs1.getInt("Quantity") %></td>
-			<td><%=rs1.getDouble("price") * rs1.getInt("Quantity")%></td>
+			<td><%=sku%></td>
+			<td><%=name%></td>
+			<td><%=price%></td>
+			<td><%=quantity%></td>
+			<td><%=total%></td>
 		</tr>
-	<% 	}
+	<% 	
+			ps2.executeUpdate();
+			ps3.executeUpdate();
 		}
+	}
 		catch (Exception e)
 		{
 			e.printStackTrace();
@@ -86,6 +98,10 @@
 			ps1.close();
 		if (rs1 != null)
 			rs1.close();
+		if (ps2 != null)
+			ps2.close();
+		if (ps3 != null)
+			ps3.close();
 		if (conn != null)
 			conn.close();
 	}

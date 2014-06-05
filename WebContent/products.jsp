@@ -60,7 +60,7 @@
 						d_pstmt = conn.prepareStatement(sql);
 						d_pstmt.setInt(1, Integer.parseInt(pid));
 						int d2 = d_pstmt.executeUpdate();
-						System.out.print(d2);
+						System.out.print("d2:" + d2);
 						if(d2 == 1)
 						{
 						conn.commit();

@@ -75,6 +75,7 @@
 							quantity = Integer.parseInt(request.getParameter("quantity"));
 							price = Integer.parseInt(request.getParameter("price"));
 							conn.setAutoCommit(false);
+							
 							pstmt3 = conn.prepareStatement("UPDATE carts SET quantity=quantity+?, price=? WHERE uid=? AND pid=?;"
 									+ "INSERT INTO carts (uid, pid, quantity, price)"
 								    +  "SELECT ?, ?, ?, ?"
@@ -91,9 +92,21 @@
 							pstmt3.setInt(8, price);
 							pstmt3.setInt(9, Integer.parseInt(uid));
 							pstmt3.setInt(10, Integer.parseInt(product));
+							/*
+							pstmt2 = conn.prepareStatement("SELECT * FROM carts WHERE uid = " + uid + " AND pid = " + product);
+							rs2 = pstmt2.executeQuery();
+							boolean x = rs2.next();
+							System.out.println("RS2.NEXT: " + x);
+							if (x)
+								pstmt3 = conn.prepareStatement("UPDATE carts SET quantity = quantity + " + quantity + ", price = " + price + "WHERE uid = " + uid + " AND pid = product");
+							else
+								pstmt3 = conn.prepareStatement("INSERT INTO carts VALUES (" + uid + ", " + product + ", " + quantity + ", " + price + ")");
 							
-							
+							System.out.println("executing update");
+							*/
 							int result = pstmt3.executeUpdate();
+							
+							System.out.println("result: " + result);
 							if(result > 0)
 							{
 								%><t:message message="Succcess" type="success"/><%
@@ -156,11 +169,9 @@
 						{
 						//Prepared Statement 1: Get product information and quantities in user's cart
 						//Parameters: 1) User ID
-						pstmt1 = conn.prepareStatement("SELECT products.id, products.sku, products.name, products.price, carts.quantity FROM users, carts, products "
-							+ "WHERE users.id = ? "
-							+ "AND users.id = carts.uid "
-							+ "AND products.id= carts.pid");
-						pstmt1.setInt(1, Integer.parseInt(uid));
+						pstmt1 = conn.prepareStatement("SELECT products.id AS pidselect, SKU, products.name AS pname, products.price AS pprice, carts.quantity AS cquantity FROM carts, products "
+							+ " WHERE carts.uid = " + uid 
+							+ " AND carts.pid = products.id");
 						rs1 = pstmt1.executeQuery();
 			
 						//Prepared Statement 2: Show product information for product desired to add to cart
@@ -186,11 +197,11 @@
 	%>
 	<tr>
 		<%-- <td><%=rs1.getString("img_url")%></td> --%>
-		<td><%=rs1.getString("sku")%></td>
-		<td><%=rs1.getString("name")%></td>
-		<td><%=rs1.getInt("price")%></td>
-		<td><%=rs1.getInt("Quantity") %></td>
-		<td><%=rs1.getInt("price") * rs1.getInt("Quantity")%></td>
+		<td><%=rs1.getString("SKU")%></td>
+		<td><%=rs1.getString("Pname")%></td>
+		<td><%=rs1.getInt("pprice")%></td>
+		<td><%=rs1.getInt("cquantity") %></td>
+		<td><%=rs1.getInt("pprice") * rs1.getInt("cquantity")%></td>
 	</tr>
 	<% 					} 
 	%>
@@ -214,7 +225,7 @@
 		</tr>
 		<tr>
 			<%-- <td><%=rs2.getString("img_url")%></td> --%>
-			<td><%=rs2.getString("sku")%></td>
+			<td><%=rs2.getString("SKU")%></td>
 			<td><%=rs2.getString("name")%></td>
 			<td><%=rs2.getInt("price")%>
 			<input type="hidden" name="price" value="<%=rs2.getInt("price") %>" /></td>

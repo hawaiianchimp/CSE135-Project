@@ -30,13 +30,9 @@
 		Class.forName("org.postgresql.Driver");
 		conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 				"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
-		ps1 = conn.prepareStatement("SELECT products.product_id, products.sku, products.img_url, products.name, products.price, COUNT (*) \"Quantity\" FROM users, carts, carts_products, products "
-				+ "WHERE users.uid = ? "
-				+ "AND users.uid = carts.uid "
-				+ "AND carts.cart_id = carts_products.cart_id "
-				+ "AND carts_products.product_id = products.product_id "
-				+ "GROUP BY products.product_id, products.sku, products.img_url, products.name, products.price");
-		ps1.setInt(1, Integer.parseInt(uid));
+		ps1 = conn.prepareStatement("SELECT products.id AS pidselect, SKU, products.name AS pname, products.price AS pprice, carts.quantity AS cquantity FROM carts, products "
+				+ " WHERE carts.uid = " + uid
+				+ " AND carts.pid = products.id ");
 		rs1 = ps1.executeQuery();
 	
 		if (action.equals("purchase"))	
@@ -66,12 +62,12 @@
 				counter++;
 		%>
 			<tr>
-				<td><%=rs1.getString("sku")%></td>
-				<td><%=rs1.getString("name")%></td>
-				<td>$<%=rs1.getDouble("price")%></td>
-				<td><%=rs1.getInt("Quantity") %></td>
+				<td><%=rs1.getString("SKU")%></td>
+				<td><%=rs1.getString("pname")%></td>
+				<td>$<%=rs1.getDouble("pprice")%></td>
+				<td><%=rs1.getInt("cquantity") %></td>
 				<%
-					price = rs1.getDouble("price") * rs1.getInt("Quantity");
+					price = rs1.getDouble("pprice") * rs1.getInt("cquantity");
 					total = total + price;
 				%>
 				<td><%=price%></td>
