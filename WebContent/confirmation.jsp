@@ -189,6 +189,30 @@
 				System.out.println("products_total ok");
 				}
 		
+		//users_total
+
+		 sqlpre = "SELECT * FROM users_total WHERE uid = " + uid;
+		 rs = stmt.executeQuery(sqlpre);
+
+		 if (rs.isBeforeFirst())
+		 	sql = "UPDATE users_total SET total = total + " + grandtotal  + "WHERE  uid = " + uid;
+		 else
+		 	sql = "INSERT INTO users_total VALUES (" + uid + ", " + grandtotal + ")";
+
+			stmt.executeUpdate(sql);
+
+		//states_total
+
+		 sqlpre = "SELECT * FROM states_total WHERE state = " + state;
+		 rs = stmt.executeQuery(sqlpre);
+
+		 if (rs.isBeforeFirst())
+		 	sql = "UPDATE states_total SET total = total + " + grandtotal + " WHERE  state = " + state;
+		 else
+		 	sql = "INSERT INTO states_total VALUES (" + state + ", " + grandtotal + ")";
+
+			stmt.executeUpdate(sql);
+		
 		ps3.executeUpdate();
 		
 	}
