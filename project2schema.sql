@@ -60,12 +60,12 @@ CREATE TABLE states_total (
 );
 INSERT INTO products_total SELECT pid, SUM(quantity*price) FROM sales GROUP BY pid;
 
-CREATE TABLE users_product_total (
+CREATE TABLE users_products_total (
 	uid		INTEGER REFERENCES users (id),	
 	pid		INTEGER REFERENCES products (id),
 	total	INTEGER NOT NULL
 );
-INSERT INTO users_product_total SELECT uid, pid, SUM(quantity*price) FROM sales GROUP BY pid, uid;
+INSERT INTO users_products_total SELECT uid, pid, SUM(quantity*price) FROM sales GROUP BY pid, uid;
 
 CREATE TABLE users_categories_total (
 	uid		INTEGER REFERENCES users (id),	
@@ -73,7 +73,7 @@ CREATE TABLE users_categories_total (
 	total	INTEGER NOT NULL
 );
 
-INSERT INTO users_category_total 
+INSERT INTO users_categories_total 
 SELECT s.uid, c.id, SUM(s.quantity*s.price) 
 FROM sales s, categories c, products p 
 WHERE  c.id = p.cid

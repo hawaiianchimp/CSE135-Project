@@ -27,9 +27,12 @@
 	String keyword = ""+request.getParameter("keyword");
 	keyword = (keyword.equals("null"))? "":keyword;
 	
-	Connection conn = DriverManager.getConnection(
+	/* Connection conn = DriverManager.getConnection(
 					"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-					"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
+					"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); */
+					Connection conn = DriverManager.getConnection(
+				            "jdbc:postgresql://localhost/CSE135?" +
+				            "user=Bonnie");
 	PreparedStatement pstmt = null, d_pstmt = null;
 	Statement statement = null, d_statement = null;
 	ResultSet rs = null, d_rs = null;

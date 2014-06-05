@@ -11,6 +11,7 @@
 	String conf = "" + request.getParameter("conf");
 	String username = "" + session.getAttribute("name");
 	String state = "" + session.getAttribute("state");
+	System.out.println("state: " + state);
 
 	if(uid.equals("null")) //redirect if not logged in
 	{
@@ -41,14 +42,21 @@
 		try
 		{
 		Class.forName("org.postgresql.Driver");
-		conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-				"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
+		/* conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+				"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); */
+				conn = DriverManager.getConnection(
+			            "jdbc:postgresql://localhost/CSE135?" +
+			            "user=Bonnie");
+		/* ps1 = conn.prepareStatement("SELECT products.id AS pidselect, products.cid AS pcid, SKU, products.name AS pname, products.price AS pprice, carts.quantity AS cquantity FROM carts, products "
+				+ " WHERE carts.uid = " + uid); */
 		ps1 = conn.prepareStatement("SELECT products.id AS pidselect, products.cid AS pcid, SKU, products.name AS pname, products.price AS pprice, carts.quantity AS cquantity FROM carts, products "
-				+ " WHERE carts.uid = " + uid);
+				+ " WHERE carts.uid = " + uid
+				+ " AND carts.pid = products.id ");
 		rs1 = ps1.executeQuery();
 		
 		ps2 = conn.prepareStatement("INSERT INTO sales (uid, pid, quantity, price) VALUES (?, ?, ?, ?)");
 		ps3 = conn.prepareStatement("DELETE FROM carts WHERE uid = " + uid);
+		stmt = conn.createStatement();
 		
 		%>
 		<table class="table">
@@ -70,18 +78,29 @@
 		while (rs1.next())
 		{
 			pid = rs1.getInt("pidselect");
+			System.out.println(pid);
 			sku = rs1.getString("SKU");
+			System.out.println(sku);
 			price = rs1.getInt("pprice");
+			System.out.println(price);
 			quantity = rs1.getInt("cquantity");
+			System.out.println(quantity);
 			total = price * quantity;
+			System.out.println(total);
 			grandtotal += total;
+			System.out.println(grandtotal);
 			name = rs1.getString("pname");
+			System.out.println(name);
 			cid = rs1.getInt("pcid");
+			System.out.println(cid);
+			System.out.println("-------------");
 			
 			ps2.setInt(1, Integer.parseInt(uid));
 			ps2.setInt(2, pid);
 			ps2.setInt(3, quantity);
 			ps2.setInt(4, price);
+			
+			
 			
 	%>
 		<tr>
@@ -93,7 +112,8 @@
 		</tr>
 	<% 	
 			ps2.executeUpdate();
-			ps3.executeUpdate();
+			
+			System.out.println("test");
 			
 			//users_products_total
 
@@ -107,6 +127,7 @@
 				
 				stmt.executeUpdate(sql);
 
+				System.out.println("users_products_total ok");
 
 
 			 //users_categories_total
@@ -121,34 +142,37 @@
 				sql = "INSERT INTO users_categories_total VALUES (" + uid + ", " + cid + ", " + total + ")";
 
 				stmt.executeUpdate(sql);
+				
+				System.out.println("users_categories_total ok");
 
 
 			//states_products_total
 
-			sqlpre = "SELECT * FROM states_products_total WHERE state = " + state;
+			sqlpre = "SELECT * FROM states_products_total WHERE state = '" + state + "'";
 			rs = stmt.executeQuery(sqlpre);
 
 			if (rs.isBeforeFirst())
-				sql = "UPDATE states_products_total SET total = total + " + total  + "WHERE  state = " + state  + "AND pid = " + pid;
+				sql = "UPDATE states_products_total SET total = total + " + total  + "WHERE  state = '" + state  + "' " + "AND pid = " + pid;
 			else
-				sql = "INSERT INTO states_products_total VALUES (" + uid + ", " + pid + ", " + total + ")";
+				sql = "INSERT INTO states_products_total (state, pid, total) VALUES ('" + state + "', " + pid + ", " + total + ")";
 				
 				stmt.executeUpdate(sql);
 
-
+	System.out.println("states_products_total ok");
 
 			 //states_categories_total
 
-			sqlpre = "SELECT * FROM states_categories_total WHERE state = " + state;
+			sqlpre = "SELECT * FROM states_categories_total WHERE state = '" + state + "'";
 			rs = stmt.executeQuery(sqlpre);
 
 			if (rs.isBeforeFirst())
-				sql = "UPDATE states_categories_total SET total = total + " + total  + "WHERE  state = " + state  + "AND cid = " + cid;
+				sql = "UPDATE states_categories_total SET total = total + " + total  + "WHERE  state = '" + state  + "' AND cid = " + cid;
 			else
-				sql = "INSERT INTO states_categories_total VALUES (" + state + ", " + cid + ", " + total + ")";
+				sql = "INSERT INTO states_categories_total VALUES ('" + state + "', " + cid + ", " + total + ")";
 
 				stmt.executeUpdate(sql);
 
+				System.out.println("states_categories_total ok");
 
 			 //products_total
 
@@ -158,11 +182,14 @@
 			 if (rs.isBeforeFirst())
 			 	sql = "UPDATE products_total SET total = total + " + total  + "WHERE  pid = " + pid;
 			 else
-			 	sql = "INSERT INTO prodcuts_total VALUES (" + pid + ", " + total + ")";
+			 	sql = "INSERT INTO products_total VALUES (" + pid + ", " + total + ")";
 
 				stmt.executeUpdate(sql);
-		}
+				
+				System.out.println("products_total ok");
+				}
 		
+		ps3.executeUpdate();
 		
 	}
 		catch (Exception e)

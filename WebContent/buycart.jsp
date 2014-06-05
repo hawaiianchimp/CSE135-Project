@@ -10,6 +10,7 @@
 	//redirect if not logged in
 	String action = "" + request.getParameter("action");
 	String uid = "" + session.getAttribute("uid");
+	System.out.println("uid: " + uid);
 	if (uid.equals("null"))
 	{
 		response.sendRedirect("redirect.jsp");
@@ -28,8 +29,11 @@
 	if (((action.equals("null")) == false && (action.equals("view")) || action.equals("purchase")))
 	{
 		Class.forName("org.postgresql.Driver");
-		conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-				"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
+		/* conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+				"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); */
+				conn = DriverManager.getConnection(
+			            "jdbc:postgresql://localhost/CSE135?" +
+			            "user=Bonnie");
 		ps1 = conn.prepareStatement("SELECT products.id AS pidselect, SKU, products.name AS pname, products.price AS pprice, carts.quantity AS cquantity FROM carts, products "
 				+ " WHERE carts.uid = " + uid
 				+ " AND carts.pid = products.id ");

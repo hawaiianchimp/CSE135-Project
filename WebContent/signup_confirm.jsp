@@ -49,10 +49,12 @@
 				Class.forName("org.postgresql.Driver");
 	
 				// Open a connection to the database using DriverManager
-				conn = DriverManager.getConnection(
+				/* conn = DriverManager.getConnection(
 						"jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); 
-
+						"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");  */
+						conn = DriverManager.getConnection(
+					            "jdbc:postgresql://localhost/CSE135?" +
+					            "user=Bonnie");
 				if (name != null) {
 					// Create the statement
 					conn.setAutoCommit(false);
