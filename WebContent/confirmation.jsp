@@ -123,7 +123,7 @@
 			if (rs.isBeforeFirst())
 				sql = "UPDATE users_products_total SET total = total + " + total + "WHERE uid = " + uid + "AND pid = " + pid;
 			else
-			 	sql = "INSERT INTO users_products_total VALUES (" + uid + ", " + pid + ", " + total + ")";
+			 	sql = "INSERT INTO users_products_total (uid, uname, pid, pname, total) VALUES (" + uid + ", '" + username + "', " +  pid + ", '" + name + "', " + total + ")";
 				
 				stmt.executeUpdate(sql);
 
@@ -139,7 +139,7 @@
 			if (rs.isBeforeFirst())
 				sql = "UPDATE users_categories_total SET total = total + " + total  + "WHERE  uid = " + uid  + "AND cid = " + cid;
 			else
-				sql = "INSERT INTO users_categories_total VALUES (" + uid + ", " + cid + ", " + total + ")";
+				sql = "INSERT INTO users_categories_total VALUES (" +  uid + ", " + username + ", " +  cid + ", " + total + ")";
 
 				stmt.executeUpdate(sql);
 				
