@@ -119,7 +119,7 @@ AND s.pid = p.id
 AND s.uid = u.id
 GROUP BY st.name, p.id;
 
-DROP TABLE states_categores_total;
+DROP TABLE states_categories_total;
 CREATE TABLE states_categories_total (
 	state 	TEXT NOT NULL,
 	cid		INTEGER REFERENCES categories (id),
