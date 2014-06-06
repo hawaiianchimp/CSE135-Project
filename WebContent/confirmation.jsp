@@ -117,9 +117,9 @@
 			
 			//users_products_total
 
-			sqlpre =  "SELECT * FROM users_products_total WHERE uid = " + uid;
+			sqlpre =  "SELECT * FROM users_products_total WHERE uid = " + uid + "AND pid = " + pid;
 			rs = stmt.executeQuery(sqlpre);
-
+			
 			if (rs.isBeforeFirst())
 				sql = "UPDATE users_products_total SET total = total + " + total + "WHERE uid = " + uid + "AND pid = " + pid;
 			else
@@ -133,7 +133,7 @@
 			 //users_categories_total
 
 
-			sqlpre = "SELECT * FROM users_categories_total WHERE uid = " + uid;
+			sqlpre = "SELECT * FROM users_categories_total WHERE uid = " + uid + "AND cid = " + cid;
 			rs = stmt.executeQuery(sqlpre);
 
 			if (rs.isBeforeFirst())
@@ -148,7 +148,7 @@
 
 			//states_products_total
 
-			sqlpre = "SELECT * FROM states_products_total WHERE state = '" + state + "'";
+			sqlpre = "SELECT * FROM states_products_total WHERE state = '" + state + "'" + "AND pid = " + pid;
 			rs = stmt.executeQuery(sqlpre);
 
 			if (rs.isBeforeFirst())
@@ -162,7 +162,7 @@
 
 			 //states_categories_total
 
-			sqlpre = "SELECT * FROM states_categories_total WHERE state = '" + state + "'";
+			sqlpre = "SELECT * FROM states_categories_total WHERE state = '" + state + "'" + "AND cid = " + cid;
 			rs = stmt.executeQuery(sqlpre);
 
 			if (rs.isBeforeFirst())
@@ -203,13 +203,13 @@
 
 		//states_total
 
-		 sqlpre = "SELECT * FROM states_total WHERE state = " + state;
+		 sqlpre = "SELECT * FROM states_total WHERE state = '" + state +"'";
 		 rs = stmt.executeQuery(sqlpre);
 
 		 if (rs.isBeforeFirst())
-		 	sql = "UPDATE states_total SET total = total + " + grandtotal + " WHERE  state = " + state;
+		 	sql = "UPDATE states_total SET total = total + " + grandtotal + " WHERE  state = '" + state +"'";
 		 else
-		 	sql = "INSERT INTO states_total VALUES (" + state + ", " + grandtotal + ")";
+		 	sql = "INSERT INTO states_total VALUES ('" + state + "', " + grandtotal + ")";
 
 			stmt.executeUpdate(sql);
 		
