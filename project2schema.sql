@@ -42,6 +42,7 @@ CREATE TABLE states (
 
 
 CREATE TABLE users_total (
+	name    TEXT NOT NULL,
 	uid		INTEGER REFERENCES users (id),	
 	total	INTEGER NOT NULL
 );
@@ -49,26 +50,30 @@ INSERT INTO users_total SELECT uid, SUM(quantity*price) FROM sales GROUP BY uid;
 
 
 CREATE TABLE products_total (
+	name    TEXT NOT NULL,
 	pid		INTEGER REFERENCES products (id),	
 	total	INTEGER NOT NULL
 );
 INSERT INTO products_total SELECT pid, SUM(quantity*price) FROM sales GROUP BY pid;
 
 CREATE TABLE states_total (
-	state	TEXT NOT NULL,
+	name	TEXT NOT NULL,
 	total	INTEGER NOT NULL
 );
 INSERT INTO products_total SELECT pid, SUM(quantity*price) FROM sales GROUP BY pid;
 
 CREATE TABLE users_products_total (
-	uid		INTEGER REFERENCES users (id),	
+	name   TEXT NOT NULL,
+	uid		INTEGER REFERENCES users (id),
 	pid		INTEGER REFERENCES products (id),
 	total	INTEGER NOT NULL
 );
+
 INSERT INTO users_products_total SELECT uid, pid, SUM(quantity*price) FROM sales GROUP BY pid, uid;
 
 CREATE TABLE users_categories_total (
-	uid		INTEGER REFERENCES users (id),	
+	name    TEXT NOT NULL,
+	uid		INTEGER REFERENCES users (id),
 	cid		INTEGER REFERENCES categories (id),
 	total	INTEGER NOT NULL
 );
@@ -81,7 +86,7 @@ AND s.pid = p.id
 GROUP BY s.uid, c.id;
 
 CREATE TABLE states_products_total (
-	state 	TEXT NOT NULL,
+	name 	TEXT NOT NULL,
 	pid		INTEGER REFERENCES products (id),
 	total	INTEGER NOT NULL
 );
@@ -96,7 +101,7 @@ GROUP BY st.name, p.id;
 
 
 CREATE TABLE states_categories_total (
-	state 	TEXT NOT NULL,
+	name 	TEXT NOT NULL,
 	cid		INTEGER REFERENCES categories (id),
 	total	INTEGER NOT NULL
 );
