@@ -37,7 +37,7 @@ CREATE TABLE carts (
 );
 
 CREATE TABLE states (
-	name		TEXT PRIMARY KEY,
+	state		TEXT PRIMARY KEY
 );
 
 DROP TABLE users_total;
@@ -68,13 +68,14 @@ GROUP BY p.name, p.id;
 
 DROP TABLE states_total;
 CREATE TABLE states_total (
-	name	TEXT NOT NULL,
+	state	TEXT NOT NULL,
 	total	INTEGER NOT NULL
 );
+
 INSERT INTO states_total 
 SELECT st.name, SUM(s.quantity*s.price) 
-FROM states s, sales st, users u
-WHERE s.name = u.state
+FROM sales s, states st, users u
+WHERE st.name = u.state
 AND u.id = s.uid 
 GROUP BY st.name;
 
@@ -96,15 +97,16 @@ CREATE TABLE users_categories_total (
 );
 
 INSERT INTO users_categories_total 
-SELECT s.uid, c.id, SUM(s.quantity*s.price) 
-FROM sales s, categories c, products p 
+SELECT u.name, s.uid, c.id, SUM(s.quantity*s.price) 
+FROM sales s, categories c, products p, users u 
 WHERE  c.id = p.cid
 AND s.pid = p.id
-GROUP BY s.uid, c.id;
+AND s.uid = u.id
+GROUP BY u.name, s.uid, c.id;
 
 DROP TABLE states_products_total;
 CREATE TABLE states_products_total (
-	name 	TEXT NOT NULL,
+	state 	TEXT NOT NULL,
 	pid		INTEGER REFERENCES products (id),
 	total	INTEGER NOT NULL
 );
@@ -119,7 +121,7 @@ GROUP BY st.name, p.id;
 
 DROP TABLE states_categores_total;
 CREATE TABLE states_categories_total (
-	name 	TEXT NOT NULL,
+	state 	TEXT NOT NULL,
 	cid		INTEGER REFERENCES categories (id),
 	total	INTEGER NOT NULL
 );
