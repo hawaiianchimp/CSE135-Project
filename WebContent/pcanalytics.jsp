@@ -18,8 +18,8 @@ String sql1 =null, sql2 = null, sql3 = null;
 try
 {
 	try{Class.forName("org.postgresql.Driver");}catch(Exception e){System.out.println("Driver error");}
-	/* conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
-	"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); */
+	conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+	"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
 	
 	/*conn = DriverManager.getConnection(
     	"jdbc:postgresql://localhost/CSE135?" +
@@ -45,7 +45,7 @@ try
 	else
 	{
 		//category - on
-		sql1 = "SELECT * FROM products_total WHERE pid IN (SELECT pid FROM products WHERE cid = " + category + ") ORDER BY total DESC LIMIT 10";
+		sql1 = "SELECT * FROM products_total WHERE pid IN (SELECT id FROM products WHERE cid = " + category + ") ORDER BY total DESC LIMIT 10";
 	}
 	
 	//sql2: Users/states and totals for row labels
@@ -74,13 +74,13 @@ try
 			{
 				//category - on, state - off
 				sql2 = "SELECT state, total FROM states_categories_total WHERE cid = " + category + " ORDER BY total DESC LIMIT 20";
-				sql3 = "SELECT spt.state, spt.total FROM state_products_total AS spt WHERE spt.pid IN (SELECT pt.pid FROM products_total AS pt WHERE pt.pid IN (SELECT p.pid FROM products AS p WHERE p.cid = " + category + ") ORDER BY pt.total DESC LIMIT 10)";
+				sql3 = "SELECT spt.state, spt.total FROM states_products_total AS spt WHERE spt.pid IN (SELECT pt.pid FROM products_total AS pt WHERE pt.pid IN (SELECT p.id FROM products AS p WHERE p.cid = " + category + ") ORDER BY pt.total DESC LIMIT 10)";
 			}
 			else
 			{
 				//category - on, state - on
 				sql2 = "SELECT * FROM states_categories_total WHERE cid = " + category + " AND state = '" + state + "' ORDER BY total DESC LIMIT 20";
-				sql3 = "SELECT spt.state, spt.total FROM state_products_total AS spt WHERE spt.state = '" + state + "' AND spt.pid IN (SELECT pt.pid FROM products_total AS pt WHERE pt.pid IN (SELECT p.pid FROM products AS p WHERE p.cid = " + category + ") ORDER BY pt.total DESC LIMIT 10)";
+				sql3 = "SELECT spt.state, spt.total FROM states_products_total AS spt WHERE spt.state = '" + state + "' AND spt.pid IN (SELECT pt.pid FROM products_total AS pt WHERE pt.pid IN (SELECT p.id FROM products AS p WHERE p.cid = " + category + ") ORDER BY pt.total DESC LIMIT 10)";
 			}
 		}
 	}
@@ -107,7 +107,7 @@ try
 			{
 				//category - on, state - off
 				sql2 = "SELECT uid, total FROM users_categories_total ORDER BY total DESC LIMIT 20";
-				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.pid IN (SELECT p.pid FROM products AS p WHERE p.cid = " + category + ") ORDER BY upt.total DESC LIMIT 10";
+				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.pid IN (SELECT p.id FROM products AS p WHERE p.cid = " + category + ") ORDER BY upt.total DESC LIMIT 10";
 			}
 			else
 			{
@@ -131,8 +131,137 @@ try
 	
 	%>
 	<table class = "table">
+	<thead>
 	<tr>
-	<td></td>
+	
+	<th>
+	<a class="btn btn-default btn-primary" href='#' >Home</a>
+	</th>
+	<%
+			PreparedStatement c_pstmt = null;
+			ResultSet c_rs = null;
+			
+			c_pstmt = conn.prepareStatement("SELECT * FROM categories LIMIT 10");
+			c_rs = c_pstmt.executeQuery();
+		%>
+	
+		<!-- For Choosing States vs. Customers Table -->
+		<form class="navbar-form navbar-left" role="search" method="GET">
+				<th colspan="2">
+				<% String scope_select = "<select class='form-control' name='scope'>" +
+			        	"<option value='customers'>Customers</option>"+
+						"<option value='states'>States</option>"+
+			        "</select>";
+			        scope_select = scope_select.replaceAll("value='"+scope+"'","value='"+scope+"' selected");%>
+			        <%=scope_select %>
+				</th><th colspan="2">
+		        <select class="form-control" name="category">
+		        	<option value="all">All Categories</option>
+		        	<% String selected = "";   
+		        	while(c_rs.next())
+		        		{
+		        			if(c_rs.getString("id").equals(category))
+		        			{
+		        				selected = "selected";
+		        			}
+		        		%>
+		        		<option value="<%= c_rs.getString("id") %>" <%=selected %>><%= c_rs.getString("name")%></option>
+		        		<% }
+		        		%>
+		        </select>
+		        </th><th colspan="2">
+		        <% String s = "<select class='form-control' name='state'>" +
+			        	"<option value='all'>All States</option>" +
+						"<option value='Alabama'>Alabama</option>" +
+						"<option value='Alaska'>Alaska</option>" +
+						"<option value='Arizona'>Arizona</option>" +
+						"<option value='Arkansas'>Arkansas</option>" +
+						"<option value='California'>California</option>" +
+						"<option value='Colorado'>Colorado</option>" +
+						"<option value='Connecticut'>Connecticut</option>" +
+						"<option value='Delaware'>Delaware</option>" +
+						"<option value='District Of Columbia'>District Of Columbia</option>" +
+						"<option value='Florida'>Florida</option>" +
+						"<option value='Georgia'>Georgia</option>" +
+						"<option value='Hawaii'>Hawaii</option>" +
+						"<option value='Idaho'>Idaho</option>" +
+						"<option value='Illinois'>Illinois</option>" +
+						"<option value='Indiana'>Indiana</option>" +
+						"<option value='Iowa'>Iowa</option>" +
+						"<option value='Kansas'>Kansas</option>" +
+						"<option value='Kentucky'>Kentucky</option>" +
+						"<option value='Louisiana'>Louisiana</option>" +
+						"<option value='Maine'>Maine</option>" +
+						"<option value='Maryland'>Maryland</option>" +
+						"<option value='Massachusetts'>Massachusetts</option>" +
+						"<option value='Michigan'>Michigan</option>" +
+						"<option value='Minnesota'>Minnesota</option>" +
+						"<option value='Mississippi'>Mississippi</option>" +
+						"<option value='Missouri'>Missouri</option>" +
+						"<option value='Montana'>Montana</option>" +
+						"<option value='Nebraska'>Nebraska</option>" +
+						"<option value='Nevada'>Nevada</option>" +
+						"<option value='New Hampshire'>New Hampshire</option>" +
+						"<option value='New Jersey'>New Jersey</option>" +
+						"<option value='New Mexico'>New Mexico</option>" +
+						"<option value='New York'>New York</option>" +
+						"<option value='North Carolina'>North Carolina</option>" +
+						"<option value='North Dakota'>North Dakota</option>" +
+						"<option value='Ohio'>Ohio</option>" +
+						"<option value='Oklahoma'>Oklahoma</option>" +
+						"<option value='Oregon'>Oregon</option>" +
+						"<option value='Pennsylvania'>Pennsylvania</option>" +
+						"<option value='Rhode Island'>Rhode Island</option>" +
+						"<option value='Sout Carolina'>South Carolina</option>" +
+						"<option value='South Dakora'>South Dakota</option>" +
+						"<option value='Tennessee'>Tennessee</option>" +
+						"<option value='Texas'>Texas</option>" +
+						"<option value='Utah'>Utah</option>" +
+						"<option value='Vermont'>Vermont</option>" +
+						"<option value='Virginia'>Virginia</option>" +
+						"<option value='West Virginia'>Washington</option>" +
+						"<option value='West Virginia'>West Virginia</option>" +
+						"<option value='Wisconsin'>Wisconsin</option>" +
+						"<option value='Wyoming'>Wyoming</option>" +
+					" </select>"; 
+					s = s.replaceAll("value='"+ state +"'", "value='"+ state +"' selected"); %>
+					<%=s %>
+				</th><th colspan="3">
+				<input type="hidden" name="query" value="true"/>
+				<input type="submit"  class="btn btn-default" />
+		        </th>
+		   	</form> 
+	<tr>
+	
+	<%
+	String row_name = "";
+	String row_selector = "";
+	
+			if(scope.equals("states")) {
+				%>
+				<th>STATE</th>
+				<%
+				if(state == null || state.equals("all") || state.equals("null"))  
+				{
+					row_name = "name";
+					row_selector = "uid";
+				}
+				else
+				{
+					
+					System.out.print(state);
+					row_name = "state";
+					row_selector = "state";
+				}
+			}
+			else{
+				%>
+				<th>USER</th>
+				<%
+				row_name = "name";
+				row_selector = "uid";
+			}
+			%>
 	<%
 	//prints out the product labels
 	while(rs1.next()){
@@ -146,14 +275,14 @@ try
 	}
 	%>
 	</tr>
-	
+	</thead>
 	<%
 	//prints out the user/state labels
 	while(rs2.next()){
 		%>
 			<tr>
 				<td>
-				<strong><%=rs2.getString("name") %></strong>
+				<strong><%=rs2.getString(1)%></strong>
 				<br>
 				<span class="label label-success">$<%=rs2.getInt("total") %></span>
 				</td>
@@ -163,12 +292,28 @@ try
 				{
 					boolean match = false;
 					rs3.beforeFirst();
-					while(rs3.next() && !match)
+					while(rs3.next() && !match) 
 					{
-						if(rs3.getInt("uid")==rs2.getInt("uid") && rs3.getInt("pid")==rs1.getInt("pid"))
+						if(!scope.equals("states"))
 						{
-							match = true;
-							%><td class="alert alert-success">$<%=rs3.getInt("total")%></td><%
+							if((rs1.getInt("pid") == rs3.getInt("pid")) && (rs2.getInt("uid") == rs3.getInt("uid")))
+							{	
+								//System.out.println(rs_3.getInt("amount"));
+								match = true;
+							%>
+								<td class="alert alert-success">$<%=rs3.getInt("total")%></td>
+							<%
+							}
+						}else
+						{
+							if(rs1.getInt("pid") == rs3.getInt("pid") && rs2.getString("state").equals(rs3.getString("state")))
+							{	
+								//System.out.println(rs_3.getInt("amount"));
+								match = true;
+							%>
+								<td class="alert alert-success">$<%=rs3.getInt("total")%></td>
+							<%
+							}
 						}
 					}
 					if(match == false){
