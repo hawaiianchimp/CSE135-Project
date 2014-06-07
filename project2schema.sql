@@ -111,13 +111,11 @@ CREATE TABLE states_products_total (
 	total	INTEGER NOT NULL
 );
 
-INSERT INTO states_products_total 
-SELECT st.name, p.id, SUM(s.quantity*s.price) 
-FROM sales s, states st, products p, users u 
-WHERE  st.name = u.state
-AND s.pid = p.id
-AND s.uid = u.id
-GROUP BY st.name, p.id;
+INSERT INTO states_products_total
+SELECT u.state, p.pid, SUM(p.total)
+FROM users_products_total p JOIN users u
+ON p.uid = u.id
+GROUP BY u.state, p.pid
 
 DROP TABLE states_categories_total;
 CREATE TABLE states_categories_total (
@@ -125,13 +123,11 @@ CREATE TABLE states_categories_total (
 	cid		INTEGER REFERENCES categories (id),
 	total	INTEGER NOT NULL
 );
+INSERT INTO states_categories_total
+SELECT u.state, pc.cid, SUM(pc.total)
+FROM users u JOIN users_categories_total pc
+ON pc.uid = u.id
+GROUP BY u.state, pc.cid
 
-INSERT INTO states_categories_total 
-SELECT st.name, c.id, SUM(s.quantity*s.price) 
-FROM sales s, states st, products p, users u, categories c 
-WHERE  st.name = u.state
-AND s.pid = p.id
-AND s.uid = u.id
-AND p.cid = c.id
-GROUP BY st.name, c.id;
+
 
