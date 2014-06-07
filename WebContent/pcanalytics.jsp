@@ -138,7 +138,7 @@ try
 	while(rs1.next()){
 		%>
 			<td>
-				<strong><%=rs1.getString("pid") %></strong>
+				<strong><%=rs1.getString("name") %></strong>
 				<br>
 				<span class="label label-success">$<%=rs1.getInt("total") %></span>
 			</td>	
@@ -153,7 +153,7 @@ try
 		%>
 			<tr>
 				<td>
-				<strong><%=rs2.getString("uid") %></strong>
+				<strong><%=rs2.getString("name") %></strong>
 				<br>
 				<span class="label label-success">$<%=rs2.getInt("total") %></span>
 				</td>
