@@ -97,7 +97,7 @@ try
 			else
 			{
 				//category - off, state - on
-				sql2 = "SELECT * FROM users_total AS ut WHERE ut.uid IN (SELECT u.id FROM users AS u WHERE u.state = '" + state + "') ORDER BY ut.total LIMIT 20";
+				sql2 = "SELECT * FROM users_total AS ut WHERE ut.uid IN (SELECT u.id FROM users AS u WHERE u.state = '" + state + "') ORDER BY ut.total DESC LIMIT 20";
 				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.uid IN (SELECT uid FROM users u JOIN users_total ut ON (ut.uid = u.id) WHERE u.state = '" + state + "' ORDER BY ut.total LIMIT 20) AND upt.pid IN (SELECT pt.pid FROM products_total AS pt ORDER BY pt.total LIMIT 10)";
 			}
 		}
