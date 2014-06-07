@@ -20,7 +20,7 @@ try
 	try{Class.forName("org.postgresql.Driver");}catch(Exception e){System.out.println("Driver error");}
 	conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
 	"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs");
-	
+	long beg = System.nanoTime();
 	conn = DriverManager.getConnection(
     	"jdbc:postgresql://localhost/CSE135?" +
     	"user=Bonnie"); 
@@ -98,7 +98,7 @@ try
 			{
 				//category - off, state - on
 				sql2 = "SELECT * FROM users_total AS ut WHERE ut.uid IN (SELECT u.id FROM users AS u WHERE u.state = '" + state + "') ORDER BY ut.total LIMIT 20";
-				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.uid IN (SELECT u.id FROM users u WHERE u.state = '" + state + "') AND upt.pid IN (SELECT pt.pid FROM products_total AS pt ORDER BY pt.total LIMIT 10)";
+				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.uid IN (SELECT uid FROM users u JOIN users_total ut ON (ut.uid = u.id) WHERE u.state = '" + state + "' ORDER BY ut.total LIMIT 20) AND upt.pid IN (SELECT pt.pid FROM products_total AS pt ORDER BY pt.total LIMIT 10)";
 			}
 		}
 		else
@@ -107,7 +107,7 @@ try
 			{
 				//category - on, state - off
 				sql2 = "SELECT * FROM users_categories_total ORDER BY total DESC LIMIT 20";
-				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.pid IN (SELECT p.id FROM products AS p WHERE p.cid = " + category + ") ORDER BY upt.total DESC LIMIT 10";
+				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.pid IN (SELECT p.id FROM products AS p JOIN products_total pt ON (pt.pid = p.id) WHERE p.cid = " + category + " ORDER BY  pt.total DESC LIMIT 10) ORDER BY upt.total DESC LIMIT 10";
 			}
 			else
 			{
@@ -121,10 +121,29 @@ try
 	//rs1 = products row
 	//rs2 = user/state column
 	//rs3 = table cells
-	rs1 = stmt1.executeQuery(sql1); //1 = pid, 2 = total
-	rs2 = stmt2.executeQuery(sql2); //1 = uid OR state, 2 = total
-	rs3 = stmt3.executeQuery(sql3);	//1 = uid OR state, 2 = pid, 3 = total
+	//rs1 = stmt1.executeQuery(sql1); //1 = pid, 2 = total
+	//rs2 = stmt2.executeQuery(sql2); //1 = uid OR state, 2 = total
+	//rs3 = stmt3.executeQuery(sql3);	//1 = uid OR state, 2 = pid, 3 = total
 	
+	long q1s, q1e, q2s, q2e, q3s, q3e;
+	double elapsed1, elapsed2, elapsed3;
+	
+	q1s = System.nanoTime();
+	rs1=stmt1.executeQuery(sql1);
+	q1e = System.nanoTime();
+	
+	q2s = System.nanoTime();
+	rs2=stmt2.executeQuery(sql2);
+	q2e = System.nanoTime();
+	
+	q3s = System.nanoTime();
+	rs3=stmt3.executeQuery(sql3);
+	q3e = System.nanoTime();
+	
+	//state not id, many users in one state
+//    out.println("product #:"+p_list.size()+"<br>state #:"+s_list.size()+"<p>");
+	int i=0,j=0;	
+	float amount=0;
 	rs1.beforeFirst();
 	rs2.beforeFirst();
 	rs3.beforeFirst();
@@ -334,6 +353,50 @@ try
 	conn.commit();
 	conn.setAutoCommit(true);
 	*/
+	
+	//System.out.println("Report: ");
+
+	//System.out.println(SQL_1);
+	elapsed1 = (q1e - q1s) / 1000000.0;
+
+	//System.out.println("Elapsed 1: " + elapsed1);
+
+	//System.out.println();
+
+	System.out.println("Query 1 Time: " + elapsed1 + " ms");
+	out.println("<br>Query 1 Time: " + elapsed1 + " ms");
+	System.out.println();
+
+
+	//System.out.println(SQL_2);
+	elapsed2 = (q2e - q2s) / 1000000.0;
+	System.out.println("Query 2 Time: " + elapsed2 + " ms");
+	out.println("<br>Query 2 Time: " + elapsed2 + " ms");
+
+	//System.out.println("Elapsed 2: " + elapsed2);
+
+
+	//System.out.println();
+
+	//System.out.println(SQL_3);
+	elapsed3 = (q3e - q3s) / 1000000.0;
+	System.out.println("Query 3 Time: " + elapsed3 + " ms");
+	out.println("<br>Query 3 Time: " + elapsed3 + " ms");
+
+	//System.out.println("Elapsed 3: " + elapsed3);
+
+
+	//System.out.println();
+
+	long end = System.nanoTime();
+	double elapsed = (end - beg) / 1000000.0;
+
+	//System.out.println("Elapsed: "  + elapsed);
+
+	System.out.println("JSP time: "  + elapsed + " ms");
+	out.println("<br>JSP time: " + elapsed + " ms");
+	System.out.println();
+	
 }
 
 catch (SQLException e)
