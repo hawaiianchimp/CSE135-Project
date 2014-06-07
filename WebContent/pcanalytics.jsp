@@ -113,7 +113,7 @@ try
 			{
 				//category - on, state - on
 				sql2 = "SELECT * FROM users_categories_total AS uct WHERE uct.uid IN (SELECT u.id FROM users AS u WHERE u.state = '" + state + "') ORDER BY uct.total DESC LIMIT 20";
-				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.uid IN (SELECT uid FROM users u JOIN users_total ut ON (ut.uid = u.id) WHERE u.state = '" + state + "' ORDER BY ut.total LIMIT 10) AND upt.pid in (SELECT p.id FROM products AS p WHERE p.cid = " + category + ") ORDER BY upt.total DESC LIMIT 20";
+				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.uid IN (SELECT uid FROM users u JOIN users_total ut ON (ut.uid = u.id) WHERE u.state = '" + state + "' ORDER BY ut.total LIMIT 20) AND upt.pid in (SELECT p.id FROM products AS p JOIN products_total pt ON (pt.pid = p.id) WHERE p.cid = " + category + " ORDER BY  pt.total DESC LIMIT 10) ORDER BY upt.total DESC LIMIT 20";
 			}
 		}
 	}
