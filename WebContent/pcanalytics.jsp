@@ -73,14 +73,14 @@ try
 			if (state == null || state.equals("all") || state.equals("null"))
 			{
 				//category - on, state - off
-				sql2 = "SELECT state, total FROM states_categories_total WHERE cid = " + category + " ORDER BY total DESC LIMIT 20";
-				sql3 = "SELECT spt.state, spt.total FROM states_products_total AS spt WHERE spt.pid IN (SELECT pt.pid FROM products_total AS pt WHERE pt.pid IN (SELECT p.id FROM products AS p WHERE p.cid = " + category + ") ORDER BY pt.total DESC LIMIT 10)";
+				sql2 = "SELECT * FROM states_categories_total WHERE cid = " + category + " ORDER BY total DESC LIMIT 20";
+				sql3 = "SELECT * FROM states_products_total AS spt WHERE spt.pid IN (SELECT pt.pid FROM products_total AS pt WHERE pt.pid IN (SELECT p.id FROM products AS p WHERE p.cid = " + category + ") ORDER BY pt.total DESC LIMIT 10)";
 			}
 			else
 			{
 				//category - on, state - on
 				sql2 = "SELECT * FROM states_categories_total WHERE cid = " + category + " AND state = '" + state + "' ORDER BY total DESC LIMIT 20";
-				sql3 = "SELECT spt.state, spt.total FROM states_products_total AS spt WHERE spt.state = '" + state + "' AND spt.pid IN (SELECT pt.pid FROM products_total AS pt WHERE pt.pid IN (SELECT p.id FROM products AS p WHERE p.cid = " + category + ") ORDER BY pt.total DESC LIMIT 10)";
+				sql3 = "SELECT * FROM states_products_total AS spt WHERE spt.state = '" + state + "' AND spt.pid IN (SELECT pt.pid FROM products_total AS pt WHERE pt.pid IN (SELECT p.id FROM products AS p WHERE p.cid = " + category + ") ORDER BY pt.total DESC LIMIT 10)";
 			}
 		}
 	}
@@ -106,7 +106,7 @@ try
 			if (state == null || state.equals("all") || state.equals("null"))
 			{
 				//category - on, state - off
-				sql2 = "SELECT uid, total FROM users_categories_total ORDER BY total DESC LIMIT 20";
+				sql2 = "SELECT * FROM users_categories_total ORDER BY total DESC LIMIT 20";
 				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.pid IN (SELECT p.id FROM products AS p WHERE p.cid = " + category + ") ORDER BY upt.total DESC LIMIT 10";
 			}
 			else
