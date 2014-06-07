@@ -21,7 +21,6 @@ try
 	
 	/* conn = DriverManager.getConnection(
     	"jdbc:postgresql://localhost/cse135?" +
-<<<<<<< HEAD
     	"user=Sean");  */
             
 	/* conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
