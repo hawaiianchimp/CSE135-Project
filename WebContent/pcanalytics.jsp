@@ -97,8 +97,8 @@ try
 			else
 			{
 				//category - off, state - on
-				sql2 = "SELECT * FROM users_total AS ut WHERE ut.uid IN (SELECT u.uid FROM users AS u WHERE u.state = '" + state + "') ORDER BY ut.total LIMIT 20";
-				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.uid IN (SELECT u.uid FROM users u WHERE u.state = '" + state + "') AND upt.pid IN (SELECT pt.pid FROM products_total AS pt ORDER BY pt.total LIMIT 10)";
+				sql2 = "SELECT * FROM users_total AS ut WHERE ut.uid IN (SELECT u.id FROM users AS u WHERE u.state = '" + state + "') ORDER BY ut.total LIMIT 20";
+				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.uid IN (SELECT u.id FROM users u WHERE u.state = '" + state + "') AND upt.pid IN (SELECT pt.pid FROM products_total AS pt ORDER BY pt.total LIMIT 10)";
 			}
 		}
 		else
@@ -112,8 +112,8 @@ try
 			else
 			{
 				//category - on, state - on
-				sql2 = "SELECT * FROM users_categories_total AS uct WHERE uct.uid IN (SELECT u.uid FROM users AS u WHERE u.state = '" + state + "') ORDER BY uct.total DESC LIMIT 20";
-				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.uid IN (SELECT u.uid FROM users WHERE u.state = '" + state + "') AND upt.pid in (SELECT p.pid FROM products AS p WHERE p.cid = " + category + ") ORDER BY upt.total DESC LIMIT 20";
+				sql2 = "SELECT * FROM users_categories_total AS uct WHERE uct.uid IN (SELECT u.id FROM users AS u WHERE u.state = '" + state + "') ORDER BY uct.total DESC LIMIT 20";
+				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.uid IN (SELECT uid FROM users u JOIN users_total ut ON (ut.uid = u.id) WHERE u.state = '" + state + "' ORDER BY ut.total LIMIT 10) AND upt.pid in (SELECT p.id FROM products AS p WHERE p.cid = " + category + ") ORDER BY upt.total DESC LIMIT 20";
 			}
 		}
 	}
