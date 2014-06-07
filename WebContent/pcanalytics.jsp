@@ -37,12 +37,12 @@ try
 	if(category == null || category.equals("all") || category.equals("null"))
 	{
 		//category - off
-		sql1 = "SELECT * FROM products_total ORDER BY total LIMIT 10";	
+		sql1 = "SELECT * FROM products_total ORDER BY total DESC LIMIT 10";	
 	}
 	else
 	{
 		//category - on
-		sql1 = "SELECT * FROM products_total WHERE pid IN (SELECT pid FROM products WHERE cid = " + category + ") ORDER BY total LIMIT 10";
+		sql1 = "SELECT * FROM products_total WHERE pid IN (SELECT pid FROM products WHERE cid = " + category + ") ORDER BY total DESC LIMIT 10";
 	}
 	
 	//sql2: Users/states and totals for row labels
@@ -55,14 +55,14 @@ try
 			if (state == null || state.equals("all") || state.equals("null"))
 			{
 				//category - off, state - off
-				sql2 = "SELECT * FROM states_total ORDER BY total LIMIT 20";
-				sql3 = "SELECT * FROM states_products_total AS spt WHERE spt.pid IN (SELECT pt.pid FROM products_total as pt ORDER BY pt.total LIMIT 10)";
+				sql2 = "SELECT * FROM states_total ORDER BY total DESC LIMIT 20";
+				sql3 = "SELECT * FROM states_products_total AS spt WHERE spt.pid IN (SELECT pt.pid FROM products_total as pt ORDER BY pt.total DESC LIMIT 10)";
 			}
 			else
 			{
 				//category - off, state - on
-				sql2 = "SELECT * FROM states_total WHERE state = '" + state + "'";
-				sql3 = "SELECT * FROM states_products_total AS spt WHERE spt.state = '" + state + "' AND spt.pid IN (SELECT pt.pid FROM products_total AS pt ORDER BY pt.total LIMIT 10)";
+				sql2 = "SELECT * FROM states_total WHERE state = '" + state + "' ORDER BY total DESC LIMIT 20";
+				sql3 = "SELECT * FROM states_products_total AS spt WHERE spt.state = '" + state + "' AND spt.pid IN (SELECT pt.pid FROM products_total AS pt ORDER BY pt.total DESC LIMIT 10)";
 			}
 		}
 		else
@@ -70,14 +70,14 @@ try
 			if (state == null || state.equals("all") || state.equals("null"))
 			{
 				//category - on, state - off
-				sql2 = "SELECT state, total FROM states_categories_total WHERE cid = " + category + " ORDER BY total LIMIT 20";
-				sql3 = "SELECT spt.state, spt.total FROM state_products_total AS spt WHERE spt.pid IN (SELECT pt.pid FROM products_total AS pt WHERE pt.pid IN (SELECT p.pid FROM products AS p WHERE p.cid = " + category + ") ORDER BY pt.total LIMIT 10)";
+				sql2 = "SELECT state, total FROM states_categories_total WHERE cid = " + category + " ORDER BY total DESC LIMIT 20";
+				sql3 = "SELECT spt.state, spt.total FROM state_products_total AS spt WHERE spt.pid IN (SELECT pt.pid FROM products_total AS pt WHERE pt.pid IN (SELECT p.pid FROM products AS p WHERE p.cid = " + category + ") ORDER BY pt.total DESC LIMIT 10)";
 			}
 			else
 			{
 				//category - on, state - on
-				sql2 = "SELECT * FROM states_categories_total WHERE cid = " + category + " AND state = '" + state + "'";
-				sql3 = "SELECT spt.state, spt.total FROM state_products_total AS spt WHERE spt.state = '" + state + "' AND spt.pid IN (SELECT pt.pid FROM products_total AS pt WHERE pt.pid IN (SELECT p.pid FROM products AS p WHERE p.cid = " + category + ") ORDER BY pt.total LIMIT 10)";
+				sql2 = "SELECT * FROM states_categories_total WHERE cid = " + category + " AND state = '" + state + "' ORDER BY total DESC LIMIT 20";
+				sql3 = "SELECT spt.state, spt.total FROM state_products_total AS spt WHERE spt.state = '" + state + "' AND spt.pid IN (SELECT pt.pid FROM products_total AS pt WHERE pt.pid IN (SELECT p.pid FROM products AS p WHERE p.cid = " + category + ") ORDER BY pt.total DESC LIMIT 10)";
 			}
 		}
 	}
@@ -88,14 +88,14 @@ try
 			if (state == null || state.equals("all") || state.equals("null"))
 			{
 				//category - off, state - off
-				sql2 = "SELECT * FROM users_total ORDER BY total LIMIT 20";
-				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.pid IN (SELECT pt.pid FROM products_total AS pt ORDER BY pt.total LIMIT 10)";
+				sql2 = "SELECT * FROM users_total ORDER BY total DESC LIMIT 20";
+				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.pid IN (SELECT pt.pid FROM products_total AS pt ORDER BY pt.total DESC LIMIT 10)";
 			}
 			else
 			{
 				//category - off, state - on
-				sql2 = "SELECT * FROM users_total AS ut WHERE ut.uid IN (SELECT u.uid FROM users AS u WHERE u.state = '" + state + "') ORDER BY ut.total LIMIT 20";
-				sql3 =  "SELECT * FROM users_products_total AS upt WHERE upt.uid IN (SELECT u.uid FROM users u WHERE u.state = '" + state + "') AND upt.pid IN (SELECT pt.pid FROM products_total AS pt ORDER BY pt.total LIMIT 10)";
+				sql2 = "SELECT * FROM users_total AS ut WHERE ut.uid IN (SELECT u.uid FROM users AS u WHERE u.state = '" + state + "') ORDER BY ut.total DESC LIMIT 20";
+				sql3 =  "SELECT * FROM users_products_total AS upt WHERE upt.uid IN (SELECT u.uid FROM users u WHERE u.state = '" + state + "') AND upt.pid IN (SELECT pt.pid FROM products_total AS pt ORDER BY pt.total DESC LIMIT 10)";
 			}
 		}
 		else
@@ -103,14 +103,14 @@ try
 			if (state == null || state.equals("all") || state.equals("null"))
 			{
 				//category - on, state - off
-				sql2 = "SELECT uid, total FROM users_categories_total ORDER BY total LIMIT 20";
-				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.pid IN (SELECT p.pid FROM products AS p WHERE p.cid = " + category + ") ORDER BY upt.total LIMIT 10";
+				sql2 = "SELECT uid, total FROM users_categories_total ORDER BY total DESC LIMIT 20";
+				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.pid IN (SELECT p.pid FROM products AS p WHERE p.cid = " + category + ") ORDER BY upt.total DESC LIMIT 10";
 			}
 			else
 			{
 				//category - on, state - on
-				sql2 = "SELECT * FROM users_categories_total AS uct WHERE uct.uid IN (SELECT u.uid FROM users AS u WHERE u.state = '" + state + "') ORDER BY uct.total LIMIT 20";
-				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.uid IN (SELECT u.uid FROM users WHERE u.state = '" + state + "') AND upt.pid in (SELECT p.pid FROM products AS p WHERE p.cid = " + category + ") ORDER BY upt.total LIMIT 20";
+				sql2 = "SELECT * FROM users_categories_total AS uct WHERE uct.uid IN (SELECT u.uid FROM users AS u WHERE u.state = '" + state + "') ORDER BY uct.total DESC LIMIT 20";
+				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.uid IN (SELECT u.uid FROM users WHERE u.state = '" + state + "') AND upt.pid in (SELECT p.pid FROM products AS p WHERE p.cid = " + category + ") ORDER BY upt.total DESC LIMIT 20";
 			}
 		}
 	}
