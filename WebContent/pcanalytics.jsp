@@ -18,9 +18,12 @@ String sql1 =null, sql2 = null, sql3 = null;
 try
 {
 	try{Class.forName("org.postgresql.Driver");}catch(Exception e){System.out.println("Driver error");}
-	conn = DriverManager.getConnection(
+	/* conn = DriverManager.getConnection("jdbc:postgresql://ec2-23-21-185-168.compute-1.amazonaws.com:5432/ddbj4k4uieorq7?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+	"qwovydljafffgl", "cGdGZam7xcem_isgwfV3FQ_jxs"); */
+	
+	/*conn = DriverManager.getConnection(
     	"jdbc:postgresql://localhost/CSE135?" +
-    	"user=Bonnie"); 
+    	"user=Bonnie"); */
 	
 	conn.setAutoCommit(false);
 	
@@ -94,8 +97,8 @@ try
 			else
 			{
 				//category - off, state - on
-				sql2 = "SELECT * FROM users_total AS ut WHERE ut.uid IN (SELECT u.uid FROM users AS u WHERE u.state = '" + state + "') ORDER BY ut.total DESC LIMIT 20";
-				sql3 =  "SELECT * FROM users_products_total AS upt WHERE upt.uid IN (SELECT u.uid FROM users u WHERE u.state = '" + state + "') AND upt.pid IN (SELECT pt.pid FROM products_total AS pt ORDER BY pt.total DESC LIMIT 10)";
+				sql2 = "SELECT * FROM users_total AS ut WHERE ut.uid IN (SELECT u.uid FROM users AS u WHERE u.state = '" + state + "') ORDER BY ut.total LIMIT 20";
+				sql3 = "SELECT * FROM users_products_total AS upt WHERE upt.uid IN (SELECT u.uid FROM users u WHERE u.state = '" + state + "') AND upt.pid IN (SELECT pt.pid FROM products_total AS pt ORDER BY pt.total LIMIT 10)";
 			}
 		}
 		else
